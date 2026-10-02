@@ -4,14 +4,16 @@ import { ATTARS_DATA } from './attarsData';
 import { TOPIS_DATA } from './topisData';
 import { DEALS_DATA } from './dealsData';
 
-export const HERO_BANNER_IMG = '/src/assets/images/hero_perfume_attar_topi_1790930694602.jpg';
-export const OUD_PERFUME_IMG = '/src/assets/images/product_royal_oud_perfume_1790930708365.jpg';
-export const DEHN_ATTAR_IMG = '/src/assets/images/product_dehn_al_oud_attar_1790930721382.jpg';
-export const EMBD_TOPI_IMG = '/src/assets/images/product_luxury_embroidered_topi_1790930733235.jpg';
-export const BLUE_PERFUME_IMG = '/src/assets/images/product_french_blue_perfume_1790931733661.jpg';
-export const AMBER_PERFUME_IMG = '/src/assets/images/product_amber_gold_perfume_1790931751652.jpg';
-export const WHITE_MUSK_IMG = '/src/assets/images/product_white_musk_attar_1790931765997.jpg';
-export const CAPS_COLLECTION_IMG = '/src/assets/images/product_sindhi_afghan_caps_1790931778385.jpg';
+export {
+  HERO_BANNER_IMG,
+  OUD_PERFUME_IMG,
+  DEHN_ATTAR_IMG,
+  EMBD_TOPI_IMG,
+  BLUE_PERFUME_IMG,
+  AMBER_PERFUME_IMG,
+  WHITE_MUSK_IMG,
+  CAPS_COLLECTION_IMG
+} from './images';
 
 // Comprehensive catalog containing 20 Perfumes, 20 Attars, 12 Topis, and 8 Deals = 60 Products
 export const PRODUCTS: Product[] = [

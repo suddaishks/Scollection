@@ -1,4 +1,5 @@
 import { Product } from '../types';
+import { OUD_PERFUME_IMG, BLUE_PERFUME_IMG, AMBER_PERFUME_IMG } from './images';
 
 export const PERFUMES_DATA: Product[] = [
   {
@@ -13,7 +14,7 @@ export const PERFUMES_DATA: Product[] = [
     discountPercentage: 24,
     rating: 4.9,
     reviewsCount: 184,
-    image: '/src/assets/images/product_royal_oud_perfume_1790930708365.jpg',
+    image: OUD_PERFUME_IMG,
     inStock: true,
     featured: true,
     badgeUr: 'فلیگ شپ بیسٹ سیلر',
