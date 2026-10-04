@@ -12,13 +12,14 @@ import { ContactUsSection } from './components/ContactUsSection';
 import { Footer } from './components/Footer';
 import { PRODUCTS } from './data/products';
 import { CartItem, Product, ProductCategory, OrderRecord } from './types';
-import { Search, SlidersHorizontal, MessageCircle, Sparkles } from 'lucide-react';
+import { Search, SlidersHorizontal, MessageCircle, Sparkles, LayoutGrid, Grid2X2, Grid3X3 } from 'lucide-react';
 
 export default function App() {
   const [lang, setLang] = useState<'ur' | 'en'>('ur');
   const [activeCategory, setActiveCategory] = useState<ProductCategory>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc' | 'rating'>('featured');
+  const [mobileGridCols, setMobileGridCols] = useState<'2' | '3'>('2');
   
   // Modals & Drawers state
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -273,25 +274,53 @@ export default function App() {
             ))}
           </div>
 
-          {/* Sort dropdown */}
-          <div className="flex items-center gap-2 text-xs text-[#a69f91]">
-            <SlidersHorizontal className="w-3.5 h-3.5 text-[#d4af37]" />
-            <span>{lang === 'ur' ? 'ترتیب:' : 'Sort By:'}</span>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as any)}
-              className="bg-[#141722] border border-[#242a3a] rounded-lg px-2.5 py-1.5 text-xs text-[#f4efe6] focus:outline-none focus:border-[#d4af37] cursor-pointer"
-            >
-              <option value="featured">{lang === 'ur' ? 'مقبول ترین (Featured)' : 'Featured'}</option>
-              <option value="price-asc">{lang === 'ur' ? 'قیمت: کم سے زیادہ' : 'Price: Low to High'}</option>
-              <option value="price-desc">{lang === 'ur' ? 'قیمت: زیادہ سے کم' : 'Price: High to Low'}</option>
-              <option value="rating">{lang === 'ur' ? 'اعلیٰ ترین ریٹنگ' : 'Highest Rated'}</option>
-            </select>
+          <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+            {/* Mobile Grid Columns Switcher: 2x or 3x per row */}
+            <div className="flex items-center gap-1 bg-[#141722] border border-[#242a3a] rounded-lg p-1 text-xs">
+              <span className="text-[11px] text-[#8e8778] px-1 hidden sm:inline">
+                {lang === 'ur' ? 'ڈسپلے:' : 'View:'}
+              </span>
+              <button
+                onClick={() => setMobileGridCols('2')}
+                className={`px-2 py-1 rounded-md transition-colors cursor-pointer flex items-center gap-1 ${
+                  mobileGridCols === '2' ? 'bg-[#d4af37] text-[#0f1115] font-bold' : 'text-[#a69f91] hover:text-white'
+                }`}
+                title={lang === 'ur' ? '2 کالم (دو پروڈکٹس ساتھ ساتھ)' : '2 Columns'}
+              >
+                <Grid2X2 className="w-3.5 h-3.5" />
+                <span className="text-[11px] font-mono">2x</span>
+              </button>
+              <button
+                onClick={() => setMobileGridCols('3')}
+                className={`px-2 py-1 rounded-md transition-colors cursor-pointer flex items-center gap-1 ${
+                  mobileGridCols === '3' ? 'bg-[#d4af37] text-[#0f1115] font-bold' : 'text-[#a69f91] hover:text-white'
+                }`}
+                title={lang === 'ur' ? '3 کالم (تین پروڈکٹس ایک ساتھ)' : '3 Columns (Compact)'}
+              >
+                <Grid3X3 className="w-3.5 h-3.5" />
+                <span className="text-[11px] font-mono">3x</span>
+              </button>
+            </div>
+
+            {/* Sort dropdown */}
+            <div className="flex items-center gap-1.5 text-xs text-[#a69f91]">
+              <SlidersHorizontal className="w-3.5 h-3.5 text-[#d4af37]" />
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as any)}
+                className="bg-[#141722] border border-[#242a3a] rounded-lg px-2 py-1.5 text-xs text-[#f4efe6] focus:outline-none focus:border-[#d4af37] cursor-pointer"
+              >
+                <option value="featured">{lang === 'ur' ? 'مقبول ترین' : 'Featured'}</option>
+                <option value="price-asc">{lang === 'ur' ? 'قیمت: کم سے زیادہ' : 'Price: Low'}</option>
+                <option value="price-desc">{lang === 'ur' ? 'قیمت: زیادہ سے کم' : 'Price: High'}</option>
+                <option value="rating">{lang === 'ur' ? 'اعلیٰ ریٹنگ' : 'Top Rated'}</option>
+              </select>
+            </div>
           </div>
 
         </div>
 
-        {/* Product Grid - 3 Column Desktop Baseline */}
+        {/* Product Grid - 2 or 3 Columns on Mobile, up to 4/5 on Desktop */}
         {filteredProducts.length === 0 ? (
           <div className="py-20 text-center text-[#8e8778] space-y-3">
             <Search className="w-10 h-10 mx-auto opacity-40" />
@@ -303,7 +332,11 @@ export default function App() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          <div className={
+            mobileGridCols === '3'
+              ? 'grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-4'
+              : 'grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-5'
+          }>
             {filteredProducts.map((prod) => (
               <ProductCard
                 key={prod.id}
@@ -311,6 +344,7 @@ export default function App() {
                 onOpenDetails={(p) => setSelectedProduct(p)}
                 onAddToCart={(p, size) => handleAddToCart(p, size)}
                 lang={lang}
+                columnsMode={mobileGridCols}
               />
             ))}
           </div>
