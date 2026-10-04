@@ -80,7 +80,7 @@ export interface CartItem {
   quantity: number;
 }
 
-export type PaymentMethod = 'cod' | 'easypaisa' | 'jazzcash';
+export type PaymentMethod = 'cod' | 'easypaisa' | 'jazzcash' | 'bank';
 
 export interface OrderCustomerInfo {
   fullName: string;

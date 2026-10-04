@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronRight, ChevronLeft, ArrowRight, Sparkles, ShieldCheck, Flame, Tag } from 'lucide-react';
+import { ChevronRight, ChevronLeft, ArrowRight, Sparkles, ShieldCheck, Flame, Tag, Sliders } from 'lucide-react';
 import {
   HERO_BANNER_IMG,
   IMPERIAL_VALLEY_IMG,
   KHAMRAH_IMG,
   NINE_PM_IMG,
   DEHN_ATTAR_IMG,
-  EMBD_TOPI_IMG
+  EMBD_TOPI_IMG,
+  BESPOKE_WORKSHOP_IMG
 } from '../data/images';
 import { ProductCategory } from '../types';
 
@@ -31,6 +32,16 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
       actionText: 'Shop All Fragrances',
       category: 'all' as ProductCategory,
       dealTag: 'BESTSELLERS IN STOCK'
+    },
+    {
+      id: 'slide-impressions',
+      badge: '1:1 BESPOKE IMPRESSIONS STUDIO',
+      title: 'Custom Impressions of Any Perfume & Attar',
+      subtitle: 'We craft identical 1:1 formulations of world-famous designer fragrances. Available in 15ml, 30ml, 50ml sprays or 3ml, 6ml, 12ml pure non-alcoholic attars.',
+      image: BESPOKE_WORKSHOP_IMG,
+      actionText: 'Order Custom Impression',
+      category: 'deals' as ProductCategory,
+      dealTag: 'CUSTOM SCENT BLENDING'
     },
     {
       id: 'slide-2',
@@ -120,11 +131,15 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
               </button>
 
               <button
-                onClick={onOpenDeals}
+                onClick={() => {
+                  const el = document.getElementById('custom-impressions');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  else onOpenDeals();
+                }}
                 className="inline-flex items-center gap-2 px-5 py-3.5 rounded-xl bg-white text-[#1a1612] border border-[#dcd2be] font-bold text-sm hover:bg-[#fbf9f5] hover:border-[#b8860b] transition-all cursor-pointer shadow-xs"
               >
-                <Flame className="w-4 h-4 text-amber-600" />
-                <span>View Special Bundles</span>
+                <Sliders className="w-4 h-4 text-[#b8860b]" />
+                <span>Custom Impressions Studio</span>
               </button>
             </div>
 

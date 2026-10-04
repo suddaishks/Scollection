@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { HeroSlider } from './components/HeroSlider';
-import { DealsSection } from './components/DealsSection';
+import { CustomImpressionsSection } from './components/CustomImpressionsSection';
 import { ProductCard } from './components/ProductCard';
 import { ProductDetailModal } from './components/ProductDetailModal';
 import { CartDrawer } from './components/CartDrawer';
@@ -72,7 +72,7 @@ export default function App() {
     }
   }, [appliedCoupon]);
 
-  const handleAddToCart = (product: Product, size: string) => {
+  const handleAddToCart = (product: Product, size: string, openDrawer: boolean = true) => {
     const variant = product.variants.find((v) => v.size === size) || product.variants[0];
     const cartItemId = `${product.id}-${size}`;
 
@@ -99,6 +99,10 @@ export default function App() {
         ];
       }
     });
+
+    if (openDrawer) {
+      setIsCartOpen(true);
+    }
   };
 
   const handleBuyNow = (product: Product, size: string) => {
@@ -185,16 +189,14 @@ export default function App() {
           if (el) el.scrollIntoView({ behavior: 'smooth' });
         }}
         onOpenDeals={() => {
-          const el = document.getElementById('deals-section');
+          const el = document.getElementById('custom-impressions');
           if (el) el.scrollIntoView({ behavior: 'smooth' });
         }}
       />
 
-      {/* Deals & Promo Vouchers Section */}
-      <DealsSection
-        onApplyCoupon={(code) => setAppliedCoupon(code)}
+      {/* Bespoke Impressions & Custom Perfumes Studio (1:1 Impressions Slider) */}
+      <CustomImpressionsSection
         onSelectProduct={(prod) => setSelectedProduct(prod)}
-        dealsProducts={dealsProducts}
       />
 
       {/* Main Catalog Section */}
@@ -248,7 +250,7 @@ export default function App() {
                 { id: 'perfume', label: 'Perfumes (15/30/50ml)', count: PRODUCTS.filter((p) => p.category === 'perfume').length },
                 { id: 'attar', label: 'Pure Attar (3/6/12ml)', count: PRODUCTS.filter((p) => p.category === 'attar').length },
                 { id: 'topi', label: 'Prayer Caps', count: PRODUCTS.filter((p) => p.category === 'topi').length },
-                { id: 'deals', label: 'Special Deals', count: dealsProducts.length },
+                { id: 'deals', label: 'Impressions & Sets', count: dealsProducts.length },
               ] as { id: ProductCategory; label: string; count: number }[]
             ).map((item) => (
               <button
@@ -406,6 +408,10 @@ export default function App() {
         cartItems={cartItems}
         onOrderCompleted={handleOrderCompleted}
         appliedCoupon={appliedCoupon}
+        onOpenTracker={() => {
+          setIsCheckoutOpen(false);
+          setIsTrackerOpen(true);
+        }}
       />
 
       <OrderTrackerModal

@@ -239,10 +239,16 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 </div>
               )}
 
-              <div className="flex justify-between">
-                <span>Delivery Charges:</span>
+              <div className="flex justify-between items-center">
+                <span>Estimated Delivery Fee:</span>
                 <span className="font-mono">
-                  {deliveryFee === 0 ? <strong className="text-emerald-700">FREE</strong> : `Rs. ${deliveryFee}`}
+                  {deliveryFee === 0 ? (
+                    <strong className="text-emerald-700">FREE (Orders &gt; 5k)</strong>
+                  ) : (
+                    <span className="text-xs font-semibold text-[#8b6508]">
+                      Rs. 150 (Khi) / Rs. 250 (Isb/Pjb) / Rs. 300 (KPK)
+                    </span>
+                  )}
                 </span>
               </div>
 

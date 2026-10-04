@@ -1,6 +1,7 @@
 import React from 'react';
 import { ShieldCheck, Truck, RotateCcw, Droplet, Phone, MessageCircle, Sparkles } from 'lucide-react';
 import { ProductCategory } from '../types';
+import { BrandLogo } from './BrandLogo';
 
 interface FooterProps {
   onSelectCategory: (cat: ProductCategory) => void;
@@ -56,10 +57,8 @@ export const Footer: React.FC<FooterProps> = ({
         
         {/* Brand Col */}
         <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#d4af37] to-[#996515] flex items-center justify-center text-white font-bold font-serif">
-              S
-            </div>
+          <div className="flex items-center gap-2.5">
+            <BrandLogo size="sm" />
             <h4 className="text-base font-bold text-white font-display">
               SUDDAIS COLLECTION
             </h4>

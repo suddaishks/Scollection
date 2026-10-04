@@ -11,7 +11,11 @@ import bluePerfume from '../assets/images/product_french_blue_perfume_1790931733
 import amberPerfume from '../assets/images/product_amber_gold_perfume_1790931751652.jpg';
 import whiteMusk from '../assets/images/product_white_musk_attar_1790931765997.jpg';
 import capsCollection from '../assets/images/product_sindhi_afghan_caps_1790931778385.jpg';
+import brandLogo from '../assets/images/brand_logo_gold_1791106672192.jpg';
+import bespokeWorkshop from '../assets/images/bespoke_impression_perfumes_1791106685515.jpg';
 
+export const BRAND_LOGO_IMG = brandLogo;
+export const BESPOKE_WORKSHOP_IMG = bespokeWorkshop;
 export const HERO_BANNER_IMG = heroWhiteGold || heroBanner;
 export const HERO_WHITE_GOLD_IMG = heroWhiteGold;
 export const IMPERIAL_VALLEY_IMG = imperialValley;

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ShoppingBag, Truck, Menu, X, Phone, Sparkles } from 'lucide-react';
 import { ProductCategory } from '../types';
+import { BrandLogo } from './BrandLogo';
 
 interface NavbarProps {
   activeCategory: ProductCategory;
@@ -19,12 +20,12 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const navLinks: { cat: ProductCategory; label: string }[] = [
+  const navLinks: { cat: ProductCategory; label: string; isAnchor?: string }[] = [
     { cat: 'all', label: 'All Collection' },
     { cat: 'perfume', label: 'Perfumes' },
     { cat: 'attar', label: 'Pure Attars' },
+    { cat: 'deals', label: 'Custom Impressions', isAnchor: '#custom-impressions' },
     { cat: 'topi', label: 'Prayer Caps' },
-    { cat: 'deals', label: 'Exclusive Deals' },
   ];
 
   return (
@@ -65,6 +66,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
           
           {/* Brand Wordmark & Logo */}
+          {/* NOTE FOR GITHUB: To change your logo, replace 'public/assets/logo.png' or 'public/logo.png' with your logo file! */}
           <div className="flex items-center gap-3">
             <button
               onClick={() => {
@@ -73,9 +75,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               }}
               className="text-left focus:outline-none group cursor-pointer flex items-center gap-2.5"
             >
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#d4af37] to-[#996515] p-0.5 shadow-sm flex items-center justify-center text-white font-serif font-bold text-xl tracking-tighter">
-                S
-              </div>
+              <BrandLogo size="md" />
               <div>
                 <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#1a1612] font-display flex items-center gap-1.5">
                   <span>SUDDAIS COLLECTION</span>
@@ -95,7 +95,16 @@ export const Navbar: React.FC<NavbarProps> = ({
               return (
                 <button
                   key={link.cat}
-                  onClick={() => onSelectCategory(link.cat)}
+                  onClick={() => {
+                    if (link.isAnchor) {
+                      const el = document.querySelector(link.isAnchor);
+                      if (el) {
+                        el.scrollIntoView({ behavior: 'smooth' });
+                        return;
+                      }
+                    }
+                    onSelectCategory(link.cat);
+                  }}
                   className={`px-3 py-2 rounded-lg text-xs font-semibold tracking-wide transition-all cursor-pointer ${
                     isActive
                       ? 'bg-[#faf4e6] text-[#b38b1f] border border-[#e8dec8] shadow-xs'
@@ -154,8 +163,15 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   key={link.cat}
                   onClick={() => {
-                    onSelectCategory(link.cat);
                     setMobileMenuOpen(false);
+                    if (link.isAnchor) {
+                      const el = document.querySelector(link.isAnchor);
+                      if (el) {
+                        el.scrollIntoView({ behavior: 'smooth' });
+                        return;
+                      }
+                    }
+                    onSelectCategory(link.cat);
                   }}
                   className={`px-3 py-2.5 rounded-xl text-xs font-semibold text-center transition-colors ${
                     activeCategory === link.cat
