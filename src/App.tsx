@@ -7,6 +7,7 @@ import { ProductDetailModal } from './components/ProductDetailModal';
 import { CartDrawer } from './components/CartDrawer';
 import { CheckoutModal } from './components/CheckoutModal';
 import { OrderTrackerModal } from './components/OrderTrackerModal';
+import { OwnerPortalModal } from './components/OwnerPortalModal';
 import { AboutUsSection } from './components/AboutUsSection';
 import { ContactUsSection } from './components/ContactUsSection';
 import { Footer } from './components/Footer';
@@ -25,6 +26,7 @@ export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isTrackerOpen, setIsTrackerOpen] = useState(false);
+  const [isOwnerPortalOpen, setIsOwnerPortalOpen] = useState(false);
 
   // Cart & Coupon
   const [cartItems, setCartItems] = useState<CartItem[]>(() => {
@@ -178,6 +180,7 @@ export default function App() {
         cartCount={totalCartCount}
         onOpenCart={() => setIsCartOpen(true)}
         onOpenTracker={() => setIsTrackerOpen(true)}
+        onOpenOwnerPortal={() => setIsOwnerPortalOpen(true)}
       />
 
       {/* Hero Slides Carousel */}
@@ -378,6 +381,7 @@ export default function App() {
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
         onOpenTracker={() => setIsTrackerOpen(true)}
+        onOpenOwnerPortal={() => setIsOwnerPortalOpen(true)}
       />
 
       {/* Modals & Slide-Overs */}
@@ -414,9 +418,16 @@ export default function App() {
         }}
       />
 
+      {/* Customer Tracking Modal */}
       <OrderTrackerModal
         isOpen={isTrackerOpen}
         onClose={() => setIsTrackerOpen(false)}
+      />
+
+      {/* Store Owner / Admin Dashboard Modal */}
+      <OwnerPortalModal
+        isOpen={isOwnerPortalOpen}
+        onClose={() => setIsOwnerPortalOpen(false)}
       />
 
       {/* Floating WhatsApp CTA */}

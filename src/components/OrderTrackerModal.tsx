@@ -11,9 +11,11 @@ import {
   AlertCircle,
   MessageCircle,
   Sparkles,
-  ExternalLink
+  ExternalLink,
+  Package
 } from 'lucide-react';
 import { OrderRecord } from '../types';
+import { getStoredOrders, ORDER_UPDATE_EVENT } from '../data/orderStore';
 
 interface OrderTrackerModalProps {
   isOpen: boolean;
@@ -31,16 +33,30 @@ export const OrderTrackerModal: React.FC<OrderTrackerModalProps> = ({
   const [activeOrder, setActiveOrder] = useState<OrderRecord | null>(null);
   const [notFound, setNotFound] = useState(false);
 
-  useEffect(() => {
-    try {
-      const stored = JSON.parse(localStorage.getItem('suddais_order_history') || '[]');
-      setOrders(stored);
-      if (stored.length > 0) {
-        setActiveOrder(stored[0]);
+  const reloadOrders = () => {
+    const list = getStoredOrders();
+    setOrders(list);
+    if (activeOrder) {
+      const refreshed = list.find((o) => o.id === activeOrder.id);
+      if (refreshed) {
+        setActiveOrder(refreshed);
+        return;
       }
-    } catch (e) {
-      console.error(e);
     }
+    if (list.length > 0 && !activeOrder) {
+      setActiveOrder(list[0]);
+    }
+  };
+
+  useEffect(() => {
+    reloadOrders();
+    const handleSync = () => reloadOrders();
+    window.addEventListener(ORDER_UPDATE_EVENT, handleSync);
+    window.addEventListener('storage', handleSync);
+    return () => {
+      window.removeEventListener(ORDER_UPDATE_EVENT, handleSync);
+      window.removeEventListener('storage', handleSync);
+    };
   }, []);
 
   const handleSearch = (e: React.FormEvent) => {
@@ -49,7 +65,8 @@ export const OrderTrackerModal: React.FC<OrderTrackerModalProps> = ({
     const q = searchQuery.trim().toLowerCase();
     if (!q) return;
 
-    const found = orders.find(
+    const currentList = getStoredOrders();
+    const found = currentList.find(
       (o) =>
         o.id.toLowerCase().includes(q) ||
         o.customer.phone.includes(q) ||
@@ -64,26 +81,42 @@ export const OrderTrackerModal: React.FC<OrderTrackerModalProps> = ({
     }
   };
 
+  const statusLevels: Record<string, number> = {
+    confirmed: 1,
+    packing: 2,
+    dispatched: 3,
+    out_for_delivery: 4,
+    delivered: 5
+  };
+
+  const currentStatus = activeOrder?.rider.status || 'confirmed';
+  const currentLevel = statusLevels[currentStatus] || 1;
+
   const steps = [
     {
-      title: 'Order Confirmed & Registered',
-      desc: 'Logged in Suddais Collection Central Dispatch Registry (Malir, Karachi)',
-      status: 'completed'
+      title: 'Order Confirmed & Logged',
+      desc: 'Registered in Suddais Collection Central Dispatch Registry (Malir, Karachi)',
+      level: 1
     },
     {
-      title: 'Quality Inspection & Protective Packaging',
-      desc: 'Formulation batch verified, atomiser tested, wrapped in bubble & presentation box',
-      status: 'completed'
+      title: 'Packaging & Quality Sealed',
+      desc: 'Fragrance batch verified, atomiser tested, wrapped in bubble & presentation box',
+      level: 2
     },
     {
-      title: 'Dispatched with Courier Partner',
-      desc: 'Handed over to courier with assigned tracking consignment note',
-      status: 'active'
+      title: 'Handed Over to Courier / Vehicle (گاڑی والوں کے حوالے)',
+      desc: `${activeOrder?.rider.courier || 'Courier partner'} assigned (Consignment: ${activeOrder?.rider.trackingNo || 'Pending'})`,
+      level: 3
     },
     {
-      title: 'Out for Doorstep Delivery',
-      desc: 'Courier rider will arrive with Cash on Delivery parcel',
-      status: 'pending'
+      title: 'Out for Doorstep Delivery (ڈور سٹیپ رائیڈر)',
+      desc: 'Courier rider is on the way to your doorstep with COD parcel',
+      level: 4
+    },
+    {
+      title: 'Successfully Delivered & Payment Done (کوریئر ڈن)',
+      desc: 'Parcel received by customer and Cash on Delivery collected',
+      level: 5
     }
   ];
 
@@ -104,7 +137,7 @@ export const OrderTrackerModal: React.FC<OrderTrackerModalProps> = ({
                 Real-Time Order & Delivery Tracker
               </h3>
               <p className="text-xs text-[#736a5c]">
-                Instant courier consignment tracking & parcel dispatch status
+                Live courier consignment tracking & parcel dispatch status
               </p>
             </div>
           </div>
@@ -143,7 +176,7 @@ export const OrderTrackerModal: React.FC<OrderTrackerModalProps> = ({
           {/* Quick Select of Stored Orders */}
           {orders.length > 1 && (
             <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
-              <span className="text-[#8c8273] text-[11px] shrink-0">Recent Orders:</span>
+              <span className="text-[#8c8273] text-[11px] shrink-0 font-medium">Recent Orders:</span>
               {orders.map((o) => (
                 <button
                   key={o.id}
@@ -213,28 +246,44 @@ export const OrderTrackerModal: React.FC<OrderTrackerModalProps> = ({
                   <h4 className="text-xs font-bold text-[#1a1612] uppercase tracking-wider">
                     Shipment Progress Timeline
                   </h4>
-                  <span className="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
-                    Active & Dispatched
+                  <span className="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-300 px-3 py-1 rounded-full">
+                    {activeOrder.rider.statusUr || 'Active Shipment'}
                   </span>
                 </div>
 
                 <div className="relative pl-6 space-y-6 before:content-[''] before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-[#e8dec8]">
                   {steps.map((st, idx) => {
-                    const isCompleted = idx <= 2;
+                    const isCompleted = currentLevel > st.level;
+                    const isCurrent = currentLevel === st.level;
+
                     return (
                       <div key={idx} className="relative">
                         <span
                           className={`absolute -left-6 top-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center text-[10px] font-bold ${
                             isCompleted
-                              ? 'bg-[#c59b27] border-white text-white shadow-xs'
+                              ? 'bg-emerald-600 border-white text-white shadow-xs'
+                              : isCurrent
+                              ? 'bg-[#c59b27] border-white text-white shadow-xs ring-4 ring-[#d4af37]/20 animate-pulse'
                               : 'bg-white border-[#dcd2be] text-[#8c8273]'
                           }`}
                         >
-                          {isCompleted ? <CheckCircle className="w-3 h-3" /> : idx + 1}
+                          {isCompleted ? (
+                            <CheckCircle className="w-3 h-3" />
+                          ) : (
+                            st.level
+                          )}
                         </span>
                         <div className="ml-2">
-                          <h5 className={`text-xs font-bold ${isCompleted ? 'text-[#1a1612]' : 'text-[#8c8273]'}`}>
-                            {st.title}
+                          <h5
+                            className={`text-xs font-bold ${
+                              isCompleted
+                                ? 'text-emerald-800'
+                                : isCurrent
+                                ? 'text-[#1a1612] font-extrabold'
+                                : 'text-[#8c8273]'
+                            }`}
+                          >
+                            {st.title} {isCurrent && <span className="text-[10px] text-[#b8860b] font-normal">(Current Stage)</span>}
                           </h5>
                           <p className="text-[11px] text-[#736a5c]">
                             {st.desc}
@@ -262,8 +311,10 @@ export const OrderTrackerModal: React.FC<OrderTrackerModalProps> = ({
                     <strong className="text-emerald-700">{activeOrder.rider.estimatedDelivery}</strong>
                   </div>
                   <div className="col-span-2 sm:col-span-1">
-                    <span className="text-[10px] text-[#8c7853] block">Origin Hub:</span>
-                    <strong className="text-[#1a1612]">Malir, Karachi (Sindh)</strong>
+                    <span className="text-[10px] text-[#8c7853] block">Location / Note:</span>
+                    <strong className="text-[#1a1612] truncate block">
+                      {activeOrder.rider.currentLocation || 'In Transit'}
+                    </strong>
                   </div>
                 </div>
               </div>
@@ -294,7 +345,7 @@ export const OrderTrackerModal: React.FC<OrderTrackerModalProps> = ({
               <div className="pt-2">
                 <a
                   href={`https://wa.me/923182187575?text=${encodeURIComponent(
-                    `Hello Suddais Collection! I am tracking my order:\n- Order ID: ${activeOrder.id}\n- Name: ${activeOrder.customer.fullName}\n- Destination: ${activeOrder.customer.city}\n- Tracking No: ${activeOrder.rider.trackingNo}\n\nPlease share the latest status update!`
+                    `Hello Suddais Collection! I am tracking my order:\n- Order ID: ${activeOrder.id}\n- Name: ${activeOrder.customer.fullName}\n- Destination: ${activeOrder.customer.city}\n- Status: ${activeOrder.rider.statusUr}\n- Tracking No: ${activeOrder.rider.trackingNo}\n\nPlease share the latest dispatch update!`
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"

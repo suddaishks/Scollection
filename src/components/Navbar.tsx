@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShoppingBag, Truck, Menu, X, Phone, Sparkles } from 'lucide-react';
+import { ShoppingBag, Truck, Menu, X, Phone, Sparkles, ShieldCheck } from 'lucide-react';
 import { ProductCategory } from '../types';
 import { BrandLogo } from './BrandLogo';
 
@@ -9,6 +9,7 @@ interface NavbarProps {
   cartCount: number;
   onOpenCart: () => void;
   onOpenTracker: () => void;
+  onOpenOwnerPortal?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -17,6 +18,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   cartCount,
   onOpenCart,
   onOpenTracker,
+  onOpenOwnerPortal,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -48,6 +50,16 @@ export const Navbar: React.FC<NavbarProps> = ({
               <Truck className="w-3.5 h-3.5 text-[#d4af37]" />
               <span>Track Order & Rider</span>
             </button>
+            {onOpenOwnerPortal && (
+              <button
+                onClick={onOpenOwnerPortal}
+                className="flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-[#d4af37]/25 border border-[#d4af37]/50 text-[#f7e7ce] hover:text-white hover:bg-[#d4af37]/40 transition-colors cursor-pointer text-[11px] font-bold"
+                title="Store Owner Admin Portal (سدیس احمد)"
+              >
+                <ShieldCheck className="w-3.5 h-3.5 text-[#d4af37]" />
+                <span>Owner Portal</span>
+              </button>
+            )}
             <a
               href="https://wa.me/923182187575?text=Hello!%20I%20would%20like%20to%20order%20from%20Suddais%20Collection."
               target="_blank"
@@ -195,6 +207,19 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <Truck className="w-4 h-4 text-[#c59b27]" />
                 <span>Track Rider / Order Status</span>
               </button>
+
+              {onOpenOwnerPortal && (
+                <button
+                  onClick={() => {
+                    onOpenOwnerPortal();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 text-xs font-bold text-[#8b6508] bg-[#faf2dd] border border-[#d4af37]/40 rounded-xl"
+                >
+                  <ShieldCheck className="w-4 h-4 text-[#b8860b]" />
+                  <span>Owner / Admin Portal (سدیس احمد)</span>
+                </button>
+              )}
 
               <a
                 href="https://wa.me/923182187575?text=Hello!%20I%20would%20like%20to%20order%20from%20Suddais%20Collection."

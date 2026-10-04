@@ -23,6 +23,7 @@ import {
   calculateDeliveryFee,
   FREE_DELIVERY_THRESHOLD
 } from '../data/deliveryRates';
+import { saveOrderToStore } from '../data/orderStore';
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -120,15 +121,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       setCompletedOrder(newOrder);
       onOrderCompleted(newOrder);
 
-      // Save order to history
-      try {
-        const historyStr = localStorage.getItem('suddais_order_history');
-        const history: OrderRecord[] = historyStr ? JSON.parse(historyStr) : [];
-        history.unshift(newOrder);
-        localStorage.setItem('suddais_order_history', JSON.stringify(history));
-      } catch (err) {
-        console.error(err);
-      }
+      // Save order to store and broadcast sync event
+      saveOrderToStore(newOrder);
     }, 1000);
   };
 

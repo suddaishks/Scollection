@@ -6,11 +6,13 @@ import { BrandLogo } from './BrandLogo';
 interface FooterProps {
   onSelectCategory: (cat: ProductCategory) => void;
   onOpenTracker: () => void;
+  onOpenOwnerPortal?: () => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({
   onSelectCategory,
   onOpenTracker,
+  onOpenOwnerPortal,
 }) => {
   return (
     <footer className="bg-[#1a1612] text-[#dcd7cb] text-xs border-t border-[#c59b27]/30">
@@ -153,6 +155,17 @@ export const Footer: React.FC<FooterProps> = ({
                 Direct WhatsApp Helpline
               </a>
             </li>
+            {onOpenOwnerPortal && (
+              <li className="pt-2 border-t border-[#332a21]">
+                <button
+                  onClick={onOpenOwnerPortal}
+                  className="hover:text-[#d4af37] transition-colors cursor-pointer flex items-center gap-1.5 text-xs text-[#d4af37] font-semibold"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span>Owner / Admin Portal (سدیس احمد)</span>
+                </button>
+              </li>
+            )}
           </ul>
         </div>
 

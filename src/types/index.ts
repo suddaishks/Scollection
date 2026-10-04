@@ -94,7 +94,7 @@ export interface OrderCustomerInfo {
 }
 
 export interface RiderStatus {
-  status: 'confirmed' | 'packing' | 'with_rider' | 'out_for_delivery' | 'delivered';
+  status: 'confirmed' | 'packing' | 'with_rider' | 'dispatched' | 'out_for_delivery' | 'delivered' | 'cancelled';
   statusUr: string;
   riderName: string;
   riderPhone: string;
