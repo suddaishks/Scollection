@@ -15,7 +15,6 @@ import { CartItem, Product, ProductCategory, OrderRecord } from './types';
 import { Search, SlidersHorizontal, MessageCircle, Sparkles, LayoutGrid, Grid2X2, Grid3X3 } from 'lucide-react';
 
 export default function App() {
-  const [lang, setLang] = useState<'ur' | 'en'>('ur');
   const [activeCategory, setActiveCategory] = useState<ProductCategory>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc' | 'rating'>('featured');
@@ -30,7 +29,7 @@ export default function App() {
   // Cart & Coupon
   const [cartItems, setCartItems] = useState<CartItem[]>(() => {
     try {
-      const saved = localStorage.getItem('itr_rida_cart');
+      const saved = localStorage.getItem('suddais_cart');
       return saved ? JSON.parse(saved) : [];
     } catch {
       return [];
@@ -39,22 +38,22 @@ export default function App() {
 
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(() => {
     try {
-      return localStorage.getItem('itr_rida_coupon');
+      return localStorage.getItem('suddais_coupon');
     } catch {
       return null;
     }
   });
 
-  // Keep HTML lang & dir attribute in sync
+  // Ensure HTML lang & dir attribute are English ltr
   useEffect(() => {
-    document.documentElement.lang = lang;
-    document.documentElement.dir = lang === 'ur' ? 'rtl' : 'ltr';
-  }, [lang]);
+    document.documentElement.lang = 'en';
+    document.documentElement.dir = 'ltr';
+  }, []);
 
   // Persist cart
   useEffect(() => {
     try {
-      localStorage.setItem('itr_rida_cart', JSON.stringify(cartItems));
+      localStorage.setItem('suddais_cart', JSON.stringify(cartItems));
     } catch (e) {
       console.error(e);
     }
@@ -64,18 +63,14 @@ export default function App() {
   useEffect(() => {
     try {
       if (appliedCoupon) {
-        localStorage.setItem('itr_rida_coupon', appliedCoupon);
+        localStorage.setItem('suddais_coupon', appliedCoupon);
       } else {
-        localStorage.removeItem('itr_rida_coupon');
+        localStorage.removeItem('suddais_coupon');
       }
     } catch (e) {
       console.error(e);
     }
   }, [appliedCoupon]);
-
-  const toggleLanguage = () => {
-    setLang((prev) => (prev === 'ur' ? 'en' : 'ur'));
-  };
 
   const handleAddToCart = (product: Product, size: string) => {
     const variant = product.variants.find((v) => v.size === size) || product.variants[0];
@@ -126,28 +121,31 @@ export default function App() {
   };
 
   const handleOrderCompleted = (_order: OrderRecord) => {
-    // Keep cart cleared upon completed order
     setCartItems([]);
   };
 
-  // Filter products
-  const filteredProducts = PRODUCTS.filter((p) => {
-    if (activeCategory === 'deals') {
-      return p.isDeal;
-    }
-    if (activeCategory !== 'all' && p.category !== activeCategory) {
-      return false;
+  // Filter products by Category, Search Query, and Sort
+  const filteredProducts = PRODUCTS.filter((prod) => {
+    if (activeCategory !== 'all') {
+      if (activeCategory === 'deals') {
+        if (!prod.isDeal) return false;
+      } else if (prod.category !== activeCategory) {
+        return false;
+      }
     }
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       const matchName =
-        p.nameUr.toLowerCase().includes(q) ||
-        p.nameEn.toLowerCase().includes(q) ||
-        p.descriptionUr.toLowerCase().includes(q) ||
-        p.descriptionEn.toLowerCase().includes(q);
-      const matchNotes = p.notes
-        ? [...p.notes.top, ...p.notes.heart, ...p.notes.base].some(
-            (n) => n.ur.toLowerCase().includes(q) || n.en.toLowerCase().includes(q)
+        prod.nameEn.toLowerCase().includes(q) ||
+        prod.descriptionEn.toLowerCase().includes(q) ||
+        prod.taglineEn.toLowerCase().includes(q);
+      const matchNotes = prod.notes
+        ? [
+            ...prod.notes.top,
+            ...prod.notes.heart,
+            ...prod.notes.base
+          ].some(
+            (n) => n.en.toLowerCase().includes(q)
           )
         : false;
       return matchName || matchNotes;
@@ -164,7 +162,7 @@ export default function App() {
   const totalCartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
-    <div className={`min-h-screen bg-[#0f1115] text-[#f4efe6] ${lang === 'ur' ? 'font-urdu' : 'font-body'}`}>
+    <div className="min-h-screen bg-white text-[#1a1612] font-body">
       
       {/* Top Navbar */}
       <Navbar
@@ -176,8 +174,6 @@ export default function App() {
         cartCount={totalCartCount}
         onOpenCart={() => setIsCartOpen(true)}
         onOpenTracker={() => setIsTrackerOpen(true)}
-        lang={lang}
-        onToggleLang={toggleLanguage}
       />
 
       {/* Hero Slides Carousel */}
@@ -185,12 +181,13 @@ export default function App() {
         onExploreCategory={(cat) => {
           setActiveCategory(cat);
           setSearchQuery('');
+          const el = document.getElementById('catalog-section');
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
         }}
         onOpenDeals={() => {
           const el = document.getElementById('deals-section');
           if (el) el.scrollIntoView({ behavior: 'smooth' });
         }}
-        lang={lang}
       />
 
       {/* Deals & Promo Vouchers Section */}
@@ -198,42 +195,41 @@ export default function App() {
         onApplyCoupon={(code) => setAppliedCoupon(code)}
         onSelectProduct={(prod) => setSelectedProduct(prod)}
         dealsProducts={dealsProducts}
-        lang={lang}
       />
 
       {/* Main Catalog Section */}
-      <section id="catalog-section" className="py-16 sm:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="catalog-section" className="py-14 sm:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Category Controls & Search Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 pb-6 border-b border-[#232838]">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 pb-6 border-b border-[#e8dec8]">
           <div>
-            <div className="flex items-center gap-2 text-[#d4af37] text-xs font-semibold uppercase tracking-wider mb-1">
+            <div className="flex items-center gap-2 text-[#b8860b] text-xs font-bold uppercase tracking-wider mb-1">
               <Sparkles className="w-4 h-4" />
-              <span>{lang === 'ur' ? 'پریمیم انتخاب' : 'Curated Catalog'}</span>
+              <span>OFFICIAL LUXURY CATALOG</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#f4efe6] font-display">
-              {activeCategory === 'all' && (lang === 'ur' ? 'تمام پرفیومز، عطر اور ٹوپیاں' : 'All Fragrances, Attars & Caps')}
-              {activeCategory === 'perfume' && (lang === 'ur' ? 'فرانسیسی و مشرقی پرفیومز' : 'French & Oriental Perfumes')}
-              {activeCategory === 'attar' && (lang === 'ur' ? 'خالص و سنتی عطر (100٪ الکحل سے پاک)' : 'Pure Non-Alcoholic Attar')}
-              {activeCategory === 'topi' && (lang === 'ur' ? 'شاہی عمانی و ترک فیز نماز ٹوپیاں' : 'Handmade Prayer Caps')}
-              {activeCategory === 'deals' && (lang === 'ur' ? 'شاہی ڈیلز و تحفہ بنڈلز' : 'Special Gift Presentation Sets')}
+            <h2 className="text-2xl sm:text-4xl font-bold text-[#1a1612] font-display">
+              {activeCategory === 'all' && 'All Fragrances, Attars & Caps'}
+              {activeCategory === 'perfume' && 'Designer Perfumes (15ml, 30ml, 50ml)'}
+              {activeCategory === 'attar' && 'Pure Concentrated Attar (3ml, 6ml, 12ml)'}
+              {activeCategory === 'topi' && 'Handcrafted Omani & Turkish Prayer Caps'}
+              {activeCategory === 'deals' && 'Special Gift Presentation Sets'}
             </h2>
           </div>
 
           {/* Search Input */}
           <div className="relative w-full md:w-80">
-            <Search className="w-4 h-4 absolute start-3 top-1/2 -translate-y-1/2 text-[#8e8778]" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#8c8273]" />
             <input
               type="text"
-              placeholder={lang === 'ur' ? 'خوشبو یا نوٹس تلاش کریں (عود، گلاب، کستوری)...' : 'Search by name or note (oud, rose)...'}
+              placeholder="Search by name or note (e.g. Imperial Valley, Khamrah, Oud)..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#151821] border border-[#272e3f] rounded-xl ps-9 pe-3 py-2 text-xs text-[#f4efe6] placeholder:text-[#676f82] focus:outline-none focus:border-[#d4af37]"
+              className="w-full bg-[#faf7f2] border border-[#dcd2be] rounded-xl pl-9 pr-8 py-2.5 text-xs text-[#1a1612] placeholder:text-[#8c8273] focus:outline-none focus:border-[#b8860b]"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="absolute end-3 top-1/2 -translate-y-1/2 text-xs text-[#8e8778] hover:text-white"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#8c8273] hover:text-[#1a1612] cursor-pointer"
               >
                 ×
               </button>
@@ -245,28 +241,31 @@ export default function App() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           
           {/* Functional Button Segmented Control */}
-          <div className="flex flex-wrap items-center gap-1.5 p-1.5 bg-[#141722] border border-[#242a3a] rounded-xl">
+          <div className="flex flex-wrap items-center gap-1.5 p-1.5 bg-[#faf7f2] border border-[#e8dec8] rounded-2xl">
             {(
               [
-                { cat: 'all', ur: 'سب اشیاء', en: 'All Items', count: PRODUCTS.length },
-                { cat: 'perfume', ur: 'پرفیومز', en: 'Perfumes', count: PRODUCTS.filter(p => p.category === 'perfume').length },
-                { cat: 'attar', ur: 'خالص عطر', en: 'Pure Attar', count: PRODUCTS.filter(p => p.category === 'attar').length },
-                { cat: 'topi', ur: 'ٹوپیاں', en: 'Prayer Caps', count: PRODUCTS.filter(p => p.category === 'topi').length },
-                { cat: 'deals', ur: 'ڈیلز و آفرز', en: 'Deals & Bundles', count: PRODUCTS.filter(p => p.isDeal).length }
-              ] as const
+                { id: 'all', label: 'All Items', count: PRODUCTS.length },
+                { id: 'perfume', label: 'Perfumes (15/30/50ml)', count: PRODUCTS.filter((p) => p.category === 'perfume').length },
+                { id: 'attar', label: 'Pure Attar (3/6/12ml)', count: PRODUCTS.filter((p) => p.category === 'attar').length },
+                { id: 'topi', label: 'Prayer Caps', count: PRODUCTS.filter((p) => p.category === 'topi').length },
+                { id: 'deals', label: 'Special Deals', count: dealsProducts.length },
+              ] as { id: ProductCategory; label: string; count: number }[]
             ).map((item) => (
               <button
-                key={item.cat}
-                onClick={() => setActiveCategory(item.cat)}
-                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
-                  activeCategory === item.cat
-                    ? 'bg-[#d4af37] text-[#0f1115] shadow-sm'
-                    : 'text-[#a69f91] hover:text-[#f4efe6] hover:bg-[#1e2332]'
+                key={item.id}
+                onClick={() => {
+                  setActiveCategory(item.id);
+                  setSearchQuery('');
+                }}
+                className={`px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                  activeCategory === item.id
+                    ? 'bg-white text-[#996515] border border-[#d4af37]/40 shadow-xs'
+                    : 'text-[#665e52] hover:text-[#1a1612] hover:bg-white/60'
                 }`}
               >
-                <span>{lang === 'ur' ? item.ur : item.en}</span>
-                <span className={`text-[11px] tabular-nums font-mono px-1.5 py-0.2 rounded-full ${
-                  activeCategory === item.cat ? 'bg-[#0f1115]/20 text-[#0f1115]' : 'bg-[#222736] text-[#7d859a]'
+                <span>{item.label}</span>
+                <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                  activeCategory === item.id ? 'bg-[#faf2dd] text-[#996515] font-bold' : 'bg-[#eee5d3] text-[#736a5c]'
                 }`}>
                   {item.count}
                 </span>
@@ -276,36 +275,36 @@ export default function App() {
 
           <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
             {/* Mobile Grid Columns Switcher: 2x, 3x, or 4x per row */}
-            <div className="flex items-center gap-1 bg-[#141722] border border-[#242a3a] rounded-lg p-1 text-xs">
-              <span className="text-[11px] text-[#8e8778] px-1 hidden sm:inline">
-                {lang === 'ur' ? 'ڈسپلے:' : 'View:'}
+            <div className="flex items-center gap-1 bg-[#faf7f2] border border-[#e8dec8] rounded-xl p-1 text-xs">
+              <span className="text-[11px] text-[#736a5c] px-1 font-medium hidden sm:inline">
+                Display:
               </span>
               <button
                 onClick={() => setMobileGridCols('2')}
-                className={`px-2 py-1 rounded-md transition-colors cursor-pointer flex items-center gap-1 ${
-                  mobileGridCols === '2' ? 'bg-[#d4af37] text-[#0f1115] font-bold' : 'text-[#a69f91] hover:text-white'
+                className={`px-2 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1 ${
+                  mobileGridCols === '2' ? 'bg-[#1a1612] text-white font-bold' : 'text-[#665e52] hover:text-[#1a1612]'
                 }`}
-                title={lang === 'ur' ? '2 کالم (دو پروڈکٹس ساتھ ساتھ)' : '2 Columns'}
+                title="2 Columns per row"
               >
                 <Grid2X2 className="w-3.5 h-3.5" />
                 <span className="text-[11px] font-mono">2x</span>
               </button>
               <button
                 onClick={() => setMobileGridCols('3')}
-                className={`px-2 py-1 rounded-md transition-colors cursor-pointer flex items-center gap-1 ${
-                  mobileGridCols === '3' ? 'bg-[#d4af37] text-[#0f1115] font-bold' : 'text-[#a69f91] hover:text-white'
+                className={`px-2 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1 ${
+                  mobileGridCols === '3' ? 'bg-[#1a1612] text-white font-bold' : 'text-[#665e52] hover:text-[#1a1612]'
                 }`}
-                title={lang === 'ur' ? '3 کالم (تین پروڈکٹس ایک ساتھ)' : '3 Columns (Compact)'}
+                title="3 Columns per row (Compact)"
               >
                 <Grid3X3 className="w-3.5 h-3.5" />
                 <span className="text-[11px] font-mono">3x</span>
               </button>
               <button
                 onClick={() => setMobileGridCols('4')}
-                className={`px-2 py-1 rounded-md transition-colors cursor-pointer flex items-center gap-1 ${
-                  mobileGridCols === '4' ? 'bg-[#d4af37] text-[#0f1115] font-bold' : 'text-[#a69f91] hover:text-white'
+                className={`px-2 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1 ${
+                  mobileGridCols === '4' ? 'bg-[#1a1612] text-white font-bold' : 'text-[#665e52] hover:text-[#1a1612]'
                 }`}
-                title={lang === 'ur' ? '4 کالم (چار پروڈکٹس ایک ساتھ)' : '4 Columns (Ultra Compact)'}
+                title="4 Columns per row (Ultra Compact)"
               >
                 <LayoutGrid className="w-3.5 h-3.5" />
                 <span className="text-[11px] font-mono">4x</span>
@@ -313,17 +312,17 @@ export default function App() {
             </div>
 
             {/* Sort dropdown */}
-            <div className="flex items-center gap-1.5 text-xs text-[#a69f91]">
-              <SlidersHorizontal className="w-3.5 h-3.5 text-[#d4af37]" />
+            <div className="flex items-center gap-1.5 text-xs text-[#665e52]">
+              <SlidersHorizontal className="w-3.5 h-3.5 text-[#b8860b]" />
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="bg-[#141722] border border-[#242a3a] rounded-lg px-2 py-1.5 text-xs text-[#f4efe6] focus:outline-none focus:border-[#d4af37] cursor-pointer"
+                className="bg-[#faf7f2] border border-[#dcd2be] rounded-xl px-2.5 py-2 text-xs text-[#1a1612] focus:outline-none focus:border-[#b8860b] cursor-pointer"
               >
-                <option value="featured">{lang === 'ur' ? 'مقبول ترین' : 'Featured'}</option>
-                <option value="price-asc">{lang === 'ur' ? 'قیمت: کم سے زیادہ' : 'Price: Low'}</option>
-                <option value="price-desc">{lang === 'ur' ? 'قیمت: زیادہ سے کم' : 'Price: High'}</option>
-                <option value="rating">{lang === 'ur' ? 'اعلیٰ ریٹنگ' : 'Top Rated'}</option>
+                <option value="featured">Featured Picks</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="rating">Highest Rated</option>
               </select>
             </div>
           </div>
@@ -332,13 +331,13 @@ export default function App() {
 
         {/* Product Grid - 2, 3 or 4 Columns on Mobile, up to 5/6 on Desktop */}
         {filteredProducts.length === 0 ? (
-          <div className="py-20 text-center text-[#8e8778] space-y-3">
+          <div className="py-20 text-center text-[#8c8273] space-y-3">
             <Search className="w-10 h-10 mx-auto opacity-40" />
-            <h3 className="text-base font-bold text-[#f4efe6]">
-              {lang === 'ur' ? 'کوئی پروڈکٹ نہیں مل سکی' : 'No products matched your search'}
+            <h3 className="text-base font-bold text-[#1a1612]">
+              No products found
             </h3>
             <p className="text-xs">
-              {lang === 'ur' ? 'براہ کرم کوئی دوسرا لفظ تلاش کریں یا کیٹیگری تبدیل کریں۔' : 'Try adjusting your search terms or filter.'}
+              Try searching with another word or change your active category filter.
             </p>
           </div>
         ) : (
@@ -355,7 +354,6 @@ export default function App() {
                 product={prod}
                 onOpenDetails={(p) => setSelectedProduct(p)}
                 onAddToCart={(p, size) => handleAddToCart(p, size)}
-                lang={lang}
                 columnsMode={mobileGridCols}
               />
             ))}
@@ -364,31 +362,28 @@ export default function App() {
 
       </section>
 
-      {/* About Us Section */}
-      <AboutUsSection lang={lang} />
+      {/* About Us Editorial Section */}
+      <AboutUsSection />
 
-      {/* Contact Us Section */}
-      <ContactUsSection lang={lang} />
+      {/* Contact Us Section with Live WhatsApp & Location */}
+      <ContactUsSection />
 
       {/* Footer */}
       <Footer
         onSelectCategory={(cat) => {
           setActiveCategory(cat);
           setSearchQuery('');
-          const el = document.getElementById('catalog-section');
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
+          window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
         onOpenTracker={() => setIsTrackerOpen(true)}
-        lang={lang}
       />
 
-      {/* Modals & Slide-over Drawers */}
+      {/* Modals & Slide-Overs */}
       <ProductDetailModal
         product={selectedProduct}
         onClose={() => setSelectedProduct(null)}
-        onAddToCart={(prod, size) => handleAddToCart(prod, size)}
-        onBuyNow={(prod, size) => handleBuyNow(prod, size)}
-        lang={lang}
+        onAddToCart={handleAddToCart}
+        onBuyNow={handleBuyNow}
       />
 
       <CartDrawer
@@ -397,10 +392,12 @@ export default function App() {
         cartItems={cartItems}
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveItem}
-        onProceedToCheckout={() => setIsCheckoutOpen(true)}
+        onProceedToCheckout={() => {
+          setIsCartOpen(false);
+          setIsCheckoutOpen(true);
+        }}
         appliedCoupon={appliedCoupon}
         onApplyCoupon={(code) => setAppliedCoupon(code)}
-        lang={lang}
       />
 
       <CheckoutModal
@@ -409,28 +406,29 @@ export default function App() {
         cartItems={cartItems}
         onOrderCompleted={handleOrderCompleted}
         appliedCoupon={appliedCoupon}
-        lang={lang}
       />
 
       <OrderTrackerModal
         isOpen={isTrackerOpen}
         onClose={() => setIsTrackerOpen(false)}
-        lang={lang}
       />
 
-      {/* Floating Quick WhatsApp Chat & Order Button */}
-      <a
-        href="https://wa.me/923001234567?text=Assalam%20o%20Alaikum!%20I%20want%20to%20place%20an%20order"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed bottom-6 start-6 z-40 flex items-center gap-2 bg-[#25d366] hover:bg-[#20ba5a] text-white px-4 py-3 rounded-full shadow-2xl transition-all hover:scale-105 active:scale-95 cursor-pointer"
-        aria-label="Direct WhatsApp Chat"
-      >
-        <MessageCircle className="w-5 h-5 fill-current" />
-        <span className="text-xs font-bold whitespace-nowrap hidden sm:inline">
-          {lang === 'ur' ? 'واٹس ایپ پر فوری آرڈر' : 'WhatsApp Order'}
-        </span>
-      </a>
+      {/* Floating WhatsApp CTA */}
+      <aside aria-label="WhatsApp Support" className="fixed bottom-6 right-6 z-40">
+        <a
+          href="https://wa.me/923182187575?text=Hello!%20I%20would%20like%20to%20order%20from%20Suddais%20Collection."
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2.5 px-4 py-3 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 group border border-emerald-400/40"
+          aria-label="Chat on WhatsApp"
+        >
+          <MessageCircle className="w-5 h-5 fill-white" />
+          <span className="hidden sm:inline font-sans tracking-wide">
+            Order on WhatsApp
+          </span>
+          <span className="w-2.5 h-2.5 rounded-full bg-white animate-pulse" />
+        </a>
+      </aside>
 
     </div>
   );

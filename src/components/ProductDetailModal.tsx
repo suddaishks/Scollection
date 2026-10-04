@@ -10,8 +10,7 @@ import {
   ShieldCheck,
   RotateCcw,
   Check,
-  Layers,
-  ChevronRight,
+  Phone,
   Droplet
 } from 'lucide-react';
 import { Product } from '../types';
@@ -21,7 +20,6 @@ interface ProductDetailModalProps {
   onClose: () => void;
   onAddToCart: (product: Product, size: string) => void;
   onBuyNow: (product: Product, size: string) => void;
-  lang: 'ur' | 'en';
 }
 
 export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
@@ -29,7 +27,6 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   onClose,
   onAddToCart,
   onBuyNow,
-  lang
 }) => {
   if (!product) return null;
 
@@ -43,23 +40,23 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
     setTimeout(() => setAddedToast(false), 2500);
   };
 
-  const handleWhatsAppInquiry = () => {
+  const handleWhatsAppOrder = () => {
     const text = encodeURIComponent(
-      `السلام علیکم! میں عطر و ردا سے اس پروڈکٹ کا آرڈر دینا چاہتا ہوں:\n\n*پروڈکٹ:* ${product.nameUr} (${product.nameEn})\n*سائز:* ${selectedVariant.size}\n*قیمت:* PKR ${selectedVariant.price.toLocaleString()}\n\nبراہ کرم ڈیلیوری اور کنفرمیشن کے بارے میں بتائیں۔ شکریہ!`
+      `Hello! I want to order from Suddais Collection:\n\n*Product:* ${product.nameEn}\n*Size:* ${selectedVariant.size}\n*Price:* Rs. ${selectedVariant.price.toLocaleString()}\n\nPlease confirm availability and delivery details. Thank you!`
     );
-    window.open(`https://wa.me/923001234567?text=${text}`, '_blank');
+    window.open(`https://wa.me/923182187575?text=${text}`, '_blank');
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
       <div
-        className="relative w-full max-w-4xl bg-[#12141c] border border-[#2b3142] rounded-2xl shadow-2xl text-[#f4efe6] overflow-hidden my-auto"
+        className="relative w-full max-w-4xl bg-white border border-[#e8dec8] rounded-3xl shadow-2xl text-[#1a1612] overflow-hidden my-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 end-4 z-20 p-2 rounded-full bg-[#1c202c]/80 hover:bg-[#2b3142] text-[#c5beb0] hover:text-white transition-colors cursor-pointer"
+          className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/90 hover:bg-[#faf4e6] text-[#52493d] hover:text-[#1a1612] border border-[#e8dec8] transition-colors cursor-pointer shadow-xs"
           aria-label="Close modal"
         >
           <X className="w-5 h-5" />
@@ -68,297 +65,227 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2">
           
           {/* Left Column: Product Gallery */}
-          <div className="p-6 bg-[#161922] flex flex-col justify-between border-b md:border-b-0 md:border-e border-[#242938]">
+          <div className="p-6 bg-[#faf7f2] flex flex-col justify-between border-b md:border-b-0 md:border-r border-[#e8dec8]">
             <div>
               {/* Main Image */}
-              <div className="relative aspect-square rounded-xl overflow-hidden bg-[#1f2430] border border-[#2b3142] mb-4">
+              <div className="relative aspect-square rounded-2xl overflow-hidden bg-white border border-[#e8dec8] shadow-sm mb-4">
                 <img
                   src={selectedImg}
                   alt={product.nameEn}
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-cover object-center"
                 />
-                {product.discountPercentage && (
-                  <span className="absolute top-3 start-3 bg-[#c82333] text-white text-xs font-bold px-2.5 py-1 rounded shadow">
-                    {product.discountPercentage}% OFF
-                  </span>
+                {product.badgeEn && (
+                  <div className="absolute top-3 left-3 bg-[#d4af37] text-[#1a1612] text-xs font-black px-3 py-1 rounded-full shadow-sm flex items-center gap-1">
+                    <Sparkles className="w-3.5 h-3.5 text-[#1a1612]" />
+                    <span>{product.badgeEn}</span>
+                  </div>
                 )}
               </div>
 
-              {/* Gallery Thumbnails */}
-              {product.gallery && product.gallery.length > 1 && (
-                <div className="flex items-center gap-3">
+              {/* Thumbnails if available */}
+              {product.gallery && product.gallery.length > 0 && (
+                <div className="flex items-center gap-2 overflow-x-auto pb-2">
+                  <button
+                    onClick={() => setSelectedImg(product.image)}
+                    className={`w-14 h-14 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
+                      selectedImg === product.image ? 'border-[#c59b27] shadow-sm' : 'border-[#e8dec8] opacity-70'
+                    }`}
+                  >
+                    <img src={product.image} alt="Main" className="w-full h-full object-cover" />
+                  </button>
                   {product.gallery.map((img, idx) => (
                     <button
                       key={idx}
                       onClick={() => setSelectedImg(img)}
-                      className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-all cursor-pointer ${
-                        selectedImg === img ? 'border-[#d4af37]' : 'border-transparent opacity-60 hover:opacity-100'
+                      className={`w-14 h-14 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
+                        selectedImg === img ? 'border-[#c59b27] shadow-sm' : 'border-[#e8dec8] opacity-70'
                       }`}
                     >
-                      <img src={img} alt="Thumbnail" className="w-full h-full object-cover" />
+                      <img src={img} alt={`Gallery ${idx}`} className="w-full h-full object-cover" />
                     </button>
                   ))}
                 </div>
               )}
             </div>
 
-            {/* Quick Sunnah & Trust Checklist */}
-            <div className="mt-6 pt-6 border-t border-[#252b3b] space-y-2.5 text-xs text-[#a69f91]">
+            {/* Trust Badges */}
+            <div className="pt-4 border-t border-[#e8dec8] grid grid-cols-2 gap-3 text-xs text-[#52493d]">
               <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-[#d4af37]" />
-                <span>{lang === 'ur' ? '100٪ خالص اور اصلی اجزاء کی ضمانت' : '100% Authentic Quality Guaranteed'}</span>
+                <ShieldCheck className="w-4 h-4 text-[#b8860b]" />
+                <span>100% Authentic Quality</span>
               </div>
               <div className="flex items-center gap-2">
-                <Droplet className="w-4 h-4 text-emerald-400" />
-                <span>{lang === 'ur' ? 'الکحل سے پاک خالص عطر (نماز و سنت کے موافق)' : 'Non-Alcoholic Pure Attar (Sunnah Compliant)'}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <RotateCcw className="w-4 h-4 text-[#d4af37]" />
-                <span>{lang === 'ur' ? '7 دن میں غیر مطمئن ہونے پر واپسی یا تبدیلی' : '7 Days Easy Exchange / Money Back Guarantee'}</span>
+                <RotateCcw className="w-4 h-4 text-[#b8860b]" />
+                <span>7-Day Easy Exchange</span>
               </div>
             </div>
-
           </div>
 
-          {/* Right Column: Details, Fragrance Notes & Actions */}
-          <div className="p-6 md:p-8 flex flex-col justify-between max-h-[85vh] overflow-y-auto">
+          {/* Right Column: Details & Order Controls */}
+          <div className="p-6 sm:p-8 flex flex-col justify-between max-h-[85vh] overflow-y-auto">
             <div>
-              
               {/* Category & Rating */}
-              <div className="flex items-center justify-between text-xs text-[#a69f91] mb-2">
-                <span className="text-[#d4af37] font-semibold uppercase tracking-wider">
-                  {product.category === 'perfume' && (lang === 'ur' ? 'پریمیم پرفیوم' : 'Extrait De Parfum')}
-                  {product.category === 'attar' && (lang === 'ur' ? 'خالص روغنی عطر' : 'Pure Concentrated Attar')}
-                  {product.category === 'topi' && (lang === 'ur' ? 'دستکاری نماز ٹوپی' : 'Handcrafted Prayer Cap')}
-                  {product.category === 'deals' && (lang === 'ur' ? 'شاہی گفٹ باکس' : 'Gift Presentation Set')}
+              <div className="flex items-center justify-between gap-2 mb-2">
+                <span className="text-xs font-bold text-[#b8860b] uppercase tracking-wider">
+                  {product.category.toUpperCase()}
                 </span>
-                <div className="flex items-center gap-1.5">
-                  <div className="flex text-[#d4af37]">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-3.5 h-3.5 fill-[#d4af37]" />
-                    ))}
-                  </div>
-                  <span className="font-semibold text-xs text-[#f4efe6] tabular-nums">{product.rating}</span>
-                  <span className="text-[11px] text-[#7d776c]">({product.reviewsCount} reviews)</span>
+                <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#faf2dd] border border-[#d4af37]/30 text-xs font-bold text-[#996515]">
+                  <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
+                  <span>{product.rating}</span>
+                  <span className="text-[#8c7853] font-normal">({product.reviewsCount} reviews)</span>
                 </div>
               </div>
 
-              {/* Title */}
-              <h2 className="text-2xl sm:text-3xl font-bold text-[#f4efe6] font-display mb-1">
-                {lang === 'ur' ? product.nameUr : product.nameEn}
+              {/* Title & Tagline */}
+              <h2 className="text-2xl sm:text-3xl font-bold text-[#1a1612] font-display mb-1">
+                {product.nameEn}
               </h2>
-
-              {/* Tagline */}
-              <p className="text-xs text-[#d4af37] font-medium mb-3">
-                {lang === 'ur' ? product.taglineUr : product.taglineEn}
+              <p className="text-xs sm:text-sm text-[#736a5c] mb-4">
+                {product.taglineEn}
               </p>
 
-              {/* Price & Discount */}
-              <div className="flex items-baseline gap-3 mb-5">
-                <span className="text-2xl font-bold text-[#f4efe6] tabular-nums">
-                  PKR {selectedVariant.price.toLocaleString()}
+              {/* Price Row */}
+              <div className="flex items-baseline gap-3 mb-6 p-3 bg-[#faf7f2] border border-[#e8dec8] rounded-2xl">
+                <span className="text-2xl sm:text-3xl font-bold text-[#1a1612] font-mono">
+                  Rs. {selectedVariant.price.toLocaleString()}
                 </span>
                 {selectedVariant.originalPrice && (
-                  <span className="text-sm text-[#7d776c] line-through tabular-nums">
-                    PKR {selectedVariant.originalPrice.toLocaleString()}
+                  <span className="text-sm text-[#998f80] line-through font-mono">
+                    Rs. {selectedVariant.originalPrice.toLocaleString()}
                   </span>
                 )}
                 {product.discountPercentage && (
-                  <span className="text-xs text-emerald-400 font-semibold">
-                    {lang === 'ur' ? `${product.discountPercentage}٪ بچت` : `Save ${product.discountPercentage}%`}
+                  <span className="text-xs font-bold text-white bg-[#b8860b] px-2 py-0.5 rounded-md">
+                    Save {product.discountPercentage}%
                   </span>
                 )}
               </div>
 
-              {/* Description */}
-              <p className="text-sm text-[#c5beb0] leading-relaxed mb-6 font-body">
-                {lang === 'ur' ? product.descriptionUr : product.descriptionEn}
-              </p>
-
-              {/* FRAGRANCE NOTES PYRAMID (Special request by user!) */}
-              {product.notes && (
-                <div className="mb-6 p-4 rounded-xl bg-[#171a24] border border-[#293040]">
-                  <div className="flex items-center gap-2 mb-3 text-[#d4af37]">
-                    <Layers className="w-4 h-4" />
-                    <h4 className="text-xs font-bold uppercase tracking-wider">
-                      {lang === 'ur' ? 'خوشبو کے تمام نوٹس کی مکمل تفصیل (Fragrance Notes Pyramid)' : 'Fragrance Notes Breakdown'}
-                    </h4>
-                  </div>
-
-                  <div className="space-y-3">
-                    {/* Top Notes */}
-                    <div className="p-2.5 rounded-lg bg-[#11131a] border border-[#232836]">
-                      <div className="flex items-center justify-between text-[11px] font-semibold text-[#f5d77f] mb-1">
-                        <span>{lang === 'ur' ? '🌿 ابتدائی نوٹس (Top Notes)' : 'Top Notes (First 15 mins)'}</span>
-                        <span className="text-[10px] text-[#8e8778]">{lang === 'ur' ? 'فوری تازگی' : 'Opening Burst'}</span>
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {product.notes.top.map((note, idx) => (
-                          <span
-                            key={idx}
-                            className="text-xs text-[#e2ddd3] font-medium"
-                          >
-                            {lang === 'ur' ? note.ur : note.en}
-                            {idx < product.notes!.top.length - 1 && <span className="text-[#52596c] ms-2">/</span>}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Heart Notes */}
-                    <div className="p-2.5 rounded-lg bg-[#11131a] border border-[#232836]">
-                      <div className="flex items-center justify-between text-[11px] font-semibold text-[#f5d77f] mb-1">
-                        <span>{lang === 'ur' ? '🌸 درمیانی نوٹس (Heart / Middle Notes)' : 'Heart Notes (2 - 8 Hours)'}</span>
-                        <span className="text-[10px] text-[#8e8778]">{lang === 'ur' ? 'خوشبو کی روح' : 'True Character'}</span>
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {product.notes.heart.map((note, idx) => (
-                          <span
-                            key={idx}
-                            className="text-xs text-[#e2ddd3] font-medium"
-                          >
-                            {lang === 'ur' ? note.ur : note.en}
-                            {idx < product.notes!.heart.length - 1 && <span className="text-[#52596c] ms-2">/</span>}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Base Notes */}
-                    <div className="p-2.5 rounded-lg bg-[#11131a] border border-[#232836]">
-                      <div className="flex items-center justify-between text-[11px] font-semibold text-[#f5d77f] mb-1">
-                        <span>{lang === 'ur' ? '🪵 بنیادی نوٹس (Base Notes)' : 'Base Notes (24+ Hours)'}</span>
-                        <span className="text-[10px] text-[#8e8778]">{lang === 'ur' ? 'کپڑوں پر دیرپا قیام' : 'Long-Lasting Drydown'}</span>
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {product.notes.base.map((note, idx) => (
-                          <span
-                            key={idx}
-                            className="text-xs text-[#e2ddd3] font-medium"
-                          >
-                            {lang === 'ur' ? note.ur : note.en}
-                            {idx < product.notes!.base.length - 1 && <span className="text-[#52596c] ms-2">/</span>}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Sillage & Longevity Meters */}
-                  {product.specs && (
-                    <div className="grid grid-cols-2 gap-3 mt-3 pt-3 border-t border-[#232836] text-xs">
-                      <div className="flex items-center gap-2 text-[#c5beb0]">
-                        <Clock className="w-3.5 h-3.5 text-[#d4af37]" />
-                        <span>{lang === 'ur' ? `پائیداری: ${product.specs.longevityUr}` : `Longevity: ${product.specs.longevity}`}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-[#c5beb0]">
-                        <Wind className="w-3.5 h-3.5 text-[#d4af37]" />
-                        <span>{lang === 'ur' ? `پھیلاؤ: ${product.specs.sillageUr}` : `Sillage: ${product.specs.sillage}`}</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* TOPI SPECIFICATIONS (If category is Topi) */}
-              {product.topiSpecs && (
-                <div className="mb-6 p-4 rounded-xl bg-[#171a24] border border-[#293040] space-y-2 text-xs">
-                  <div className="text-xs font-bold text-[#d4af37] uppercase tracking-wider mb-2">
-                    {lang === 'ur' ? 'دستکاری و سائز کی تفصیلات' : 'Cap Craft & Sizing Details'}
-                  </div>
-                  <div className="flex justify-between py-1 border-b border-[#232836]">
-                    <span className="text-[#8e8778]">{lang === 'ur' ? 'کپڑا / فیبرک:' : 'Material:'}</span>
-                    <span className="text-[#f4efe6] font-medium">{lang === 'ur' ? product.topiSpecs.materialUr : product.topiSpecs.materialEn}</span>
-                  </div>
-                  <div className="flex justify-between py-1 border-b border-[#232836]">
-                    <span className="text-[#8e8778]">{lang === 'ur' ? 'دستکاری کام:' : 'Embroidery:'}</span>
-                    <span className="text-[#f4efe6] font-medium">{lang === 'ur' ? product.topiSpecs.craftUr : product.topiSpecs.craftEn}</span>
-                  </div>
-                  <div className="flex justify-between py-1">
-                    <span className="text-[#8e8778]">{lang === 'ur' ? 'سائز کی پیمائش:' : 'Head Size Guide:'}</span>
-                    <span className="text-[#f4efe6] font-medium">{lang === 'ur' ? 'ماتھے کے اوپر فیتے سے سر کا گھیراؤ ناپیں' : 'Measure circumference above forehead'}</span>
-                  </div>
-                </div>
-              )}
-
               {/* Size / Variant Selector */}
-              <div className="mb-6">
-                <label className="block text-xs font-bold text-[#d4af37] uppercase tracking-wider mb-2.5">
-                  {lang === 'ur' ? 'سائز یا بوتل کا انتخاب کریں:' : 'Select Size / Variant:'}
-                </label>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                  {product.variants.map((v, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setSelectedVariant(v)}
-                      className={`p-2.5 rounded-lg border text-xs text-start transition-all cursor-pointer ${
-                        selectedVariant.size === v.size
-                          ? 'border-[#d4af37] bg-[#d4af37]/15 text-[#f4efe6] font-bold'
-                          : 'border-[#293040] bg-[#14161f] text-[#a69f91] hover:border-[#3b445a]'
-                      }`}
-                    >
-                      <div className="font-semibold truncate">{v.size}</div>
-                      <div className="text-[11px] text-[#d4af37] font-mono tabular-nums">
-                        PKR {v.price.toLocaleString()}
-                      </div>
-                    </button>
-                  ))}
+              {product.variants.length > 1 && (
+                <div className="mb-6">
+                  <label className="block text-xs font-bold text-[#1a1612] mb-2 uppercase tracking-wider">
+                    Select Size / Bottle Volume:
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {product.variants.map((v) => (
+                      <button
+                        key={v.size}
+                        onClick={() => setSelectedVariant(v)}
+                        className={`p-2.5 rounded-xl text-xs font-bold border transition-all text-left flex items-center justify-between cursor-pointer ${
+                          selectedVariant.size === v.size
+                            ? 'bg-[#faf2dd] border-[#c59b27] text-[#1a1612] shadow-xs'
+                            : 'bg-white border-[#e8dec8] text-[#52493d] hover:border-[#c59b27]'
+                        }`}
+                      >
+                        <span>{v.size}</span>
+                        <span className="font-mono text-[#b8860b]">Rs. {v.price.toLocaleString()}</span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
+              {/* Fragrance Notes Breakdown */}
+              {product.notes && (
+                <div className="mb-6 space-y-3">
+                  <h4 className="text-xs font-bold text-[#1a1612] uppercase tracking-wider flex items-center gap-1.5">
+                    <Droplet className="w-3.5 h-3.5 text-[#b8860b]" />
+                    <span>Fragrance Notes Pyramid:</span>
+                  </h4>
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="p-2.5 rounded-xl bg-[#faf7f2] border border-[#e8dec8] text-center">
+                      <span className="text-[10px] font-bold text-[#996515] uppercase block mb-1">
+                        Top Notes
+                      </span>
+                      <p className="text-xs text-[#1a1612] font-medium leading-tight">
+                        {product.notes.top.map((n) => n.en).join(', ')}
+                      </p>
+                    </div>
+
+                    <div className="p-2.5 rounded-xl bg-[#faf7f2] border border-[#e8dec8] text-center">
+                      <span className="text-[10px] font-bold text-[#996515] uppercase block mb-1">
+                        Heart Notes
+                      </span>
+                      <p className="text-xs text-[#1a1612] font-medium leading-tight">
+                        {product.notes.heart.map((n) => n.en).join(', ')}
+                      </p>
+                    </div>
+
+                    <div className="p-2.5 rounded-xl bg-[#faf7f2] border border-[#e8dec8] text-center">
+                      <span className="text-[10px] font-bold text-[#996515] uppercase block mb-1">
+                        Base Notes
+                      </span>
+                      <p className="text-xs text-[#1a1612] font-medium leading-tight">
+                        {product.notes.base.map((n) => n.en).join(', ')}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Longevity & Sillage Meters */}
+              {product.specs && (
+                <div className="grid grid-cols-2 gap-3 mb-6 p-3 rounded-2xl bg-[#fcfaf7] border border-[#eee5d3] text-xs">
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-[#b8860b]" />
+                    <div>
+                      <span className="text-[10px] text-[#736a5c] block">Longevity</span>
+                      <span className="font-bold text-[#1a1612]">{product.specs.longevity}</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Wind className="w-4 h-4 text-[#b8860b]" />
+                    <div>
+                      <span className="text-[10px] text-[#736a5c] block">Sillage / Projection</span>
+                      <span className="font-bold text-[#1a1612]">{product.specs.sillage}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Description */}
+              <div className="mb-6">
+                <p className="text-xs sm:text-sm text-[#52493d] leading-relaxed">
+                  {product.descriptionEn}
+                </p>
+              </div>
             </div>
 
-            {/* Sticky Action Buttons */}
-            <div className="pt-4 border-t border-[#252b3b] space-y-3">
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {/* Buy Now Button */}
-                <button
-                  onClick={() => {
-                    onBuyNow(product, selectedVariant.size);
-                    onClose();
-                  }}
-                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#d4af37] hover:bg-[#e6c352] text-[#0f1115] font-bold shadow-lg shadow-[#d4af37]/20 transition-all cursor-pointer active:scale-98"
-                >
-                  <Zap className="w-4 h-4 fill-current" />
-                  <span>{lang === 'ur' ? 'ابھی خریدیں (Buy Now)' : 'Buy Now'}</span>
-                </button>
-
-                {/* Add to Cart Button */}
+            {/* Action Buttons */}
+            <div className="pt-4 border-t border-[#e8dec8] space-y-2">
+              <div className="grid grid-cols-2 gap-3">
                 <button
                   onClick={handleAddToCart}
-                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#202532] hover:bg-[#2b3244] text-[#f4efe6] font-semibold border border-[#3b4359] transition-all cursor-pointer active:scale-98"
+                  className="flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-[#faf6ee] border border-[#d4af37] text-[#1a1612] font-bold text-xs sm:text-sm hover:bg-[#faf2dd] transition-all cursor-pointer shadow-xs active:scale-95"
                 >
-                  {addedToast ? (
-                    <>
-                      <Check className="w-4 h-4 text-emerald-400" />
-                      <span className="text-emerald-300">{lang === 'ur' ? 'کارٹ میں شامل کر دیا گیا!' : 'Added to Cart!'}</span>
-                    </>
-                  ) : (
-                    <>
-                      <ShoppingBag className="w-4 h-4" />
-                      <span>{lang === 'ur' ? 'کارٹ میں ڈالیں' : 'Add to Cart'}</span>
-                    </>
-                  )}
+                  <ShoppingBag className="w-4 h-4 text-[#b8860b]" />
+                  <span>{addedToast ? 'Added to Cart!' : 'Add to Cart'}</span>
+                </button>
+
+                <button
+                  onClick={() => onBuyNow(product, selectedVariant.size)}
+                  className="flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-gradient-to-r from-[#d4af37] via-[#e6c352] to-[#c59b27] text-[#1a1612] font-bold text-xs sm:text-sm hover:brightness-105 transition-all cursor-pointer shadow-md active:scale-95"
+                >
+                  <Zap className="w-4 h-4 text-[#1a1612]" />
+                  <span>Buy Now (Express)</span>
                 </button>
               </div>
 
-              {/* Direct WhatsApp Order Button */}
+              {/* WhatsApp Quick Order Button */}
               <button
-                onClick={handleWhatsAppInquiry}
-                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-[#075e54]/30 hover:bg-[#075e54]/50 text-emerald-300 border border-emerald-600/40 text-xs font-semibold transition-all cursor-pointer"
+                onClick={handleWhatsAppOrder}
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs transition-all cursor-pointer shadow-xs"
               >
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span>{lang === 'ur' ? 'واٹس ایپ پر فوری آرڈر دیں (0300-1234567)' : 'Quick Order via WhatsApp'}</span>
+                <Phone className="w-4 h-4" />
+                <span>Order via WhatsApp (+92 318 2187575)</span>
               </button>
-
             </div>
 
           </div>
 
         </div>
-
       </div>
     </div>
   );

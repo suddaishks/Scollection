@@ -1,4 +1,9 @@
 import heroBanner from '../assets/images/hero_perfume_attar_topi_1790930694602.jpg';
+import heroWhiteGold from '../assets/images/hero_white_gold_luxury_1791105497434.jpg';
+import imperialValley from '../assets/images/perfume_imperial_valley_1791105513619.jpg';
+import khamrahLattafa from '../assets/images/perfume_khamrah_lattafa_1791105526511.jpg';
+import ninePmRebel from '../assets/images/perfume_nine_pm_rebel_1791105541609.jpg';
+import lattafaAsad from '../assets/images/perfume_lattafa_asad_1791105554822.jpg';
 import oudPerfume from '../assets/images/product_royal_oud_perfume_1790930708365.jpg';
 import dehnAttar from '../assets/images/product_dehn_al_oud_attar_1790930721382.jpg';
 import embdTopi from '../assets/images/product_luxury_embroidered_topi_1790930733235.jpg';
@@ -7,7 +12,12 @@ import amberPerfume from '../assets/images/product_amber_gold_perfume_1790931751
 import whiteMusk from '../assets/images/product_white_musk_attar_1790931765997.jpg';
 import capsCollection from '../assets/images/product_sindhi_afghan_caps_1790931778385.jpg';
 
-export const HERO_BANNER_IMG = heroBanner;
+export const HERO_BANNER_IMG = heroWhiteGold || heroBanner;
+export const HERO_WHITE_GOLD_IMG = heroWhiteGold;
+export const IMPERIAL_VALLEY_IMG = imperialValley;
+export const KHAMRAH_IMG = khamrahLattafa;
+export const NINE_PM_IMG = ninePmRebel;
+export const ASAD_IMG = lattafaAsad;
 export const OUD_PERFUME_IMG = oudPerfume;
 export const DEHN_ATTAR_IMG = dehnAttar;
 export const EMBD_TOPI_IMG = embdTopi;

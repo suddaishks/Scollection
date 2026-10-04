@@ -1,26 +1,34 @@
 import { Product } from '../types';
-import { OUD_PERFUME_IMG, BLUE_PERFUME_IMG, AMBER_PERFUME_IMG } from './images';
+import {
+  IMPERIAL_VALLEY_IMG,
+  NINE_PM_IMG,
+  KHAMRAH_IMG,
+  ASAD_IMG,
+  OUD_PERFUME_IMG,
+  BLUE_PERFUME_IMG,
+  AMBER_PERFUME_IMG
+} from './images';
 
 export const PERFUMES_DATA: Product[] = [
   {
     id: 'perfume-imperial-valley',
     nameUr: 'امپیریل ویلی پرفیوم (50ml)',
-    nameEn: 'Imperial Valley Perfume - 50 ML',
+    nameEn: 'Gissah Imperial Valley - 50 ML',
     taglineUr: 'سدیس کلیکشن کا سب سے مقبول پریمیم ڈیزائنر اسپرے پرفیوم',
-    taglineEn: 'Luxury Designer Style Imperial Valley Spray Perfume',
+    taglineEn: 'Iconic Designer Spray with Crisp Bergamot, Leather & Amber',
     category: 'perfume',
     price: 3000,
     originalPrice: 3800,
     discountPercentage: 21,
-    rating: 4.8,
-    reviewsCount: 41,
-    image: BLUE_PERFUME_IMG,
+    rating: 4.9,
+    reviewsCount: 142,
+    image: IMPERIAL_VALLEY_IMG,
     inStock: true,
     featured: true,
     badgeUr: 'سب سے مقبول (POPULAR)',
-    badgeEn: 'POPULAR',
+    badgeEn: 'BEST SELLER',
     descriptionUr: 'سدیس کلیکشن کا شاہکار امپیریل ویلی پرفیوم۔ تازہ جڑی بوٹیاں، سٹرس پھل اور لکڑی کی خوشبو کا لازوال شاہکار جو سارا دن مہکتا رہتا ہے۔',
-    descriptionEn: 'High concentration luxury spray perfume with majestic sillage, combining crisp Italian bergamot, leather, dry herbs, and golden ambergris.',
+    descriptionEn: 'The world-famous Imperial Valley high-concentration fragrance. Opens with crisp Italian bergamot, davana, and pink pepper before blossoming into white leather, rosemary, and golden ambergris.',
     notes: {
       top: [{ ur: 'اطالوی برگاموٹ و دوانا', en: 'Italian Bergamot & Davana' }, { ur: 'گلابی مرچ', en: 'Pink Pepper' }],
       heart: [{ ur: 'روزماری و عود رال', en: 'Rosemary & Agarwood' }, { ur: 'سفید چمڑا', en: 'White Leather' }],
@@ -29,8 +37,8 @@ export const PERFUMES_DATA: Product[] = [
     specs: {
       sillage: 'Intense',
       sillageUr: 'انتہائی شاندار اور دور تک جانے والا پھیلاؤ',
-      longevity: '20-24 Hours',
-      longevityUr: '20 سے 24 گھنٹے کپڑوں پر محفوظ',
+      longevity: '24+ Hours',
+      longevityUr: '24 گھنٹے سے زیادہ کپڑوں پر محفوظ',
       season: 'All Seasons',
       seasonUr: 'ہر موسم اور تقریبات کے لیے',
       concentration: 'Eau De Parfum (50 ML)',
@@ -39,87 +47,135 @@ export const PERFUMES_DATA: Product[] = [
       genderUr: 'مرد و خواتین'
     },
     variants: [
+      { size: '15 ML (Pocket Spray)', price: 1200, originalPrice: 1500, inStock: true },
+      { size: '30 ML (Luxury Spray)', price: 2000, originalPrice: 2500, inStock: true },
       { size: '50 ML (Full Bottle)', price: 3000, originalPrice: 3800, inStock: true }
     ]
   },
   {
     id: 'perfume-9pm-style',
-    nameUr: 'نائن پی ایم اسٹائل پرفیوم (50ml)',
-    nameEn: '9 PM Style Perfume - 50 ML',
+    nameUr: 'نائن پی ایم ریبل پرفیوم (50ml)',
+    nameEn: 'Afnan 9 PM Rebel',
     taglineUr: 'ونیلا، میٹھے سیب اور دارچینی کی مسحور کن پارٹی خوشبو',
-    taglineEn: 'Sweet Vanilla, Apple & Cinnamon Evening Party Scent',
+    taglineEn: 'Sweet Vanilla, Apple & Warm Cinnamon Evening Powerhouse',
     category: 'perfume',
     price: 3000,
     originalPrice: 3700,
     discountPercentage: 19,
     rating: 5.0,
-    reviewsCount: 110,
-    image: AMBER_PERFUME_IMG,
+    reviewsCount: 195,
+    image: NINE_PM_IMG,
     inStock: true,
     featured: true,
     badgeUr: 'ٹاپ ریٹڈ (TOP RATED)',
     badgeEn: 'TOP RATED',
     descriptionUr: 'شام کی محافل اور پارٹیوں کا بے تاج بادشاہ! سیب، دارچینی، لیوینڈر اور میٹھی ونیلا کا ایسا جادو جو سب کو متوجہ کر لے۔',
-    descriptionEn: 'Sweet, addictive, long-lasting bubblegum vanilla and warm spiced apple evening party powerhouse.',
+    descriptionEn: 'The legendary club and evening fragrance featuring mouthwatering spiced apple, cinnamon, fresh lavender, and rich bourbon vanilla.',
     notes: {
-      top: [{ ur: 'سیب و دارچینی', en: 'Crisp Apple & Cinnamon' }, { ur: 'برگاموٹ', en: 'Bergamot' }],
-      heart: [{ ur: 'لیوینڈر و نارنگی پھول', en: 'Lavender & Orange Blossom' }, { ur: 'کنول', en: 'Lily of Valley' }],
+      top: [{ ur: 'سیب و دارچینی', en: 'Crisp Green Apple & Wild Cinnamon' }, { ur: 'برگاموٹ', en: 'Italian Bergamot' }],
+      heart: [{ ur: 'لیوینڈر و نارنگی پھول', en: 'French Lavender & Orange Blossom' }, { ur: 'کنول', en: 'Lily of Valley' }],
       base: [{ ur: 'بوربن ونیلا', en: 'Bourbon Vanilla' }, { ur: 'ٹونکا بین و عنبر', en: 'Tonka Bean & Amber' }]
     },
     specs: {
       sillage: 'Intense',
       sillageUr: 'کمرے کو مہکا دینے والا',
-      longevity: '18-24 Hours',
-      longevityUr: '18 سے 24 گھنٹے',
-      season: 'Evening & Winter',
-      seasonUr: 'شام اور سردیوں کی محافل',
-      concentration: 'Eau De Parfum (50 ML)',
+      longevity: '24 Hours',
+      longevityUr: '24 گھنٹے',
+      season: 'Evening & All Seasons',
+      seasonUr: 'شام اور تقریبات',
+      concentration: 'Eau De Parfum (15ml / 30ml / 50ml)',
       concentrationUr: 'ای او ڈی پرفیوم (50 ML)',
       gender: 'Men / Unisex',
       genderUr: 'مردانہ و یونی سیکس'
     },
     variants: [
-      { size: '50 ML (اسپرے بوتل)', price: 3000, inStock: true }
+      { size: '15 ML (Pocket Spray)', price: 1200, originalPrice: 1500, inStock: true },
+      { size: '30 ML (Luxury Spray)', price: 2000, originalPrice: 2400, inStock: true },
+      { size: '50 ML (Full Bottle)', price: 3000, originalPrice: 3700, inStock: true }
     ]
   },
   {
     id: 'perfume-khamrah-luxury',
-    nameUr: 'خمرہ پرفیوم (50ml)',
-    nameEn: 'Khamrah Perfume - 50 ML',
+    nameUr: 'خمرہ اللطافہ پرفیوم (50ml)',
+    nameEn: 'Lattafa Khamrah',
     taglineUr: 'دارچینی، کھجور کی مٹھاس، پرالین اور قیمتی ونیلا کی گرمائش',
-    taglineEn: 'Warm Cinnamon, Dates, Praline & Gourmand Luxury',
+    taglineEn: 'Opulent Dates, Cinnamon, Praline & Vanilla Cognac Flacon',
     category: 'perfume',
     price: 2000,
     originalPrice: 2600,
     discountPercentage: 23,
-    rating: 4.8,
-    reviewsCount: 35,
-    image: AMBER_PERFUME_IMG,
+    rating: 4.9,
+    reviewsCount: 168,
+    image: KHAMRAH_IMG,
     inStock: true,
     featured: true,
     badgeUr: 'شاہی ذائقہ دار',
-    badgeEn: 'Gourmand Luxury',
-    descriptionUr: 'شیریں دارچینی، جائے فل، کھجور اور پرالین کا گرم اور دلکش احساس۔ سردیوں کی سب سے زیادہ بکنے والی خوشبو۔',
-    descriptionEn: 'Opulent warm spicy gourmand opening with nutmeg and cinnamon settling into rich praline, dates, and smoky vanilla.',
+    badgeEn: 'VIRAL LUXURY',
+    descriptionUr: 'شیریں دارچینی، جائے فل، کھجور اور پرالین کا گرم اور دلکش احساس۔ سردیوں اور تقریبات کی سب سے زیادہ بکنے والی خوشبو۔',
+    descriptionEn: 'The world-famous viral gourmand fragrance housed in a heavy whiskey crystal flacon. Sweet cinnamon, nutmeg, dates, praline, and smoky tonka bean.',
     notes: {
-      top: [{ ur: 'دارچینی و جائفل', en: 'Cinnamon & Nutmeg' }, { ur: 'برگاموٹ', en: 'Bergamot' }],
-      heart: [{ ur: 'کھجور و پرالین', en: 'Dates Accord & Praline' }, { ur: 'ٹیوبروز', en: 'Tuberose' }],
-      base: [{ ur: 'ونیلا و ٹونکا', en: 'Vanilla & Tonka Bean' }, { ur: 'عنبر لکڑی', en: 'Amberwood' }]
+      top: [{ ur: 'دارچینی و جائفل', en: 'Ceylon Cinnamon & Nutmeg' }, { ur: 'برگاموٹ', en: 'Bergamot' }],
+      heart: [{ ur: 'کھجور و پرالین', en: 'Sweet Arabian Dates & Praline' }, { ur: 'ٹیوبروز', en: 'Tuberose' }],
+      base: [{ ur: 'ونیلا و ٹونکا', en: 'Vanilla & Tonka Bean' }, { ur: 'عنبر لکڑی', en: 'Smoky Amberwood' }]
     },
     specs: {
-      sillage: 'Strong',
+      sillage: 'Intense',
       sillageUr: 'گرم اور پرکشش',
-      longevity: '18-22 Hours',
-      longevityUr: '18 سے 22 گھنٹے',
+      longevity: '24+ Hours',
+      longevityUr: '24 گھنٹے سے زائد',
       season: 'Winter & Festive',
       seasonUr: 'سردیاں اور تقریبات',
-      concentration: 'Eau De Parfum (50 ML)',
+      concentration: 'Eau De Parfum (15ml / 30ml / 50ml)',
       concentrationUr: 'ای او ڈی پرفیوم (50 ML)',
       gender: 'Unisex',
       genderUr: 'یکساں موزوں'
     },
     variants: [
-      { size: '50 ML', price: 2000, inStock: true }
+      { size: '15 ML (Pocket Spray)', price: 950, originalPrice: 1200, inStock: true },
+      { size: '30 ML (Luxury Spray)', price: 1500, originalPrice: 1900, inStock: true },
+      { size: '50 ML (Crystal Bottle)', price: 2000, originalPrice: 2600, inStock: true }
+    ]
+  },
+  {
+    id: 'perfume-lattafa-asad',
+    nameUr: 'اسد اللطافہ پرفیوم (50ml)',
+    nameEn: 'Lattafa Asad',
+    taglineUr: 'سیاہ کالی مرچ، کافی، تمباکو اور عنبر کا پروقار شاہکار',
+    taglineEn: 'Bold Black Pepper, Coffee, Tobacco & Warm Amber Elegance',
+    category: 'perfume',
+    price: 2500,
+    originalPrice: 3200,
+    discountPercentage: 22,
+    rating: 4.9,
+    reviewsCount: 135,
+    image: ASAD_IMG,
+    inStock: true,
+    featured: true,
+    badgeUr: 'پاور ہاؤس',
+    badgeEn: 'POWERHOUSE',
+    descriptionUr: 'سیاہ بوتل اور گولڈ کڑھائی والی لاجواب خوشبو۔ کالی مرچ، تیکھی کافی، لکڑی اور تمباکو کا باوقار مردانہ امتزاج۔',
+    descriptionEn: 'An iconic powerhouse fragrance blending zesty black pepper and pineapple with roasted espresso coffee, iris, dry tobacco, and rich golden benzoin.',
+    notes: {
+      top: [{ ur: 'کالی مرچ و انناس', en: 'Black Pepper & Pineapple' }, { ur: 'تمباکو پتے', en: 'Tobacco Leaves' }],
+      heart: [{ ur: 'روسٹڈ کافی و پچولی', en: 'Dark Roasted Coffee & Patchouli' }, { ur: 'آئرس', en: 'Iris' }],
+      base: [{ ur: 'عنبر و بنزوئن', en: 'Golden Amber & Benzoin' }, { ur: 'ونیلا لکڑی', en: 'Dry Vanilla Wood' }]
+    },
+    specs: {
+      sillage: 'Intense',
+      sillageUr: 'دور رس اور بارعب',
+      longevity: '24 Hours',
+      longevityUr: '24 گھنٹے',
+      season: 'All Seasons / Evenings',
+      seasonUr: 'شام اور تقریبات',
+      concentration: 'Eau De Parfum (15ml / 30ml / 50ml)',
+      concentrationUr: 'ای او ڈی پرفیوم (50 ML)',
+      gender: 'Men',
+      genderUr: 'مردانہ'
+    },
+    variants: [
+      { size: '15 ML (Pocket Spray)', price: 1100, originalPrice: 1400, inStock: true },
+      { size: '30 ML (Luxury Spray)', price: 1800, originalPrice: 2300, inStock: true },
+      { size: '50 ML (Matte Black Bottle)', price: 2500, originalPrice: 3200, inStock: true }
     ]
   },
   {

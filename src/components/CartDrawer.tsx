@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, ShoppingBag, Plus, Minus, Trash2, ArrowRight, ArrowLeft, Tag, Truck, ShieldCheck } from 'lucide-react';
+import { X, ShoppingBag, Plus, Minus, Trash2, ArrowRight, Tag, Truck, ShieldCheck, Check } from 'lucide-react';
 import { CartItem } from '../types';
 
 interface CartDrawerProps {
@@ -11,7 +11,6 @@ interface CartDrawerProps {
   onProceedToCheckout: () => void;
   appliedCoupon: string | null;
   onApplyCoupon: (code: string) => void;
-  lang: 'ur' | 'en';
 }
 
 export const CartDrawer: React.FC<CartDrawerProps> = ({
@@ -23,7 +22,6 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   onProceedToCheckout,
   appliedCoupon,
   onApplyCoupon,
-  lang
 }) => {
   if (!isOpen) return null;
 
@@ -31,15 +29,17 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const [couponMsg, setCouponMsg] = useState<{ text: string; error: boolean } | null>(null);
 
   const subtotal = cartItems.reduce((acc, item) => acc + item.unitPrice * item.quantity, 0);
-  const freeShippingThreshold = 3000;
+  const freeShippingThreshold = 5000;
   const isFreeShipping = subtotal >= freeShippingThreshold || appliedCoupon === 'FREESHIP';
   const deliveryFee = isFreeShipping ? 0 : 250;
 
   // Coupon discount calculation
   let discount = 0;
-  if (appliedCoupon === 'JUMMAH15') {
-    discount = Math.round(subtotal * 0.15);
-  } else if (appliedCoupon === 'BUY2GET1') {
+  if (appliedCoupon === 'WELCOME500' && subtotal >= 3000) {
+    discount = 500;
+  } else if (appliedCoupon === 'ROYAL1000' && subtotal >= 6000) {
+    discount = 1000;
+  } else if (appliedCoupon === 'JUMMAH10') {
     discount = Math.round(subtotal * 0.10);
   }
 
@@ -52,35 +52,38 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     const code = couponInput.trim().toUpperCase();
     if (!code) return;
 
-    if (code === 'JUMMAH15' || code === 'FREESHIP' || code === 'BUY2GET1') {
+    if (code === 'WELCOME500' || code === 'ROYAL1000' || code === 'JUMMAH10' || code === 'FREESHIP') {
       onApplyCoupon(code);
-      setCouponMsg({ text: lang === 'ur' ? 'کوپن کامیابی سے لاگو ہو گیا!' : 'Coupon applied successfully!', error: false });
+      setCouponMsg({ text: `Coupon ${code} applied successfully!`, error: false });
     } else {
-      setCouponMsg({ text: lang === 'ur' ? 'غلط کوپن کوڈ ہے، براہ کرم JUMMAH15 آزمائیں۔' : 'Invalid coupon code. Try JUMMAH15', error: true });
+      setCouponMsg({ text: 'Invalid coupon. Try WELCOME500 or JUMMAH10', error: true });
     }
+    setTimeout(() => setCouponMsg(null), 3500);
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden bg-black/75 backdrop-blur-xs flex justify-end">
+    <div className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-xs">
       <div
-        className="w-full max-w-md bg-[#13151d] border-s border-[#252b3a] h-full flex flex-col justify-between text-[#f4efe6] shadow-2xl"
+        className="w-full max-w-md bg-white border-l border-[#e8dec8] h-full flex flex-col justify-between shadow-2xl text-[#1a1612]"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
-        <div className="p-4 sm:p-5 border-b border-[#252b3a] flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <ShoppingBag className="w-5 h-5 text-[#d4af37]" />
-            <h3 className="font-bold text-lg font-display">
-              {lang === 'ur' ? 'آپ کا شاپنگ کارٹ' : 'Your Shopping Bag'}
-            </h3>
-            <span className="text-xs bg-[#222838] px-2 py-0.5 rounded-full text-[#a69f91] tabular-nums">
-              {cartItems.reduce((acc, i) => acc + i.quantity, 0)}
-            </span>
+        {/* Drawer Header */}
+        <div className="p-5 border-b border-[#e8dec8] flex items-center justify-between bg-[#faf7f2]">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 rounded-xl bg-[#faf2dd] text-[#996515] border border-[#d4af37]/30">
+              <ShoppingBag className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-bold text-base text-[#1a1612] font-display">Your Shopping Bag</h3>
+              <p className="text-xs text-[#736a5c]">
+                {cartItems.length} {cartItems.length === 1 ? 'item' : 'items'} selected
+              </p>
+            </div>
           </div>
 
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg hover:bg-[#202534] text-[#a69f91] hover:text-white transition-colors cursor-pointer"
+            className="p-2 rounded-xl text-[#736a5c] hover:text-[#1a1612] hover:bg-[#ede6d8] transition-colors cursor-pointer"
             aria-label="Close cart"
           >
             <X className="w-5 h-5" />
@@ -88,183 +91,184 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         </div>
 
         {/* Free Shipping Progress Indicator */}
-        <div className="px-5 py-3 bg-[#191d28] border-b border-[#252b3a]">
-          <div className="flex items-center justify-between text-xs mb-1.5">
-            <span className="flex items-center gap-1.5 text-[#dcd7cb]">
-              <Truck className="w-3.5 h-3.5 text-[#d4af37]" />
-              {isFreeShipping
-                ? (lang === 'ur' ? 'مبارک ہو! آپ کو مفت ڈیلیوری مل گئی ہے' : 'Congratulations! You unlocked FREE Delivery')
-                : (lang === 'ur'
-                    ? `صرف PKR ${remainingForFreeShipping.toLocaleString()} مزید اور پائیں مفت ڈیلیوری!`
-                    : `Add PKR ${remainingForFreeShipping.toLocaleString()} more for FREE Delivery!`)}
+        <div className="px-5 py-3 bg-[#fdfaf5] border-b border-[#eee5d3] text-xs">
+          <div className="flex items-center justify-between text-[#52493d] mb-1.5 font-medium">
+            <span className="flex items-center gap-1.5">
+              <Truck className="w-3.5 h-3.5 text-[#b8860b]" />
+              {isFreeShipping ? (
+                <span className="font-bold text-emerald-700">🎉 Congratulations! You unlocked Free Delivery!</span>
+              ) : (
+                <span>Add <strong>Rs. {remainingForFreeShipping.toLocaleString()}</strong> more for Free Shipping</span>
+              )}
             </span>
-            <span className="text-[11px] font-semibold text-[#d4af37] tabular-nums">
-              {Math.round(freeShippingProgress)}%
-            </span>
+            <span className="font-bold text-[#b8860b]">{Math.round(freeShippingProgress)}%</span>
           </div>
-          <div className="w-full h-1.5 bg-[#252b3a] rounded-full overflow-hidden">
+          <div className="w-full h-1.5 bg-[#e8dec8] rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-[#d4af37] to-emerald-400 transition-all duration-300"
+              className="h-full bg-gradient-to-r from-[#d4af37] to-[#b8860b] transition-all duration-500 rounded-full"
               style={{ width: `${freeShippingProgress}%` }}
             />
           </div>
         </div>
 
-        {/* Items List */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4">
+        {/* Cart Items List */}
+        <div className="flex-1 overflow-y-auto p-5 space-y-4">
           {cartItems.length === 0 ? (
-            <div className="text-center py-16 text-[#8e8778] space-y-3">
-              <ShoppingBag className="w-12 h-12 mx-auto stroke-1 opacity-40" />
-              <p className="text-sm">
-                {lang === 'ur' ? 'آپ کا کارٹ ابھی خالی ہے۔' : 'Your shopping bag is empty.'}
+            <div className="py-20 text-center text-[#8c8273] space-y-3">
+              <ShoppingBag className="w-12 h-12 mx-auto text-[#dcd2be]" />
+              <h4 className="text-base font-bold text-[#1a1612]">Your Bag is Empty</h4>
+              <p className="text-xs text-[#736a5c]">
+                Explore our luxury perfumes, concentrated attars, and handcrafted caps to add items.
               </p>
-              <button
-                onClick={onClose}
-                className="mt-2 text-xs font-semibold text-[#d4af37] hover:underline"
-              >
-                {lang === 'ur' ? 'خوشبوئیں اور ٹوپیاں دیکھیں' : 'Browse Fragrances & Caps'}
-              </button>
             </div>
           ) : (
             cartItems.map((item) => (
               <div
                 key={item.id}
-                className="flex gap-3 bg-[#171b25] border border-[#262c3c] rounded-xl p-3"
+                className="flex items-center gap-3 p-3 rounded-2xl bg-[#faf7f2] border border-[#e8dec8] hover:border-[#c59b27] transition-all"
               >
-                <img
-                  src={item.image}
-                  alt={item.nameEn}
-                  referrerPolicy="no-referrer"
-                  className="w-18 h-18 rounded-lg object-cover bg-[#222838] shrink-0"
-                />
+                {/* Product thumbnail */}
+                <div className="w-16 h-16 rounded-xl overflow-hidden bg-white border border-[#e8dec8] shrink-0">
+                  <img
+                    src={item.image}
+                    alt={item.nameEn}
+                    className="w-full h-full object-cover object-center"
+                  />
+                </div>
 
-                <div className="flex-1 flex flex-col justify-between">
-                  <div className="flex items-start justify-between gap-1">
-                    <div>
-                      <h4 className="text-sm font-bold text-[#f4efe6] line-clamp-1">
-                        {lang === 'ur' ? item.nameUr : item.nameEn}
-                      </h4>
-                      <p className="text-xs text-[#d4af37] font-medium">
-                        {item.selectedSize}
-                      </p>
-                    </div>
-
-                    <button
-                      onClick={() => onRemoveItem(item.id)}
-                      className="text-[#6d7488] hover:text-[#c82333] transition-colors p-1 cursor-pointer"
-                      title="Remove item"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
+                {/* Details */}
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-bold text-xs sm:text-sm text-[#1a1612] truncate font-display">
+                    {item.nameEn}
+                  </h4>
+                  <div className="text-[11px] text-[#736a5c] mb-1.5 flex items-center gap-2">
+                    <span>Size: {item.selectedSize}</span>
+                    <span className="text-[#a69c8c]">•</span>
+                    <span className="font-mono font-bold text-[#b8860b]">
+                      Rs. {item.unitPrice.toLocaleString()}
+                    </span>
                   </div>
 
-                  <div className="flex items-center justify-between pt-2">
-                    <span className="text-xs font-bold text-[#f4efe6] tabular-nums">
-                      PKR {(item.unitPrice * item.quantity).toLocaleString()}
-                    </span>
-
-                    {/* Quantity Selector */}
-                    <div className="flex items-center gap-2 bg-[#101218] border border-[#2c3344] rounded-lg px-2 py-0.5">
+                  {/* Quantity controls */}
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center border border-[#dcd2be] rounded-lg bg-white">
                       <button
                         onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
-                        className="text-[#a69f91] hover:text-white p-0.5 cursor-pointer"
+                        className="p-1 text-[#736a5c] hover:text-[#1a1612] cursor-pointer"
+                        aria-label="Decrease quantity"
                       >
                         <Minus className="w-3 h-3" />
                       </button>
-                      <span className="text-xs font-bold tabular-nums min-w-[16px] text-center">
+                      <span className="px-2 text-xs font-bold text-[#1a1612] font-mono">
                         {item.quantity}
                       </span>
                       <button
                         onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
-                        className="text-[#a69f91] hover:text-white p-0.5 cursor-pointer"
+                        className="p-1 text-[#736a5c] hover:text-[#1a1612] cursor-pointer"
+                        aria-label="Increase quantity"
                       >
                         <Plus className="w-3 h-3" />
                       </button>
                     </div>
-                  </div>
 
+                    <button
+                      onClick={() => onRemoveItem(item.id)}
+                      className="p-1 text-red-500 hover:text-red-700 ml-auto cursor-pointer"
+                      title="Remove Item"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
               </div>
             ))
           )}
         </div>
 
-        {/* Footer & Checkout Area */}
+        {/* Footer Checkout Summary */}
         {cartItems.length > 0 && (
-          <div className="p-4 sm:p-5 bg-[#171a24] border-t border-[#252b3a] space-y-3">
+          <div className="p-5 border-t border-[#e8dec8] bg-[#faf7f2] space-y-3">
             
             {/* Promo Code Form */}
             <form onSubmit={handleApplyCoupon} className="flex gap-2">
               <div className="relative flex-1">
-                <Tag className="w-3.5 h-3.5 absolute start-3 top-1/2 -translate-y-1/2 text-[#8e8778]" />
+                <Tag className="w-3.5 h-3.5 text-[#b8860b] absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
-                  placeholder={lang === 'ur' ? 'کوپن کوڈ (مثلاً JUMMAH15)' : 'Promo Code (e.g. JUMMAH15)'}
+                  placeholder="Enter Voucher Code..."
                   value={couponInput}
                   onChange={(e) => setCouponInput(e.target.value)}
-                  className="w-full bg-[#101218] border border-[#2d3446] rounded-lg ps-8 pe-3 py-1.5 text-xs text-[#f4efe6] uppercase placeholder:normal-case placeholder:text-[#676f82] focus:outline-none focus:border-[#d4af37]"
+                  className="w-full bg-white border border-[#dcd2be] rounded-xl pl-9 pr-3 py-2 text-xs text-[#1a1612] placeholder:text-[#8c8273] focus:outline-none focus:border-[#b8860b] font-mono"
                 />
               </div>
               <button
                 type="submit"
-                className="px-3 py-1.5 bg-[#252c3c] hover:bg-[#d4af37] hover:text-[#0f1115] text-[#dcd7cb] text-xs font-semibold rounded-lg transition-colors cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-[#1a1612] text-white font-bold text-xs hover:bg-[#c59b27] transition-all cursor-pointer"
               >
-                {lang === 'ur' ? 'لاگو کریں' : 'Apply'}
+                Apply
               </button>
             </form>
 
             {couponMsg && (
-              <p className={`text-[11px] ${couponMsg.error ? 'text-red-400' : 'text-emerald-400'}`}>
+              <p className={`text-xs ${couponMsg.error ? 'text-red-600' : 'text-emerald-700 font-bold'}`}>
                 {couponMsg.text}
               </p>
             )}
 
+            {appliedCoupon && (
+              <div className="flex items-center justify-between text-xs text-[#996515] bg-[#faf2dd] p-2 rounded-xl border border-[#d4af37]/30">
+                <span className="flex items-center gap-1">
+                  <Check className="w-3 h-3 text-emerald-600" />
+                  <span>Promo <strong>{appliedCoupon}</strong> active</span>
+                </span>
+                <span className="font-bold">- Rs. {discount.toLocaleString()}</span>
+              </div>
+            )}
+
             {/* Calculations Breakdown */}
-            <div className="space-y-1.5 text-xs pt-1">
-              <div className="flex justify-between text-[#a69f91]">
-                <span>{lang === 'ur' ? 'ذیلی کل (Subtotal):' : 'Subtotal:'}</span>
-                <span className="font-mono tabular-nums text-[#dcd7cb]">PKR {subtotal.toLocaleString()}</span>
+            <div className="space-y-1.5 text-xs text-[#52493d] pt-2">
+              <div className="flex justify-between">
+                <span>Subtotal:</span>
+                <span className="font-mono text-[#1a1612]">Rs. {subtotal.toLocaleString()}</span>
               </div>
 
               {discount > 0 && (
-                <div className="flex justify-between text-emerald-400">
-                  <span>{lang === 'ur' ? `کوپن رعایت (${appliedCoupon}):` : `Discount (${appliedCoupon}):`}</span>
-                  <span className="font-mono tabular-nums">-PKR {discount.toLocaleString()}</span>
+                <div className="flex justify-between text-emerald-700 font-medium">
+                  <span>Coupon Discount:</span>
+                  <span className="font-mono">- Rs. {discount.toLocaleString()}</span>
                 </div>
               )}
 
-              <div className="flex justify-between text-[#a69f91]">
-                <span>{lang === 'ur' ? 'ڈیلیوری فیس (Courier):' : 'Delivery Fee:'}</span>
-                <span className="font-mono tabular-nums text-[#dcd7cb]">
-                  {deliveryFee === 0
-                    ? (lang === 'ur' ? 'مفت (FREE)' : 'FREE')
-                    : `PKR ${deliveryFee}`}
+              <div className="flex justify-between">
+                <span>Delivery Charges:</span>
+                <span className="font-mono">
+                  {deliveryFee === 0 ? <strong className="text-emerald-700">FREE</strong> : `Rs. ${deliveryFee}`}
                 </span>
               </div>
 
-              <div className="flex justify-between text-sm font-bold text-[#f4efe6] pt-2 border-t border-[#262c3c]">
-                <span>{lang === 'ur' ? 'کل قابلِ ادائیگی رقم:' : 'Total Amount:'}</span>
-                <span className="text-base text-[#d4af37] font-mono tabular-nums">
-                  PKR {grandTotal.toLocaleString()}
+              <div className="flex justify-between text-base font-bold text-[#1a1612] pt-2 border-t border-[#e8dec8]">
+                <span>Total Amount:</span>
+                <span className="font-mono text-lg text-[#b8860b]">
+                  Rs. {grandTotal.toLocaleString()}
                 </span>
               </div>
             </div>
 
-            {/* Checkout Button */}
+            {/* Checkout Action Button */}
             <button
               onClick={() => {
                 onClose();
                 onProceedToCheckout();
               }}
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#d4af37] hover:bg-[#e6c352] text-[#0f1115] font-bold shadow-lg transition-all cursor-pointer active:scale-98"
+              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-gradient-to-r from-[#d4af37] via-[#e6c352] to-[#c59b27] text-[#1a1612] font-bold text-sm hover:brightness-105 transition-all shadow-md active:scale-95 cursor-pointer"
             >
-              <span>{lang === 'ur' ? 'چیک آؤٹ اور ترسیل فارم' : 'Proceed to Checkout'}</span>
-              {lang === 'ur' ? <ArrowLeft className="w-4 h-4" /> : <ArrowRight className="w-4 h-4" />}
+              <span>Proceed to Checkout</span>
+              <ArrowRight className="w-4 h-4" />
             </button>
 
-            <div className="text-center text-[11px] text-[#7d776c] flex items-center justify-center gap-2">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-              <span>{lang === 'ur' ? 'کیش آن ڈیلیوری، ایزی پیسہ و جاز کیش' : 'COD, Easypaisa, JazzCash Supported'}</span>
+            <div className="flex items-center justify-center gap-2 text-[11px] text-[#736a5c]">
+              <ShieldCheck className="w-3.5 h-3.5 text-[#b8860b]" />
+              <span>Cash on Delivery & Easypaisa Accepted</span>
             </div>
 
           </div>

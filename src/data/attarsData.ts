@@ -39,13 +39,15 @@ export const ATTARS_DATA: Product[] = [
       genderUr: 'مردانہ کلاسک'
     },
     variants: [
-      { size: '12 ML (ایک تولہ شیشی)', price: 1400, inStock: true }
+      { size: '3 ML (Pocket Roll-On)', price: 450, originalPrice: 600, inStock: true },
+      { size: '6 ML (Half Tola)', price: 800, originalPrice: 1000, inStock: true },
+      { size: '12 ML (Full Tola Flacon)', price: 1400, originalPrice: 1700, inStock: true }
     ]
   },
   {
     id: 'attar-blue-sea',
     nameUr: 'بلو سی عطر (12ml)',
-    nameEn: 'Blue Sea Attar - 12 ML',
+    nameEn: 'Blue Sea Pure Attar',
     taglineUr: 'سمندری لہروں، لیموں اور ٹھنڈے پانی کی دل موہ لینے والی تازگی',
     taglineEn: 'Fresh, Oceanic Aquatic Fragrance with Long Projection',
     category: 'attar',
@@ -73,19 +75,21 @@ export const ATTARS_DATA: Product[] = [
       longevityUr: '18 سے 24 گھنٹے',
       season: 'Summer Peak & Daily',
       seasonUr: 'موسم گرما اور روزمرہ',
-      concentration: '100% Pure Attar (12 ML)',
+      concentration: '100% Pure Attar (3ml / 6ml / 12ml)',
       concentrationUr: 'خالص الکحل سے پاک عطر',
       gender: 'Unisex',
       genderUr: 'سب کے لیے'
     },
     variants: [
-      { size: '12 ML (1 Tola)', price: 1200, inStock: true }
+      { size: '3 ML (Pocket Roll-On)', price: 400, originalPrice: 500, inStock: true },
+      { size: '6 ML (Half Tola)', price: 700, originalPrice: 850, inStock: true },
+      { size: '12 ML (Full Tola Flacon)', price: 1200, originalPrice: 1350, inStock: true }
     ]
   },
   {
     id: 'attar-oud-ul-lail',
     nameUr: 'عود اللیل عطر (12ml)',
-    nameEn: 'Oud Ul Lail Attar - 12 ML',
+    nameEn: 'Oud Ul Lail Pure Attar',
     taglineUr: 'تاریک رات کی پراسرار اور گہری عود کی شاہانہ خوشبو',
     taglineEn: 'Deep, Mysterious Night-Time Oudh Fragrance',
     category: 'attar',
@@ -108,18 +112,20 @@ export const ATTARS_DATA: Product[] = [
     },
     specs: {
       sillage: 'Intense',
-      sillageUr: 'انتہائی باوقار اور گہرا',
+      sillageUr: 'گہرا اور دور تک جانے والا',
       longevity: '24-36 Hours',
       longevityUr: '24 سے 36 گھنٹے',
-      season: 'Winter & Evenings',
-      seasonUr: 'سردیاں اور رات کی تقریبات',
-      concentration: '100% Pure Attar',
-      concentrationUr: 'خالص روغنی عطر (12ml)',
+      season: 'Winter & Night',
+      seasonUr: 'سردیاں اور شام کی مجالس',
+      concentration: '100% Pure Attar (3ml / 6ml / 12ml)',
+      concentrationUr: 'خالص دہن العود',
       gender: 'Unisex',
       genderUr: 'مرد و خواتین'
     },
     variants: [
-      { size: '12 ML', price: 1200, inStock: true }
+      { size: '3 ML (Pocket Roll-On)', price: 400, originalPrice: 500, inStock: true },
+      { size: '6 ML (Half Tola)', price: 700, originalPrice: 850, inStock: true },
+      { size: '12 ML (Full Tola Flacon)', price: 1200, originalPrice: 1400, inStock: true }
     ]
   },
   {

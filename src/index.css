@@ -2,36 +2,57 @@
 
 @layer base {
   :root {
-    --font-serif: 'Cormorant Garamond', 'Noto Nastaliq Urdu', Georgia, serif;
-    --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
-    --font-urdu: 'Noto Nastaliq Urdu', 'Noto Sans Arabic', serif;
+    --font-serif: 'Cormorant Garamond', Georgia, serif;
+    --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --font-display: 'Cinzel', 'Cormorant Garamond', serif;
+  }
+  body {
+    background-color: #ffffff;
+    color: #1e2024;
+    font-family: var(--font-sans);
   }
 }
 
 .font-display {
-  font-family: 'Cormorant Garamond', 'Noto Nastaliq Urdu', Georgia, serif;
+  font-family: 'Cinzel', 'Cormorant Garamond', Georgia, serif;
+  letter-spacing: -0.01em;
 }
 
-.font-urdu {
-  font-family: 'Noto Nastaliq Urdu', 'Noto Sans Arabic', serif;
+.font-serif {
+  font-family: 'Cormorant Garamond', Georgia, serif;
 }
 
 .font-body {
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
 }
 
-/* Custom scrollbars */
+/* Luxury Gold Gradients & Accents */
+.gold-gradient-text {
+  background: linear-gradient(135deg, #b8860b 0%, #d4af37 50%, #996515 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gold-gradient-bg {
+  background: linear-gradient(135deg, #d4af37 0%, #e6c352 50%, #c59b27 100%);
+}
+
+.gold-border-glow {
+  box-shadow: 0 4px 20px -2px rgba(212, 175, 55, 0.15);
+}
+
+/* Custom scrollbars for White & Gold theme */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0f1115;
+  background: #fcfaf7;
 }
 ::-webkit-scrollbar-thumb {
-  background: #2a2e37;
+  background: #d4af37;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #c5a059;
+  background: #b8860b;
 }

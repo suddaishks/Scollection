@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import { Phone, Mail, MapPin, Clock, MessageCircle, Send, CheckCircle2 } from 'lucide-react';
 
-interface ContactUsSectionProps {
-  lang: 'ur' | 'en';
-}
-
-export const ContactUsSection: React.FC<ContactUsSectionProps> = ({ lang }) => {
+export const ContactUsSection: React.FC = () => {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -25,28 +21,26 @@ export const ContactUsSection: React.FC<ContactUsSectionProps> = ({ lang }) => {
 
   const handleOpenDirectWhatsApp = () => {
     const text = encodeURIComponent(
-      'السلام علیکم! میں سدیس کلیکشن کے پرفیومز، عطر یا ٹوپیوں کے بارے میں معلومات اور آرڈر دینا چاہتا ہوں۔'
+      'Hello! I would like to inquire about perfumes, attars, and caps from Suddais Collection.'
     );
     window.open(`https://wa.me/923182187575?text=${text}`, '_blank');
   };
 
   return (
-    <section id="contact-section" className="py-16 sm:py-20 bg-[#12141c] border-b border-[#222632]">
+    <section id="contact-section" className="py-16 sm:py-20 bg-[#faf7f2] border-b border-[#e8dec8]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 text-[#d4af37] text-xs font-semibold uppercase tracking-wider mb-2">
+          <div className="inline-flex items-center gap-2 text-[#b8860b] text-xs font-bold uppercase tracking-wider mb-2">
             <Phone className="w-4 h-4" />
-            <span>{lang === 'ur' ? 'ہم سے رابطہ کریں' : 'Contact Us & Customer Support'}</span>
+            <span>CUSTOMER SUPPORT & STORE INQUIRIES</span>
           </div>
-          <h2 className="text-3xl font-bold text-[#f4efe6] font-display mb-3">
-            {lang === 'ur' ? 'خوشبو کے انتخاب میں رہنمائی یا فوری آرڈر' : 'We are here to assist with notes, orders & custom gifts'}
+          <h2 className="text-3xl sm:text-4xl font-bold text-[#1a1612] font-display mb-3">
+            Get In Touch With Suddais Collection
           </h2>
-          <p className="text-sm text-[#a69f91]">
-            {lang === 'ur'
-              ? 'واٹس ایپ، فون یا فارم کے ذریعے رابطہ کریں۔ ہماری ٹیم آپ کی خدمت کے لیے ہمہ وقت تیار ہے۔'
-              : 'Reach out via WhatsApp for immediate support, custom bulk orders, or fragrance guidance.'}
+          <p className="text-sm text-[#736a5c]">
+            Need help selecting a scent or want to order in bulk? Contact us directly via WhatsApp, phone, or our fast message form.
           </p>
         </div>
 
@@ -56,68 +50,55 @@ export const ContactUsSection: React.FC<ContactUsSectionProps> = ({ lang }) => {
           <div className="lg:col-span-5 space-y-4">
             
             {/* WhatsApp Big Action Card */}
-            <div className="p-6 rounded-2xl bg-[#0b241c] border border-emerald-500/30 text-white space-y-3">
+            <div className="p-6 rounded-2xl bg-[#09291b] border border-emerald-500/40 text-white space-y-3 shadow-md">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400">
-                  <MessageCircle className="w-6 h-6 fill-current" />
+                <div className="p-3 rounded-xl bg-emerald-500/20 text-emerald-400">
+                  <MessageCircle className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-base font-display">
-                    {lang === 'ur' ? 'فوری واٹس ایپ رابطہ' : 'Instant WhatsApp Help'}
-                  </h3>
-                  <p className="text-xs text-emerald-200">
-                    {lang === 'ur' ? '24 گھنٹے میں سے کسی بھی وقت میسج کریں' : 'Direct line for inquiries & instant orders'}
-                  </p>
+                  <h4 className="font-bold text-base font-display">Instant WhatsApp Order</h4>
+                  <p className="text-xs text-emerald-200">Fastest response within minutes</p>
                 </div>
               </div>
-
-              <div className="font-mono text-base font-bold text-white tabular-nums pt-1">
-                +92 318 2187575
-              </div>
-
+              <p className="text-xs text-emerald-100/90 leading-relaxed">
+                Connect directly with our master perfumer on WhatsApp for product recommendations, custom gift sets, and fast orders.
+              </p>
               <button
                 onClick={handleOpenDirectWhatsApp}
-                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-[#0f1115] font-bold text-xs transition-colors cursor-pointer"
+                className="w-full py-3 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-[#09291b] font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
               >
-                <span>{lang === 'ur' ? 'ابھی واٹس ایپ چیٹ شروع کریں' : 'Chat on WhatsApp Now'}</span>
+                <Phone className="w-4 h-4" />
+                <span>Chat on WhatsApp (+92 318 2187575)</span>
               </button>
             </div>
 
-            {/* Physical Store & Timings */}
-            <div className="p-6 rounded-2xl bg-[#171a24] border border-[#272d3e] space-y-4 text-xs">
+            {/* Store Address & Hours */}
+            <div className="p-6 rounded-2xl bg-white border border-[#e8dec8] space-y-4 shadow-xs">
               <div className="flex items-start gap-3">
-                <MapPin className="w-4 h-4 text-[#d4af37] shrink-0 mt-0.5" />
-                <div>
-                  <h4 className="font-bold text-[#f4efe6] text-sm mb-0.5">
-                    {lang === 'ur' ? 'مرکزی شوروم و پتہ:' : 'Flagship Store & Address:'}
-                  </h4>
-                  <p className="text-[#a69f91] leading-relaxed">
-                    {lang === 'ur'
-                      ? 'شیرپاؤ ایف 2 اسٹریٹ، لیبر کالونی ڈبل کیبن اسٹریٹ، نزد ایم اے ڈیکوریشن، ملیر، کراچی، پاکستان۔'
-                      : 'Sherpao F2 Street, labour colony double Kebin Street, Near M A Decoration, Malir, Karachi, Pakistan.'}
+                <MapPin className="w-5 h-5 text-[#b8860b] shrink-0 mt-0.5" />
+                <div className="text-xs">
+                  <h5 className="font-bold text-[#1a1612] mb-0.5">Physical Store Address:</h5>
+                  <p className="text-[#52493d] leading-relaxed">
+                    Sherpao F2 Street, Labour Colony Double Kebin Street, Near M A Decoration, Malir, Karachi, Pakistan.
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 pt-3 border-t border-[#232838]">
-                <Clock className="w-4 h-4 text-[#d4af37] shrink-0 mt-0.5" />
-                <div>
-                  <h4 className="font-bold text-[#f4efe6] text-sm mb-0.5">
-                    {lang === 'ur' ? 'اوقاتِ کار:' : 'Shop Timings:'}
-                  </h4>
-                  <p className="text-[#a69f91]">
-                    {lang === 'ur' ? 'روزانہ صبح 10:00 بجے تا رات 11:00 بجے' : 'Daily from 10:00 AM to 11:00 PM'}
-                  </p>
+              <div className="flex items-start gap-3">
+                <Phone className="w-5 h-5 text-[#b8860b] shrink-0 mt-0.5" />
+                <div className="text-xs">
+                  <h5 className="font-bold text-[#1a1612] mb-0.5">Direct Helpline / Order Line:</h5>
+                  <p className="text-[#52493d] font-mono font-bold">+92 318 2187575</p>
+                  <p className="text-[#8c8273] text-[11px]">Available daily for calls & WhatsApp</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 pt-3 border-t border-[#232838]">
-                <Mail className="w-4 h-4 text-[#d4af37] shrink-0 mt-0.5" />
-                <div>
-                  <h4 className="font-bold text-[#f4efe6] text-sm mb-0.5">
-                    {lang === 'ur' ? 'ای میل:' : 'Email Support:'}
-                  </h4>
-                  <p className="text-[#a69f91] font-mono">support@itr-rida.pk</p>
+              <div className="flex items-start gap-3">
+                <Clock className="w-5 h-5 text-[#b8860b] shrink-0 mt-0.5" />
+                <div className="text-xs">
+                  <h5 className="font-bold text-[#1a1612] mb-0.5">Store Opening Hours:</h5>
+                  <p className="text-[#52493d]">Monday to Saturday: 11:00 AM – 11:00 PM</p>
+                  <p className="text-[#52493d]">Friday: 3:00 PM – 11:30 PM (After Jummah Prayers)</p>
                 </div>
               </div>
             </div>
@@ -125,81 +106,81 @@ export const ContactUsSection: React.FC<ContactUsSectionProps> = ({ lang }) => {
           </div>
 
           {/* Right: Message Form */}
-          <div className="lg:col-span-7 bg-[#171a24] border border-[#272d3e] rounded-2xl p-6 sm:p-8">
-            <h3 className="text-xl font-bold text-[#f4efe6] font-display mb-2">
-              {lang === 'ur' ? 'پیغام یا استفسار ارسال کریں' : 'Send an Inquiry / Message'}
-            </h3>
-            <p className="text-xs text-[#a69f91] mb-6">
-              {lang === 'ur'
-                ? 'کسی مخصوص پرفیوم نوٹس، عطر یا ٹوپی کے سائز کے متعلق سوال ہو تو فارم پُر کریں۔'
-                : 'Need guidance on perfume notes or custom bulk gifting? Leave a message below.'}
-            </p>
+          <div className="lg:col-span-7">
+            <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#e8dec8] shadow-xs">
+              <h3 className="text-xl font-bold text-[#1a1612] font-display mb-1">
+                Send Us a Quick Message
+              </h3>
+              <p className="text-xs text-[#736a5c] mb-6">
+                Fill in your details below and our customer support team will get back to you promptly.
+              </p>
 
-            {submitted ? (
-              <div className="p-8 text-center bg-[#13151e] rounded-xl border border-emerald-500/30 space-y-2">
-                <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto" />
-                <h4 className="text-lg font-bold text-[#f4efe6]">
-                  {lang === 'ur' ? 'آپ کا پیغام کامیابی سے موصول ہو گیا ہے!' : 'Message Received!'}
-                </h4>
-                <p className="text-xs text-[#a69f91]">
-                  {lang === 'ur' ? 'ہماری ٹیم جلد آپ سے رابطہ کرے گی۔' : 'Our fragrance specialist will call you shortly.'}
-                </p>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-4 text-xs">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-[#a69f91] mb-1">
-                      {lang === 'ur' ? 'آپ کا نام *' : 'Your Name *'}
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder={lang === 'ur' ? 'مثلاً اسامہ خان' : 'e.g. Osama Khan'}
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full bg-[#101218] border border-[#2b3142] rounded-lg px-3 py-2.5 text-xs text-[#f4efe6] focus:outline-none focus:border-[#d4af37]"
-                    />
+              {submitted ? (
+                <div className="p-8 rounded-2xl bg-[#f4fbf7] border border-emerald-500/30 text-center space-y-2">
+                  <CheckCircle2 className="w-12 h-12 text-emerald-600 mx-auto" />
+                  <h4 className="text-lg font-bold text-[#1a1612]">
+                    Message Sent Successfully!
+                  </h4>
+                  <p className="text-xs text-[#52493d]">
+                    Thank you! Our fragrance consultant will contact you at your phone number shortly.
+                  </p>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-[#1a1612] mb-1">
+                        Your Full Name *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="e.g. Suddais Ahmed"
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        className="w-full bg-[#faf7f2] border border-[#dcd2be] rounded-xl px-3.5 py-2.5 text-xs text-[#1a1612] focus:outline-none focus:border-[#b8860b]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-[#1a1612] mb-1">
+                        Phone / WhatsApp Number *
+                      </label>
+                      <input
+                        type="tel"
+                        required
+                        placeholder="0318-2187575"
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        className="w-full bg-[#faf7f2] border border-[#dcd2be] rounded-xl px-3.5 py-2.5 text-xs text-[#1a1612] focus:outline-none focus:border-[#b8860b]"
+                      />
+                    </div>
                   </div>
 
                   <div>
-                    <label className="block text-[#a69f91] mb-1">
-                      {lang === 'ur' ? 'موبائل نمبر یا واٹس ایپ *' : 'Phone / WhatsApp *'}
+                    <label className="block text-xs font-bold text-[#1a1612] mb-1">
+                      Your Message or Order Details
                     </label>
-                    <input
-                      type="tel"
-                      required
-                      placeholder="03001234567"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      className="w-full bg-[#101218] border border-[#2b3142] rounded-lg px-3 py-2.5 text-xs text-[#f4efe6] focus:outline-none focus:border-[#d4af37]"
+                    <textarea
+                      rows={4}
+                      placeholder="Write your perfume preference, question about attar notes, or order details here..."
+                      value={formData.message}
+                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      className="w-full bg-[#faf7f2] border border-[#dcd2be] rounded-xl px-3.5 py-2.5 text-xs text-[#1a1612] focus:outline-none focus:border-[#b8860b]"
                     />
                   </div>
-                </div>
 
-                <div>
-                  <label className="block text-[#a69f91] mb-1">
-                    {lang === 'ur' ? 'آپ کا پیغام / سوال' : 'Your Message / Inquiry'}
-                  </label>
-                  <textarea
-                    rows={4}
-                    placeholder={lang === 'ur' ? 'اپنا سوال یا مطلوبہ خوشبو کے بارے میں لکھیں...' : 'Tell us what you are looking for...'}
-                    value={formData.message}
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    className="w-full bg-[#101218] border border-[#2b3142] rounded-lg px-3 py-2.5 text-xs text-[#f4efe6] focus:outline-none focus:border-[#d4af37]"
-                  />
-                </div>
+                  <button
+                    type="submit"
+                    className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-[#d4af37] via-[#e6c352] to-[#c59b27] text-[#1a1612] font-bold text-xs sm:text-sm hover:brightness-105 transition-all shadow-md active:scale-95 cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <Send className="w-4 h-4" />
+                    <span>Send Message to Support</span>
+                  </button>
+                </form>
+              )}
 
-                <button
-                  type="submit"
-                  className="flex items-center justify-center gap-2 py-3 px-6 bg-[#d4af37] hover:bg-[#e6c352] text-[#0f1115] font-bold rounded-xl transition-all cursor-pointer shadow-md active:scale-98"
-                >
-                  <Send className="w-4 h-4" />
-                  <span>{lang === 'ur' ? 'پیغام ارسال کریں' : 'Send Message'}</span>
-                </button>
-              </form>
-            )}
-
+            </div>
           </div>
 
         </div>

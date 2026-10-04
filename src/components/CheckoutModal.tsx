@@ -2,16 +2,13 @@ import React, { useState } from 'react';
 import {
   X,
   ShieldCheck,
-  CreditCard,
   Banknote,
   Smartphone,
   CheckCircle2,
   Truck,
   Phone,
-  MessageCircle,
   Clock,
   ArrowRight,
-  ArrowLeft,
   Copy,
   Check,
   MapPin
@@ -25,7 +22,6 @@ interface CheckoutModalProps {
   cartItems: CartItem[];
   onOrderCompleted: (order: OrderRecord) => void;
   appliedCoupon: string | null;
-  lang: 'ur' | 'en';
 }
 
 export const CheckoutModal: React.FC<CheckoutModalProps> = ({
@@ -34,19 +30,20 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   cartItems,
   onOrderCompleted,
   appliedCoupon,
-  lang
 }) => {
   if (!isOpen) return null;
 
   const subtotal = cartItems.reduce((acc, item) => acc + item.unitPrice * item.quantity, 0);
   const isFreeShipping = subtotal >= 5000 || appliedCoupon === 'FREESHIP';
-  const deliveryFee = isFreeShipping ? 0 : 200;
+  const deliveryFee = isFreeShipping ? 0 : 250;
 
   let discount = 0;
-  if (appliedCoupon === 'SUDDAIS10' || appliedCoupon === 'BUY2GET1') {
+  if (appliedCoupon === 'WELCOME500' && subtotal >= 3000) {
+    discount = 500;
+  } else if (appliedCoupon === 'ROYAL1000' && subtotal >= 6000) {
+    discount = 1000;
+  } else if (appliedCoupon === 'JUMMAH10') {
     discount = Math.round(subtotal * 0.10);
-  } else if (appliedCoupon === 'JUMMAH15' || appliedCoupon === 'COMBO5') {
-    discount = Math.round(subtotal * 0.15);
   }
   const grandTotal = Math.max(0, subtotal - discount + deliveryFee);
 
@@ -54,495 +51,449 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     fullName: '',
     phone: '',
     whatsappPhone: '',
-    city: PAKISTAN_CITIES[0],
+    city: PAKISTAN_CITIES[0] || 'Karachi',
     address: '',
     notes: '',
     paymentMethod: 'cod',
     transactionId: ''
   });
 
-  const [confirmedOrder, setConfirmedOrder] = useState<OrderRecord | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [completedOrder, setCompletedOrder] = useState<OrderRecord | null>(null);
   const [copiedAccount, setCopiedAccount] = useState<string | null>(null);
-  const [formError, setFormError] = useState('');
 
-  const handleCopyAccount = (acc: string) => {
-    navigator.clipboard.writeText(acc);
-    setCopiedAccount(acc);
+  const copyToClipboard = (text: string, key: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedAccount(key);
     setTimeout(() => setCopiedAccount(null), 2500);
   };
 
-  const handlePlaceOrder = (e: React.FormEvent) => {
+  const handleSubmitOrder = (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!formData.fullName.trim() || !formData.phone.trim() || !formData.address.trim()) {
-      setFormError(lang === 'ur' ? 'براہ کرم اپنا نام، موبائل نمبر اور مکمل پتہ درج کریں۔' : 'Please provide Name, Phone and Street Address.');
+      alert('Please fill in your name, phone number and delivery address.');
       return;
     }
 
-    if ((formData.paymentMethod === 'easypaisa' || formData.paymentMethod === 'jazzcash') && !formData.transactionId?.trim()) {
-      setFormError(
-        lang === 'ur'
-          ? 'براہ کرم ایزی پیسہ یا جاز کیش ادائیگی کے بعد ٹرانزیکشن آئی ڈی (TRX ID) درج کریں۔'
-          : 'Please enter your Easypaisa/JazzCash Transaction ID (TRX ID).'
-      );
-      return;
-    }
+    setIsSubmitting(true);
 
-    const orderId = `SC-${Math.floor(100000 + Math.random() * 900000)}`;
+    const randomId = `SUD-${Math.floor(100000 + Math.random() * 900000)}`;
+    const randomTracking = `TCS-${Math.floor(10000000 + Math.random() * 90000000)}`;
 
-    const riderDetails: RiderStatus = {
+    const rider: RiderStatus = {
       status: 'confirmed',
-      statusUr: 'آرڈر موصول ہو گیا ہے اور رائیڈر تیاری میں ہے',
-      riderName: 'طارق رحمان (Tariq Rehman)',
+      statusUr: 'آرڈر تصدیق شدہ',
+      riderName: 'Muhammad Bilal',
       riderPhone: '0318-2187575',
-      vehicleNo: 'KHI-4921 (Honda 125)',
-      courier: 'Suddais Collection Express Delivery / TCS Courier',
-      trackingNo: `TRK-${Math.floor(1000000 + Math.random() * 9000000)}`,
-      estimatedDelivery: '24 سے 48 گھنٹے کے اندر',
-      currentLocation: 'سدیس کلیکشن سنٹرل ویئرہاؤس، ملیر، کراچی'
+      vehicleNo: 'KHI-7892',
+      courier: 'TCS / Leopards Express',
+      trackingNo: randomTracking,
+      estimatedDelivery: '24-48 Hours (Standard Delivery)',
+      currentLocation: `${formData.city} Hub Warehouse`
     };
 
     const newOrder: OrderRecord = {
-      id: orderId,
-      createdAt: new Date().toLocaleDateString('ur-PK', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      }),
-      customer: formData,
-      items: cartItems,
+      id: randomId,
+      createdAt: new Date().toISOString(),
+      customer: { ...formData },
+      items: [...cartItems],
       subtotal,
       discount,
       deliveryFee,
       total: grandTotal,
       couponCode: appliedCoupon || undefined,
-      rider: riderDetails
+      rider
     };
 
-    // Save order in localStorage
-    try {
-      const existing = JSON.parse(localStorage.getItem('itr_rida_orders') || '[]');
-      existing.unshift(newOrder);
-      localStorage.setItem('itr_rida_orders', JSON.stringify(existing));
-    } catch (err) {
-      console.error(err);
-    }
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setCompletedOrder(newOrder);
+      onOrderCompleted(newOrder);
 
-    setConfirmedOrder(newOrder);
-    onOrderCompleted(newOrder);
+      // Save order to history
+      try {
+        const historyStr = localStorage.getItem('suddais_order_history');
+        const history: OrderRecord[] = historyStr ? JSON.parse(historyStr) : [];
+        history.unshift(newOrder);
+        localStorage.setItem('suddais_order_history', JSON.stringify(history));
+      } catch (err) {
+        console.error(err);
+      }
+    }, 1200);
   };
 
-  const handleOpenWhatsAppOrder = () => {
-    if (!confirmedOrder) return;
-    const itemsSummary = confirmedOrder.items
-      .map((i) => `• ${i.nameUr} (${i.selectedSize}) x ${i.quantity} = PKR ${(i.unitPrice * i.quantity).toLocaleString()}`)
+  const handleWhatsAppDirectCheckout = () => {
+    const itemsList = cartItems
+      .map((item, idx) => `${idx + 1}. ${item.nameEn} (${item.selectedSize}) x${item.quantity} - Rs. ${(item.unitPrice * item.quantity).toLocaleString()}`)
       .join('\n');
 
     const msg = encodeURIComponent(
-      `🛍️ *NEW ORDER - SUDDAIS COLLECTION*\n\n` +
-      `*آرڈر نمبر:* #${confirmedOrder.id}\n` +
-      `*کسٹمر نام:* ${confirmedOrder.customer.fullName}\n` +
-      `*فون نمبر:* ${confirmedOrder.customer.phone}\n` +
-      `*شہر:* ${confirmedOrder.customer.city}\n` +
-      `*پتہ:* ${confirmedOrder.customer.address}\n\n` +
-      `*آرڈر کی تفصیل:*\n${itemsSummary}\n\n` +
-      `*ذیلی کل:* PKR ${confirmedOrder.subtotal.toLocaleString()}\n` +
-      `*ڈیلیوری چارجز:* ${confirmedOrder.deliveryFee === 0 ? 'مفت (FREE SHIPPING)' : `PKR ${confirmedOrder.deliveryFee}`}\n` +
-      `*کل قابل ادائیگی:* PKR ${confirmedOrder.total.toLocaleString()}\n` +
-      `*ادائیگی طریقہ:* ${confirmedOrder.customer.paymentMethod.toUpperCase()}` +
-      (confirmedOrder.customer.transactionId ? ` (TID: ${confirmedOrder.customer.transactionId})` : '') +
-      `\n\nبراہ کرم میرا آرڈر کنفرم کریں۔ شکریہ!`
+      `Hello Suddais Collection! I would like to place an order:\n\n*Customer Details:*\nName: ${formData.fullName || 'Not specified'}\nPhone: ${formData.phone || 'Not specified'}\nCity: ${formData.city}\nAddress: ${formData.address || 'To be shared'}\nPayment: ${formData.paymentMethod.toUpperCase()}\n\n*Order Items:*\n${itemsList}\n\n*Subtotal:* Rs. ${subtotal.toLocaleString()}\n*Discount:* Rs. ${discount.toLocaleString()}\n*Delivery Fee:* ${deliveryFee === 0 ? 'FREE' : `Rs. ${deliveryFee}`}\n*Total Payable:* Rs. ${grandTotal.toLocaleString()}\n\nPlease confirm my order. Thank you!`
     );
 
     window.open(`https://wa.me/923182187575?text=${msg}`, '_blank');
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
       <div
-        className="relative w-full max-w-2xl bg-[#12141c] border border-[#2b3142] rounded-2xl shadow-2xl text-[#f4efe6] overflow-hidden my-auto"
+        className="relative w-full max-w-2xl bg-white border border-[#e8dec8] rounded-3xl shadow-2xl text-[#1a1612] overflow-hidden my-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-5 border-b border-[#252b3a] flex items-center justify-between bg-[#161922]">
-          <div className="flex items-center gap-2.5">
-            <ShieldCheck className="w-5 h-5 text-[#d4af37]" />
-            <h3 className="font-bold text-lg font-display">
-              {confirmedOrder
-                ? (lang === 'ur' ? 'آرڈر کنفرمیشن و رائیڈر اسٹیٹس' : 'Order Confirmed & Rider Dispatch')
-                : (lang === 'ur' ? 'چیک آؤٹ اور محفوظ ترسیل' : 'Secure Checkout & Delivery')}
-            </h3>
+        <div className="p-5 sm:p-6 bg-[#faf7f2] border-b border-[#e8dec8] flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-2xl bg-[#faf2dd] text-[#996515] border border-[#d4af37]/30">
+              <ShieldCheck className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-lg sm:text-xl font-bold text-[#1a1612] font-display">
+                {completedOrder ? 'Order Confirmed!' : 'Secure Express Checkout'}
+              </h3>
+              <p className="text-xs text-[#736a5c]">
+                {completedOrder
+                  ? 'Your parcel is being packaged with utmost care.'
+                  : 'Fast dispatch across Pakistan with Cash on Delivery & Easypaisa'}
+              </p>
+            </div>
           </div>
+
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg hover:bg-[#222736] text-[#a69f91] hover:text-white transition-colors cursor-pointer"
+            className="p-2 rounded-xl text-[#736a5c] hover:text-[#1a1612] hover:bg-[#ede6d8] transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* BODY: ORDER CONFIRMED VIEW (WITH RIDER DISPATCH) */}
-        {confirmedOrder ? (
-          <div className="p-6 sm:p-8 space-y-6">
-            
-            {/* Success Box */}
-            <div className="text-center py-2 space-y-2">
-              <div className="w-16 h-16 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center mx-auto text-emerald-400">
-                <CheckCircle2 className="w-10 h-10" />
-              </div>
-              <h2 className="text-2xl font-bold font-display text-[#f4efe6]">
-                {lang === 'ur' ? 'مبارک ہو! آپ کا آرڈر کامیابی سے موصول ہو گیا ہے' : 'Order Placed Successfully!'}
-              </h2>
-              <p className="text-sm text-[#d4af37] font-mono font-bold">
-                {lang === 'ur' ? `آرڈر آئی ڈی: #${confirmedOrder.id}` : `Order ID: #${confirmedOrder.id}`}
-              </p>
-            </div>
-
-            {/* RIDER ASSIGNMENT CARD (Requested by user: "اور رائیڈ ائے") */}
-            <div className="bg-[#181d28] border border-[#2d3648] rounded-xl p-5 space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-[#293142]">
-                <div className="flex items-center gap-2">
-                  <Truck className="w-5 h-5 text-[#d4af37]" />
-                  <span className="font-bold text-sm text-[#f4efe6]">
-                    {lang === 'ur' ? 'رائیڈر کی معلومات اور لائیو ترسیل' : 'Assigned Rider & Delivery Status'}
-                  </span>
-                </div>
-                <span className="text-xs bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2.5 py-0.5 rounded-full font-semibold">
-                  {lang === 'ur' ? 'رائیڈر روانہ / الرٹ جاری' : 'Rider Dispatched'}
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                <div>
-                  <span className="text-[#8e8778] block">{lang === 'ur' ? 'رائیڈر کا نام:' : 'Rider Name:'}</span>
-                  <span className="text-[#f4efe6] font-semibold text-sm">{confirmedOrder.rider.riderName}</span>
-                </div>
-                <div>
-                  <span className="text-[#8e8778] block">{lang === 'ur' ? 'رائیڈر کا رابطہ فون:' : 'Rider Contact:'}</span>
-                  <a href={`tel:${confirmedOrder.rider.riderPhone}`} className="text-[#d4af37] font-mono font-bold flex items-center gap-1">
-                    <Phone className="w-3.5 h-3.5" />
-                    <span>{confirmedOrder.rider.riderPhone}</span>
-                  </a>
-                </div>
-                <div>
-                  <span className="text-[#8e8778] block">{lang === 'ur' ? 'موٹر سائیکل / گاڑی نمبر:' : 'Vehicle No:'}</span>
-                  <span className="text-[#f4efe6] font-mono">{confirmedOrder.rider.vehicleNo}</span>
-                </div>
-                <div>
-                  <span className="text-[#8e8778] block">{lang === 'ur' ? 'تخمینہ وقتِ ترسیل:' : 'Estimated Arrival:'}</span>
-                  <span className="text-emerald-400 font-semibold">{confirmedOrder.rider.estimatedDelivery}</span>
-                </div>
-                <div className="sm:col-span-2">
-                  <span className="text-[#8e8778] block">{lang === 'ur' ? 'موجودہ مقام:' : 'Current Status & Depot:'}</span>
-                  <span className="text-[#cdc7b9] flex items-center gap-1.5 mt-0.5">
-                    <MapPin className="w-3.5 h-3.5 text-[#d4af37] shrink-0" />
-                    <span>{confirmedOrder.rider.currentLocation}</span>
-                  </span>
+        {/* Modal Body */}
+        <div className="p-5 sm:p-6 max-h-[80vh] overflow-y-auto">
+          {completedOrder ? (
+            /* Order Placed Success Screen */
+            <div className="space-y-6">
+              <div className="p-6 rounded-2xl bg-[#f4fbf7] border border-emerald-500/30 text-center space-y-2">
+                <CheckCircle2 className="w-12 h-12 text-emerald-600 mx-auto" />
+                <h4 className="text-xl font-bold text-[#1a1612] font-display">
+                  Thank You for Your Order!
+                </h4>
+                <p className="text-xs text-[#52493d]">
+                  Your order has been recorded successfully. Our team will verify and dispatch within 24 hours.
+                </p>
+                <div className="inline-block mt-2 px-4 py-1.5 rounded-full bg-white border border-emerald-400 text-xs font-mono font-bold text-emerald-800 shadow-xs">
+                  Order ID: {completedOrder.id}
                 </div>
               </div>
 
-              <div className="p-3 bg-[#11131a] rounded-lg border border-[#232938] text-[11px] text-[#a69f91] flex items-center gap-2">
-                <Clock className="w-4 h-4 text-[#d4af37] shrink-0" />
-                <span>
-                  {lang === 'ur'
-                    ? 'ڈیلیوری سے قبل رائیڈر آپ کے فون پر کال کرے گا۔ براہ کرم اپنا فون آن رکھیں۔'
-                    : 'The courier rider will call your phone before arriving at your doorstep.'}
-                </span>
-              </div>
-            </div>
-
-            {/* Total Paid & Delivery Summary */}
-            <div className="bg-[#141620] border border-[#252b3a] rounded-xl p-4 flex items-center justify-between text-xs">
-              <div>
-                <span className="text-[#8e8778] block">{lang === 'ur' ? 'ادائیگی کا طریقہ:' : 'Payment Mode:'}</span>
-                <span className="text-[#f4efe6] font-bold uppercase">{confirmedOrder.customer.paymentMethod}</span>
-              </div>
-              <div className="text-end">
-                <span className="text-[#8e8778] block">{lang === 'ur' ? 'کل رقم:' : 'Total Amount:'}</span>
-                <span className="text-base text-[#d4af37] font-bold font-mono tabular-nums">
-                  PKR {confirmedOrder.total.toLocaleString()}
-                </span>
-              </div>
-            </div>
-
-            {/* Action Buttons: WhatsApp direct order + Done */}
-            <div className="space-y-3 pt-2">
-              <button
-                onClick={handleOpenWhatsAppOrder}
-                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-all shadow-lg cursor-pointer"
-              >
-                <MessageCircle className="w-5 h-5 fill-current" />
-                <span>{lang === 'ur' ? 'واٹس ایپ پر آرڈر کی فوری تصدیق بھیجیں' : 'Send Instant Order Confirmation to WhatsApp'}</span>
-              </button>
-
-              <button
-                onClick={onClose}
-                className="w-full py-2.5 px-4 rounded-xl bg-[#232734] hover:bg-[#2d3242] text-[#f4efe6] font-semibold text-xs transition-colors cursor-pointer"
-              >
-                {lang === 'ur' ? 'شاپنگ جاری رکھیں' : 'Continue Shopping'}
-              </button>
-            </div>
-
-          </div>
-        ) : (
-          /* CHECKOUT FORM VIEW */
-          <form onSubmit={handlePlaceOrder} className="p-6 sm:p-8 space-y-6 max-h-[82vh] overflow-y-auto">
-            
-            {/* Order Items Preview */}
-            <div className="bg-[#171b26] border border-[#262c3c] rounded-xl p-3 space-y-2">
-              <div className="text-xs font-semibold text-[#d4af37] mb-1">
-                {lang === 'ur' ? 'آرڈر کا خلاصہ (Items Summary):' : 'Order Items Summary:'}
-              </div>
-              <div className="space-y-1.5 max-h-36 overflow-y-auto pe-1">
-                {cartItems.map((item) => (
-                  <div key={item.id} className="flex justify-between text-xs text-[#cdc7b9]">
-                    <span className="truncate max-w-[240px]">
-                      {lang === 'ur' ? item.nameUr : item.nameEn} ({item.selectedSize}) x {item.quantity}
-                    </span>
-                    <span className="font-mono tabular-nums text-[#f4efe6] shrink-0">
-                      PKR {(item.unitPrice * item.quantity).toLocaleString()}
+              {/* Courier & Rider Assignment Details */}
+              <div className="p-5 rounded-2xl bg-[#faf7f2] border border-[#e8dec8] space-y-3">
+                <div className="flex items-center justify-between pb-3 border-b border-[#e8dec8]">
+                  <div className="flex items-center gap-2">
+                    <Truck className="w-4 h-4 text-[#b8860b]" />
+                    <span className="font-bold text-xs uppercase tracking-wider text-[#1a1612]">
+                      Assigned Courier & Rider
                     </span>
                   </div>
-                ))}
+                  <span className="text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">
+                    Confirmed
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 text-xs text-[#52493d]">
+                  <div>
+                    <span className="text-[#8c8273] block text-[11px]">Courier Partner:</span>
+                    <span className="font-bold text-[#1a1612]">{completedOrder.rider.courier}</span>
+                  </div>
+                  <div>
+                    <span className="text-[#8c8273] block text-[11px]">Tracking Number:</span>
+                    <span className="font-mono font-bold text-[#b8860b]">{completedOrder.rider.trackingNo}</span>
+                  </div>
+                  <div>
+                    <span className="text-[#8c8273] block text-[11px]">Rider Contact:</span>
+                    <span className="font-bold text-[#1a1612]">{completedOrder.rider.riderPhone}</span>
+                  </div>
+                  <div>
+                    <span className="text-[#8c8273] block text-[11px]">Estimated Delivery:</span>
+                    <span className="font-bold text-[#1a1612]">{completedOrder.rider.estimatedDelivery}</span>
+                  </div>
+                </div>
               </div>
-              <div className="pt-2 border-t border-[#252b3a] flex justify-between text-xs font-bold text-[#f4efe6]">
-                <span>{lang === 'ur' ? 'کل قابل ادائیگی:' : 'Total Payable:'}</span>
-                <span className="text-[#d4af37] font-mono text-sm">PKR {grandTotal.toLocaleString()}</span>
+
+              {/* Items Summary */}
+              <div className="space-y-2">
+                <h5 className="text-xs font-bold text-[#1a1612] uppercase tracking-wider">
+                  Ordered Products ({completedOrder.items.length})
+                </h5>
+                <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
+                  {completedOrder.items.map((it) => (
+                    <div
+                      key={it.id}
+                      className="flex items-center justify-between text-xs p-2.5 rounded-xl bg-[#faf7f2] border border-[#e8dec8]"
+                    >
+                      <span className="font-medium text-[#1a1612] truncate max-w-[280px]">
+                        {it.nameEn} ({it.selectedSize}) x{it.quantity}
+                      </span>
+                      <span className="font-mono font-bold text-[#b8860b]">
+                        Rs. {(it.unitPrice * it.quantity).toLocaleString()}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="pt-2 flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={handleWhatsAppDirectCheckout}
+                  className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs cursor-pointer shadow-xs"
+                >
+                  <Phone className="w-4 h-4" />
+                  <span>Send Confirmation on WhatsApp</span>
+                </button>
+
+                <button
+                  onClick={onClose}
+                  className="px-6 py-3 rounded-xl bg-[#1a1612] hover:bg-[#c59b27] text-white font-bold text-xs cursor-pointer"
+                >
+                  Continue Shopping
+                </button>
               </div>
             </div>
-
-            {/* Error Message */}
-            {formError && (
-              <div className="p-3 bg-red-900/30 border border-red-500/40 rounded-lg text-xs text-red-300">
-                {formError}
-              </div>
-            )}
-
-            {/* Customer Details Form */}
-            <div className="space-y-4">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-[#d4af37]">
-                {lang === 'ur' ? '1. ترسیل کی معلومات (Customer & Address)' : '1. Delivery Information'}
-              </h4>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs text-[#a69f91] mb-1">
-                    {lang === 'ur' ? 'آپ کا مکمل نام *' : 'Full Name *'}
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder={lang === 'ur' ? 'مثلاً محمد احمد' : 'e.g. Muhammad Ahmad'}
-                    value={formData.fullName}
-                    onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                    className="w-full bg-[#101218] border border-[#2b3142] rounded-lg px-3 py-2 text-xs text-[#f4efe6] focus:outline-none focus:border-[#d4af37]"
-                  />
+          ) : (
+            /* Checkout Form */
+            <form onSubmit={handleSubmitOrder} className="space-y-6">
+              
+              {/* Order Items Review */}
+              <div className="p-4 rounded-2xl bg-[#faf7f2] border border-[#e8dec8] space-y-2">
+                <div className="flex items-center justify-between pb-2 border-b border-[#e8dec8] text-xs font-bold text-[#1a1612]">
+                  <span>Items in this Order ({cartItems.length}):</span>
+                  <span className="font-mono text-[#b8860b]">Total: Rs. {grandTotal.toLocaleString()}</span>
                 </div>
-
-                <div>
-                  <label className="block text-xs text-[#a69f91] mb-1">
-                    {lang === 'ur' ? 'موبائل نمبر (کال اور ایس ایم ایس) *' : 'Mobile Phone (03xx-xxxxxxx) *'}
-                  </label>
-                  <input
-                    type="tel"
-                    required
-                    placeholder="03001234567"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full bg-[#101218] border border-[#2b3142] rounded-lg px-3 py-2 text-xs text-[#f4efe6] focus:outline-none focus:border-[#d4af37]"
-                  />
+                <div className="space-y-1.5 max-h-32 overflow-y-auto pr-1 text-xs text-[#52493d]">
+                  {cartItems.map((item) => (
+                    <div key={item.id} className="flex justify-between items-center">
+                      <span className="truncate max-w-[280px]">
+                        {item.nameEn} ({item.selectedSize}) x{item.quantity}
+                      </span>
+                      <span className="font-mono text-[#1a1612]">
+                        Rs. {(item.unitPrice * item.quantity).toLocaleString()}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs text-[#a69f91] mb-1">
-                    {lang === 'ur' ? 'واٹس ایپ نمبر (آرڈر اپڈیٹس کے لیے)' : 'WhatsApp Number'}
-                  </label>
-                  <input
-                    type="tel"
-                    placeholder="03001234567"
-                    value={formData.whatsappPhone}
-                    onChange={(e) => setFormData({ ...formData, whatsappPhone: e.target.value })}
-                    className="w-full bg-[#101218] border border-[#2b3142] rounded-lg px-3 py-2 text-xs text-[#f4efe6] focus:outline-none focus:border-[#d4af37]"
-                  />
+              {/* Customer Contact Details */}
+              <div className="space-y-3">
+                <h4 className="text-xs font-bold text-[#1a1612] uppercase tracking-wider flex items-center gap-1.5">
+                  <MapPin className="w-3.5 h-3.5 text-[#b8860b]" />
+                  <span>Shipping & Contact Information</span>
+                </h4>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs text-[#52493d] mb-1 font-medium">Full Name *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. Suddais Ahmed"
+                      value={formData.fullName}
+                      onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                      className="w-full bg-[#faf7f2] border border-[#dcd2be] rounded-xl px-3 py-2 text-xs text-[#1a1612] focus:outline-none focus:border-[#b8860b]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs text-[#52493d] mb-1 font-medium">Contact Phone Number *</label>
+                    <input
+                      type="tel"
+                      required
+                      placeholder="0318-2187575"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      className="w-full bg-[#faf7f2] border border-[#dcd2be] rounded-xl px-3 py-2 text-xs text-[#1a1612] focus:outline-none focus:border-[#b8860b]"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs text-[#52493d] mb-1 font-medium">Destination City *</label>
+                    <select
+                      value={formData.city}
+                      onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                      className="w-full bg-[#faf7f2] border border-[#dcd2be] rounded-xl px-3 py-2 text-xs text-[#1a1612] focus:outline-none focus:border-[#b8860b]"
+                    >
+                      {PAKISTAN_CITIES.map((c) => (
+                        <option key={c} value={c}>{c}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs text-[#52493d] mb-1 font-medium">WhatsApp Number (Optional)</label>
+                    <input
+                      type="tel"
+                      placeholder="For real-time delivery status updates"
+                      value={formData.whatsappPhone}
+                      onChange={(e) => setFormData({ ...formData, whatsappPhone: e.target.value })}
+                      className="w-full bg-[#faf7f2] border border-[#dcd2be] rounded-xl px-3 py-2 text-xs text-[#1a1612] focus:outline-none focus:border-[#b8860b]"
+                    />
+                  </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs text-[#a69f91] mb-1">
-                    {lang === 'ur' ? 'شہر منتخب کریں *' : 'Select City *'}
-                  </label>
-                  <select
-                    value={formData.city}
-                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                    className="w-full bg-[#101218] border border-[#2b3142] rounded-lg px-3 py-2 text-xs text-[#f4efe6] focus:outline-none focus:border-[#d4af37]"
+                  <label className="block text-xs text-[#52493d] mb-1 font-medium">Complete Street Address / House / Office *</label>
+                  <textarea
+                    required
+                    rows={2}
+                    placeholder="House/Apartment #, Street, Sector/Area, Landmark..."
+                    value={formData.address}
+                    onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                    className="w-full bg-[#faf7f2] border border-[#dcd2be] rounded-xl px-3 py-2 text-xs text-[#1a1612] focus:outline-none focus:border-[#b8860b]"
+                  />
+                </div>
+              </div>
+
+              {/* Payment Method Selection */}
+              <div className="space-y-3">
+                <h4 className="text-xs font-bold text-[#1a1612] uppercase tracking-wider">
+                  Payment Method
+                </h4>
+
+                <div className="grid grid-cols-3 gap-2">
+                  {/* COD */}
+                  <label
+                    className={`flex flex-col items-center justify-center p-3 rounded-2xl border text-center cursor-pointer transition-all ${
+                      formData.paymentMethod === 'cod'
+                        ? 'bg-[#faf2dd] border-[#c59b27] text-[#1a1612] shadow-xs'
+                        : 'bg-[#faf7f2] border-[#e8dec8] text-[#52493d] hover:border-[#c59b27]'
+                    }`}
                   >
-                    {PAKISTAN_CITIES.map((c, i) => (
-                      <option key={i} value={c}>{c}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs text-[#a69f91] mb-1">
-                  {lang === 'ur' ? 'مکمل گلی، محلہ، مکان / فلیٹ نمبر کا پتہ *' : 'Street Address, House/Flat No *'}
-                </label>
-                <textarea
-                  required
-                  rows={2}
-                  placeholder={lang === 'ur' ? 'مکان نمبر، گلی، قریبی مشہور جگہ یا مسجد...' : 'Complete address with landmarks...'}
-                  value={formData.address}
-                  onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                  className="w-full bg-[#101218] border border-[#2b3142] rounded-lg px-3 py-2 text-xs text-[#f4efe6] focus:outline-none focus:border-[#d4af37]"
-                />
-              </div>
-            </div>
-
-            {/* PAYMENT METHOD SELECTOR (Cash, Easypaisa, JazzCash) */}
-            <div className="space-y-4 pt-2 border-t border-[#252b3a]">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-[#d4af37]">
-                {lang === 'ur' ? '2. ادائیگی کا طریقہ (Payment Method)' : '2. Payment Method'}
-              </h4>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                {/* Cash on Delivery */}
-                <button
-                  type="button"
-                  onClick={() => setFormData({ ...formData, paymentMethod: 'cod' })}
-                  className={`p-3 rounded-xl border text-start transition-all cursor-pointer ${
-                    formData.paymentMethod === 'cod'
-                      ? 'border-[#d4af37] bg-[#d4af37]/15 text-[#f4efe6]'
-                      : 'border-[#262c3c] bg-[#141620] text-[#a69f91] hover:border-[#384157]'
-                  }`}
-                >
-                  <Banknote className="w-5 h-5 text-emerald-400 mb-2" />
-                  <div className="text-xs font-bold">{lang === 'ur' ? 'کیش آن ڈیلیوری' : 'Cash on Delivery'}</div>
-                  <div className="text-[10px] text-[#8e8778] mt-0.5">{lang === 'ur' ? 'وصولی کے وقت نقد' : 'Pay when you receive'}</div>
-                </button>
-
-                {/* Easypaisa */}
-                <button
-                  type="button"
-                  onClick={() => setFormData({ ...formData, paymentMethod: 'easypaisa' })}
-                  className={`p-3 rounded-xl border text-start transition-all cursor-pointer ${
-                    formData.paymentMethod === 'easypaisa'
-                      ? 'border-emerald-400 bg-emerald-500/15 text-[#f4efe6]'
-                      : 'border-[#262c3c] bg-[#141620] text-[#a69f91] hover:border-[#384157]'
-                  }`}
-                >
-                  <Smartphone className="w-5 h-5 text-emerald-400 mb-2" />
-                  <div className="text-xs font-bold">{lang === 'ur' ? 'ایزی پیسہ (Easypaisa)' : 'Easypaisa'}</div>
-                  <div className="text-[10px] text-[#8e8778] mt-0.5">{lang === 'ur' ? 'اکاؤنٹ ٹرانسفر' : 'Instant mobile transfer'}</div>
-                </button>
-
-                {/* JazzCash */}
-                <button
-                  type="button"
-                  onClick={() => setFormData({ ...formData, paymentMethod: 'jazzcash' })}
-                  className={`p-3 rounded-xl border text-start transition-all cursor-pointer ${
-                    formData.paymentMethod === 'jazzcash'
-                      ? 'border-[#d4af37] bg-[#d4af37]/15 text-[#f4efe6]'
-                      : 'border-[#262c3c] bg-[#141620] text-[#a69f91] hover:border-[#384157]'
-                  }`}
-                >
-                  <CreditCard className="w-5 h-5 text-[#d4af37] mb-2" />
-                  <div className="text-xs font-bold">{lang === 'ur' ? 'جاز کیش (JazzCash)' : 'JazzCash'}</div>
-                  <div className="text-[10px] text-[#8e8778] mt-0.5">{lang === 'ur' ? 'اکاؤنٹ ٹرانسفر' : 'Instant mobile transfer'}</div>
-                </button>
-              </div>
-
-              {/* Easypaisa Details Box */}
-              {formData.paymentMethod === 'easypaisa' && (
-                <div className="p-4 rounded-xl bg-emerald-950/20 border border-emerald-500/30 space-y-3 text-xs">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="text-emerald-400 font-bold">{lang === 'ur' ? 'ایزی پیسہ اکاؤنٹ نمبر:' : 'Easypaisa Account:'}</div>
-                      <div className="font-mono text-sm font-bold text-white tracking-wider">0318-2187575</div>
-                      <div className="text-[11px] text-[#a69f91]">{lang === 'ur' ? 'عنوان: سدیس کلیکشن / سدیس احمد' : 'Title: Suddais Collection / Suddais Ahmed'}</div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => handleCopyAccount('03182187575')}
-                      className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-emerald-800/40 text-emerald-300 text-xs font-medium cursor-pointer"
-                    >
-                      {copiedAccount === '03182187575' ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                      <span>{copiedAccount === '03182187575' ? 'کاپی ہو گیا' : 'کاپی نمبر'}</span>
-                    </button>
-                  </div>
-                  <div>
-                    <label className="block text-[#a69f91] mb-1">
-                      {lang === 'ur' ? 'رقم بھیجنے کے بعد ٹرانزیکشن آئی ڈی (TRX ID) لکھیں *:' : 'Enter Easypaisa Transaction ID (TRX ID) *:'}
-                    </label>
                     <input
-                      type="text"
-                      required
-                      placeholder="e.g. 1982736452"
-                      value={formData.transactionId}
-                      onChange={(e) => setFormData({ ...formData, transactionId: e.target.value })}
-                      className="w-full bg-[#101218] border border-emerald-500/40 rounded-lg px-3 py-2 text-xs text-white focus:outline-none"
+                      type="radio"
+                      name="paymentMethod"
+                      value="cod"
+                      checked={formData.paymentMethod === 'cod'}
+                      onChange={() => setFormData({ ...formData, paymentMethod: 'cod' })}
+                      className="sr-only"
                     />
-                  </div>
-                </div>
-              )}
+                    <Banknote className="w-5 h-5 text-[#b8860b] mb-1" />
+                    <span className="font-bold text-xs">Cash on Delivery</span>
+                    <span className="text-[10px] text-[#736a5c]">Pay on Arrival</span>
+                  </label>
 
-              {/* JazzCash Details Box */}
-              {formData.paymentMethod === 'jazzcash' && (
-                <div className="p-4 rounded-xl bg-[#231a10] border border-[#d4af37]/40 space-y-3 text-xs">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="text-[#d4af37] font-bold">{lang === 'ur' ? 'جاز کیش اکاؤنٹ نمبر:' : 'JazzCash Account:'}</div>
-                      <div className="font-mono text-sm font-bold text-white tracking-wider">0318-2187575</div>
-                      <div className="text-[11px] text-[#a69f91]">{lang === 'ur' ? 'عنوان: سدیس کلیکشن / سدیس احمد' : 'Title: Suddais Collection / Suddais Ahmed'}</div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => handleCopyAccount('03182187575')}
-                      className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#3d2f16] text-[#d4af37] text-xs font-medium cursor-pointer"
-                    >
-                      {copiedAccount === '03182187575' ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                      <span>{copiedAccount === '03182187575' ? 'کاپی ہو گیا' : 'کاپی نمبر'}</span>
-                    </button>
-                  </div>
-                  <div>
-                    <label className="block text-[#a69f91] mb-1">
-                      {lang === 'ur' ? 'رقم بھیجنے کے بعد ٹرانزیکشن آئی ڈی (TID) لکھیں *:' : 'Enter JazzCash Transaction ID (TID) *:'}
-                    </label>
+                  {/* Easypaisa */}
+                  <label
+                    className={`flex flex-col items-center justify-center p-3 rounded-2xl border text-center cursor-pointer transition-all ${
+                      formData.paymentMethod === 'easypaisa'
+                        ? 'bg-[#faf2dd] border-[#c59b27] text-[#1a1612] shadow-xs'
+                        : 'bg-[#faf7f2] border-[#e8dec8] text-[#52493d] hover:border-[#c59b27]'
+                    }`}
+                  >
                     <input
-                      type="text"
-                      required
-                      placeholder="e.g. 0982736412"
-                      value={formData.transactionId}
-                      onChange={(e) => setFormData({ ...formData, transactionId: e.target.value })}
-                      className="w-full bg-[#101218] border border-[#d4af37]/40 rounded-lg px-3 py-2 text-xs text-white focus:outline-none"
+                      type="radio"
+                      name="paymentMethod"
+                      value="easypaisa"
+                      checked={formData.paymentMethod === 'easypaisa'}
+                      onChange={() => setFormData({ ...formData, paymentMethod: 'easypaisa' })}
+                      className="sr-only"
                     />
-                  </div>
+                    <Smartphone className="w-5 h-5 text-emerald-600 mb-1" />
+                    <span className="font-bold text-xs">Easypaisa</span>
+                    <span className="text-[10px] text-[#736a5c]">Mobile Wallet</span>
+                  </label>
+
+                  {/* JazzCash */}
+                  <label
+                    className={`flex flex-col items-center justify-center p-3 rounded-2xl border text-center cursor-pointer transition-all ${
+                      formData.paymentMethod === 'jazzcash'
+                        ? 'bg-[#faf2dd] border-[#c59b27] text-[#1a1612] shadow-xs'
+                        : 'bg-[#faf7f2] border-[#e8dec8] text-[#52493d] hover:border-[#c59b27]'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="jazzcash"
+                      checked={formData.paymentMethod === 'jazzcash'}
+                      onChange={() => setFormData({ ...formData, paymentMethod: 'jazzcash' })}
+                      className="sr-only"
+                    />
+                    <Smartphone className="w-5 h-5 text-red-600 mb-1" />
+                    <span className="font-bold text-xs">JazzCash</span>
+                    <span className="text-[10px] text-[#736a5c]">Instant Transfer</span>
+                  </label>
                 </div>
-              )}
 
-            </div>
+                {/* Easypaisa / JazzCash Account Details */}
+                {(formData.paymentMethod === 'easypaisa' || formData.paymentMethod === 'jazzcash') && (
+                  <div className="p-4 rounded-2xl bg-[#faf2dd] border border-[#d4af37]/40 space-y-3">
+                    <div className="flex items-center justify-between text-xs">
+                      <div>
+                        <span className="text-[11px] text-[#8c7853] block">Account Title:</span>
+                        <strong className="text-sm text-[#1a1612]">Suddais Ahmed</strong>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-[11px] text-[#8c7853] block">Account Number:</span>
+                        <div className="flex items-center gap-1.5">
+                          <strong className="font-mono text-sm text-[#1a1612]">0318-2187575</strong>
+                          <button
+                            type="button"
+                            onClick={() => copyToClipboard('03182187575', 'acc')}
+                            className="p-1 rounded bg-white text-[#996515] border border-[#d4af37]/40 text-[10px] hover:bg-[#faf6ee] cursor-pointer"
+                          >
+                            {copiedAccount === 'acc' ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
 
-            {/* Submit Button */}
-            <div className="pt-4 border-t border-[#252b3a] space-y-3">
-              <button
-                type="submit"
-                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#d4af37] hover:bg-[#e6c352] text-[#0f1115] font-bold shadow-xl transition-all cursor-pointer active:scale-98"
-              >
-                <span>{lang === 'ur' ? 'آرڈر مکمل کریں اور رائیڈر بک کریں' : 'Confirm Order & Book Rider'}</span>
-                {lang === 'ur' ? <ArrowLeft className="w-4 h-4" /> : <ArrowRight className="w-4 h-4" />}
-              </button>
+                    <div>
+                      <label className="block text-[11px] text-[#52493d] mb-1 font-medium">
+                        Transaction ID (TID / Reference) after sending:
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Enter TID (e.g. 10482910482)"
+                        value={formData.transactionId || ''}
+                        onChange={(e) => setFormData({ ...formData, transactionId: e.target.value })}
+                        className="w-full bg-white border border-[#dcd2be] rounded-xl px-3 py-1.5 text-xs text-[#1a1612] font-mono focus:outline-none focus:border-[#b8860b]"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
 
-              <p className="text-center text-[11px] text-[#7d776c]">
-                {lang === 'ur'
-                  ? 'آرڈر کنفرم کرنے پر آپ کو واٹس ایپ اور ایس ایم ایس پر رائیڈر کی لائیو ٹریکنگ مل جائے گی۔'
-                  : 'You will receive immediate SMS & WhatsApp updates along with live courier rider details.'}
-              </p>
-            </div>
+              {/* Submit Buttons */}
+              <div className="pt-2 space-y-2">
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full flex items-center justify-center gap-2 py-4 rounded-xl bg-gradient-to-r from-[#d4af37] via-[#e6c352] to-[#c59b27] text-[#1a1612] font-bold text-sm hover:brightness-105 transition-all shadow-md active:scale-95 cursor-pointer disabled:opacity-50"
+                >
+                  {isSubmitting ? (
+                    <span>Confirming Order...</span>
+                  ) : (
+                    <>
+                      <span>Confirm Order (Rs. {grandTotal.toLocaleString()})</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
 
-          </form>
-        )}
+                {/* Instant WhatsApp Order Option */}
+                <button
+                  type="button"
+                  onClick={handleWhatsAppDirectCheckout}
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs transition-all cursor-pointer shadow-xs"
+                >
+                  <Phone className="w-4 h-4" />
+                  <span>Send Order Directly on WhatsApp (+92 318 2187575)</span>
+                </button>
+              </div>
+
+            </form>
+          )}
+        </div>
 
       </div>
     </div>

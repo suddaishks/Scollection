@@ -1,53 +1,51 @@
 import React from 'react';
-import { ShieldCheck, Truck, RotateCcw, Droplet, Phone, MessageCircle } from 'lucide-react';
+import { ShieldCheck, Truck, RotateCcw, Droplet, Phone, MessageCircle, Sparkles } from 'lucide-react';
 import { ProductCategory } from '../types';
 
 interface FooterProps {
   onSelectCategory: (cat: ProductCategory) => void;
   onOpenTracker: () => void;
-  lang: 'ur' | 'en';
 }
 
 export const Footer: React.FC<FooterProps> = ({
   onSelectCategory,
   onOpenTracker,
-  lang
 }) => {
   return (
-    <footer className="bg-[#0b0c10] border-t border-[#1d222e] text-[#a69f91] text-xs">
+    <footer className="bg-[#1a1612] text-[#dcd7cb] text-xs border-t border-[#c59b27]/30">
       
       {/* 4 Guarantees Strip */}
-      <div className="border-b border-[#1d222e] py-8">
+      <div className="border-b border-[#2d251d] py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-6">
           <div className="flex items-center gap-3">
             <ShieldCheck className="w-6 h-6 text-[#d4af37] shrink-0" />
             <div>
-              <div className="text-sm font-bold text-[#f4efe6]">{lang === 'ur' ? '100٪ اصلی اجزاء' : '100% Authentic'}</div>
-              <div className="text-[11px] text-[#7d776c]">{lang === 'ur' ? 'اصلی کمبوڈین و اسامی عود' : 'Pure natural notes'}</div>
+              <div className="text-sm font-bold text-white">100% Authentic Quality</div>
+              <div className="text-[11px] text-[#998f80]">Original concentrated perfume oils</div>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
             <Truck className="w-6 h-6 text-emerald-400 shrink-0" />
             <div>
-              <div className="text-sm font-bold text-[#f4efe6]">{lang === 'ur' ? 'تیز ترین ترسیل' : 'Fast Courier & Rider'}</div>
-              <div className="text-[11px] text-[#7d776c]">{lang === 'ur' ? 'پورے پاکستان میں ہوم ڈیلیوری' : 'Nationwide 2-3 Days'}</div>
+              <div className="text-sm font-bold text-white">Express Nationwide Dispatch</div>
+              <div className="text-[11px] text-[#998f80]">Free on orders over Rs. 5,000</div>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
             <Droplet className="w-6 h-6 text-[#d4af37] shrink-0" />
             <div>
-              <div className="text-sm font-bold text-[#f4efe6]">{lang === 'ur' ? 'الکحل سے پاک سنّت عطر' : 'Halal Sunnah Attar'}</div>
-              <div className="text-[11px] text-[#7d776c]">{lang === 'ur' ? 'خالص اور نماز کے لیے موزوں' : 'Prayer & Jummah Safe'}</div>
+              <div className="text-sm font-bold text-white">Zero Alcohol Attars</div>
+              <div className="text-[11px] text-[#998f80]">Pure, concentrated and prayer safe</div>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
             <RotateCcw className="w-6 h-6 text-[#d4af37] shrink-0" />
             <div>
-              <div className="text-sm font-bold text-[#f4efe6]">{lang === 'ur' ? '7 دن میں واپسی ضمانت' : '7 Days Returns'}</div>
-              <div className="text-[11px] text-[#7d776c]">{lang === 'ur' ? 'تسلی بخش خریداری کی گارنٹی' : 'Easy Exchange'}</div>
+              <div className="text-sm font-bold text-white">7-Day Easy Exchange</div>
+              <div className="text-[11px] text-[#998f80]">Complete customer satisfaction</div>
             </div>
           </div>
         </div>
@@ -58,34 +56,34 @@ export const Footer: React.FC<FooterProps> = ({
         
         {/* Brand Col */}
         <div className="space-y-3">
-          <div className="text-xl sm:text-2xl font-bold text-[#f4efe6] font-display">
-            {lang === 'ur' ? 'سدیس کلیکشن' : 'SUDDAIS COLLECTION'}
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#d4af37] to-[#996515] flex items-center justify-center text-white font-bold font-serif">
+              S
+            </div>
+            <h4 className="text-base font-bold text-white font-display">
+              SUDDAIS COLLECTION
+            </h4>
           </div>
-          <p className="text-xs text-[#8e8778] leading-relaxed">
-            {lang === 'ur'
-              ? 'سدیس کلیکشن - پریمیم الکحل سے پاک عطر، دیرپا اسپرے پرفیومز، اور اعلیٰ معیار کی اسلامی نماز ٹوپیاں (Kufi)۔'
-              : 'Welcome to Suddais Collection! Premium non-alcoholic Attars, luxury spray Perfumes, and high-quality Islamic Caps (Kufi).'}
+          <p className="text-xs text-[#998f80] leading-relaxed">
+            Pakistan’s premier destination for high-concentration spray perfumes (Imperial Valley, 9PM Rebel, Khamrah, Asad), pure artisan attars, and handcrafted Islamic prayer caps.
           </p>
-          <div className="pt-2 flex items-center gap-2">
-            <span className="text-[11px] text-[#7d776c]">{lang === 'ur' ? 'ادائیگی کے ذرائع:' : 'Payments:'}</span>
-            <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-[#181b24] text-[#dcd7cb] border border-[#2b3040]">کیش</span>
-            <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-[#181b24] text-emerald-400 border border-[#2b3040]">ایزی پیسہ</span>
-            <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-[#181b24] text-[#d4af37] border border-[#2b3040]">جاز کیش</span>
+          <div className="pt-2 text-[11px] text-[#8c7853]">
+            Store: Malir, Karachi, Pakistan.
           </div>
         </div>
 
-        {/* Quick Collections */}
-        <div className="space-y-3">
-          <h4 className="text-sm font-bold text-[#f4efe6] font-display">
-            {lang === 'ur' ? 'کلیکشنز' : 'Collections'}
-          </h4>
-          <ul className="space-y-2 text-xs">
+        {/* Categories */}
+        <div className="space-y-2.5">
+          <h5 className="font-bold text-sm text-[#f7e7ce] uppercase tracking-wider mb-3">
+            Product Categories
+          </h5>
+          <ul className="space-y-2">
             <li>
               <button
                 onClick={() => onSelectCategory('perfume')}
                 className="hover:text-[#d4af37] transition-colors cursor-pointer"
               >
-                {lang === 'ur' ? 'فرانسیسی و مشرقی پرفیومز' : 'French & Oriental Perfumes'}
+                Designer Perfumes (15ml, 30ml, 50ml)
               </button>
             </li>
             <li>
@@ -93,7 +91,7 @@ export const Footer: React.FC<FooterProps> = ({
                 onClick={() => onSelectCategory('attar')}
                 className="hover:text-[#d4af37] transition-colors cursor-pointer"
               >
-                {lang === 'ur' ? 'خالص دہن العود و کستوری عطر' : 'Pure Dehn Al Oud & Musk Attar'}
+                Pure Non-Alcoholic Attar (3ml, 6ml, 12ml)
               </button>
             </li>
             <li>
@@ -101,7 +99,7 @@ export const Footer: React.FC<FooterProps> = ({
                 onClick={() => onSelectCategory('topi')}
                 className="hover:text-[#d4af37] transition-colors cursor-pointer"
               >
-                {lang === 'ur' ? 'شاہی عمانی و ترک فیز ٹوپیاں' : 'Omani Embroidered & Fez Caps'}
+                Artisan Prayer Caps (Omani, Turkish, Afghan)
               </button>
             </li>
             <li>
@@ -109,31 +107,41 @@ export const Footer: React.FC<FooterProps> = ({
                 onClick={() => onSelectCategory('deals')}
                 className="hover:text-[#d4af37] transition-colors cursor-pointer"
               >
-                {lang === 'ur' ? 'خصوصی آفرز و گفٹ بنڈلز' : 'Special Gift Presentation Sets'}
+                Special Gift Bundles & Vouchers
               </button>
             </li>
           </ul>
         </div>
 
-        {/* Customer Care */}
-        <div className="space-y-3">
-          <h4 className="text-sm font-bold text-[#f4efe6] font-display">
-            {lang === 'ur' ? 'کسٹمر سپورٹ' : 'Customer Service'}
-          </h4>
-          <ul className="space-y-2 text-xs">
+        {/* Quick Help & Tracking */}
+        <div className="space-y-2.5">
+          <h5 className="font-bold text-sm text-[#f7e7ce] uppercase tracking-wider mb-3">
+            Customer Care
+          </h5>
+          <ul className="space-y-2">
             <li>
-              <button onClick={onOpenTracker} className="hover:text-[#d4af37] transition-colors cursor-pointer">
-                {lang === 'ur' ? 'آرڈر و رائیڈر ٹریکنگ' : 'Live Order & Rider Status'}
+              <button
+                onClick={onOpenTracker}
+                className="hover:text-[#d4af37] transition-colors cursor-pointer flex items-center gap-1.5"
+              >
+                <Truck className="w-3.5 h-3.5 text-[#d4af37]" />
+                <span>Track My Parcel & Rider</span>
               </button>
             </li>
             <li>
-              <a href="#contact-section" className="hover:text-[#d4af37] transition-colors">
-                {lang === 'ur' ? 'ہم سے رابطہ کریں' : 'Contact Support'}
+              <a
+                href="#about-section"
+                className="hover:text-[#d4af37] transition-colors"
+              >
+                About Our Heritage & Quality
               </a>
             </li>
             <li>
-              <a href="#about-section" className="hover:text-[#d4af37] transition-colors">
-                {lang === 'ur' ? 'ہمارے بارے میں' : 'About Suddais Collection'}
+              <a
+                href="#contact-section"
+                className="hover:text-[#d4af37] transition-colors"
+              >
+                Store Location & Inquiries
               </a>
             </li>
             <li>
@@ -141,39 +149,47 @@ export const Footer: React.FC<FooterProps> = ({
                 href="https://wa.me/923182187575"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-emerald-400 hover:underline flex items-center gap-1"
+                className="hover:text-[#d4af37] transition-colors text-emerald-400 font-bold"
               >
-                <MessageCircle className="w-3 h-3" />
-                <span>{lang === 'ur' ? 'واٹس ایپ: 0318-2187575' : 'WhatsApp: 0318-2187575'}</span>
+                Direct WhatsApp Helpline
               </a>
             </li>
           </ul>
         </div>
 
-        {/* Contact info */}
+        {/* WhatsApp & Payment */}
         <div className="space-y-3">
-          <h4 className="text-sm font-bold text-[#f4efe6] font-display">
-            {lang === 'ur' ? 'پتہ و اوقاتِ کار' : 'Store Address & Timings'}
-          </h4>
-          <p className="text-xs text-[#8e8778] leading-relaxed">
-            {lang === 'ur'
-              ? 'شیرپاؤ ایف 2 اسٹریٹ، لیبر کالونی ڈبل کیبن اسٹریٹ، نزد ایم اے ڈیکوریشن، ملیر، کراچی، پاکستان۔'
-              : 'Sherpao F2 Street, labour colony double Kebin Street, Near M A Decoration, Malir, Karachi, Pakistan.'}
+          <h5 className="font-bold text-sm text-[#f7e7ce] uppercase tracking-wider mb-3">
+            Instant Orders & Payments
+          </h5>
+          <p className="text-xs text-[#998f80]">
+            We accept Cash on Delivery (COD), Easypaisa, and JazzCash across all Pakistan cities.
           </p>
-          <div className="text-xs text-[#f4efe6] font-mono tabular-nums">
-            +92 318 2187575
-          </div>
-          <p className="text-[11px] text-[#7d776c]">
-            {lang === 'ur' ? 'روزانہ صبح 10:00 بجے تا رات 11:00 بجے' : 'Daily 10:00 AM - 11:00 PM'}
-          </p>
+
+          <a
+            href="https://wa.me/923182187575?text=Hello!%20I%20want%20to%20place%20an%20order."
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs transition-colors shadow-xs"
+          >
+            <MessageCircle className="w-4 h-4" />
+            <span>WhatsApp: 0318-2187575</span>
+          </a>
         </div>
 
       </div>
 
-      {/* Copyright */}
-      <div className="border-t border-[#1a1e28] py-6 text-center text-[#6e685d] text-[11px]">
-        <div>
-          © {new Date().getFullYear()} SUDDAIS COLLECTION. {lang === 'ur' ? 'جملہ حقوق محفوظ ہیں۔' : 'All rights reserved.'}
+      {/* Copyright Strip */}
+      <div className="border-t border-[#262019] py-5 bg-[#120f0c] text-center text-[#807567] text-[11px]">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+          <span>© {new Date().getFullYear()} SUDDAIS COLLECTION. All Rights Reserved. White & Gold Luxury Edition.</span>
+          <div className="flex items-center gap-3">
+            <span>Cash on Delivery</span>
+            <span>•</span>
+            <span>Easypaisa</span>
+            <span>•</span>
+            <span>JazzCash</span>
+          </div>
         </div>
       </div>
 
