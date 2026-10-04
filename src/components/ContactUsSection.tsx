@@ -25,9 +25,9 @@ export const ContactUsSection: React.FC<ContactUsSectionProps> = ({ lang }) => {
 
   const handleOpenDirectWhatsApp = () => {
     const text = encodeURIComponent(
-      'السلام علیکم! میں عطر و ردا کے پرفیومز، عطر یا ٹوپیوں کے بارے میں معلومات لینا چاہتا ہوں۔'
+      'السلام علیکم! میں سدیس کلیکشن کے پرفیومز، عطر یا ٹوپیوں کے بارے میں معلومات اور آرڈر دینا چاہتا ہوں۔'
     );
-    window.open(`https://wa.me/923001234567?text=${text}`, '_blank');
+    window.open(`https://wa.me/923182187575?text=${text}`, '_blank');
   };
 
   return (
@@ -72,7 +72,7 @@ export const ContactUsSection: React.FC<ContactUsSectionProps> = ({ lang }) => {
               </div>
 
               <div className="font-mono text-base font-bold text-white tabular-nums pt-1">
-                +92 300 1234567
+                +92 318 2187575
               </div>
 
               <button
@@ -89,15 +89,12 @@ export const ContactUsSection: React.FC<ContactUsSectionProps> = ({ lang }) => {
                 <MapPin className="w-4 h-4 text-[#d4af37] shrink-0 mt-0.5" />
                 <div>
                   <h4 className="font-bold text-[#f4efe6] text-sm mb-0.5">
-                    {lang === 'ur' ? 'مرکزی شوروم و ویئرہاؤس:' : 'Flagship Store & Warehouse:'}
+                    {lang === 'ur' ? 'مرکزی شوروم و پتہ:' : 'Flagship Store & Address:'}
                   </h4>
-                  <p className="text-[#a69f91]">
+                  <p className="text-[#a69f91] leading-relaxed">
                     {lang === 'ur'
-                      ? 'دکان نمبر 14، طارق روڈ شاپنگ سینٹر، کراچی، پاکستان'
-                      : 'Shop #14, Tariq Road Commercial Center, Karachi, Pakistan'}
-                  </p>
-                  <p className="text-[#7d776c] mt-1">
-                    {lang === 'ur' ? 'شاخ 2: راجہ بازار، راولپنڈی' : 'Branch 2: Raja Bazaar, Rawalpindi'}
+                      ? 'شیرپاؤ ایف 2 اسٹریٹ، لیبر کالونی ڈبل کیبن اسٹریٹ، نزد ایم اے ڈیکوریشن، ملیر، کراچی، پاکستان۔'
+                      : 'Sherpao F2 Street, labour colony double Kebin Street, Near M A Decoration, Malir, Karachi, Pakistan.'}
                   </p>
                 </div>
               </div>
@@ -106,10 +103,10 @@ export const ContactUsSection: React.FC<ContactUsSectionProps> = ({ lang }) => {
                 <Clock className="w-4 h-4 text-[#d4af37] shrink-0 mt-0.5" />
                 <div>
                   <h4 className="font-bold text-[#f4efe6] text-sm mb-0.5">
-                    {lang === 'ur' ? 'اوقاتِ کار:' : 'Working Hours:'}
+                    {lang === 'ur' ? 'اوقاتِ کار:' : 'Shop Timings:'}
                   </h4>
                   <p className="text-[#a69f91]">
-                    {lang === 'ur' ? 'پیر تا اتوار: صبح 11:00 بجے تا رات 11:30 بجے' : 'Mon - Sun: 11:00 AM - 11:30 PM (PST)'}
+                    {lang === 'ur' ? 'روزانہ صبح 10:00 بجے تا رات 11:00 بجے' : 'Daily from 10:00 AM to 11:00 PM'}
                   </p>
                 </div>
               </div>

@@ -39,14 +39,14 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   if (!isOpen) return null;
 
   const subtotal = cartItems.reduce((acc, item) => acc + item.unitPrice * item.quantity, 0);
-  const isFreeShipping = subtotal >= 3000 || appliedCoupon === 'FREESHIP';
-  const deliveryFee = isFreeShipping ? 0 : 250;
+  const isFreeShipping = subtotal >= 5000 || appliedCoupon === 'FREESHIP';
+  const deliveryFee = isFreeShipping ? 0 : 200;
 
   let discount = 0;
-  if (appliedCoupon === 'JUMMAH15') {
-    discount = Math.round(subtotal * 0.15);
-  } else if (appliedCoupon === 'BUY2GET1') {
+  if (appliedCoupon === 'SUDDAIS10' || appliedCoupon === 'BUY2GET1') {
     discount = Math.round(subtotal * 0.10);
+  } else if (appliedCoupon === 'JUMMAH15' || appliedCoupon === 'COMBO5') {
+    discount = Math.round(subtotal * 0.15);
   }
   const grandTotal = Math.max(0, subtotal - discount + deliveryFee);
 
@@ -88,18 +88,18 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       return;
     }
 
-    const orderId = `IR-${Math.floor(100000 + Math.random() * 900000)}`;
+    const orderId = `SC-${Math.floor(100000 + Math.random() * 900000)}`;
 
     const riderDetails: RiderStatus = {
       status: 'confirmed',
       statusUr: 'آرڈر موصول ہو گیا ہے اور رائیڈر تیاری میں ہے',
       riderName: 'طارق رحمان (Tariq Rehman)',
-      riderPhone: '0321-9876543',
+      riderPhone: '0318-2187575',
       vehicleNo: 'KHI-4921 (Honda 125)',
-      courier: 'Itr & Rida Express Delivery / TCS Courier',
+      courier: 'Suddais Collection Express Delivery / TCS Courier',
       trackingNo: `TRK-${Math.floor(1000000 + Math.random() * 9000000)}`,
       estimatedDelivery: '24 سے 48 گھنٹے کے اندر',
-      currentLocation: 'سنٹرل ڈسپیچ ویئرہاؤس، طارق روڈ، کراچی'
+      currentLocation: 'سدیس کلیکشن سنٹرل ویئرہاؤس، ملیر، کراچی'
     };
 
     const newOrder: OrderRecord = {
@@ -141,20 +141,22 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       .join('\n');
 
     const msg = encodeURIComponent(
-      `*السلام علیکم! عطر و ردا نیا آرڈر*\n\n` +
+      `🛍️ *NEW ORDER - SUDDAIS COLLECTION*\n\n` +
       `*آرڈر نمبر:* #${confirmedOrder.id}\n` +
       `*کسٹمر نام:* ${confirmedOrder.customer.fullName}\n` +
       `*فون نمبر:* ${confirmedOrder.customer.phone}\n` +
       `*شہر:* ${confirmedOrder.customer.city}\n` +
       `*پتہ:* ${confirmedOrder.customer.address}\n\n` +
       `*آرڈر کی تفصیل:*\n${itemsSummary}\n\n` +
+      `*ذیلی کل:* PKR ${confirmedOrder.subtotal.toLocaleString()}\n` +
+      `*ڈیلیوری چارجز:* ${confirmedOrder.deliveryFee === 0 ? 'مفت (FREE SHIPPING)' : `PKR ${confirmedOrder.deliveryFee}`}\n` +
       `*کل قابل ادائیگی:* PKR ${confirmedOrder.total.toLocaleString()}\n` +
       `*ادائیگی طریقہ:* ${confirmedOrder.customer.paymentMethod.toUpperCase()}` +
       (confirmedOrder.customer.transactionId ? ` (TID: ${confirmedOrder.customer.transactionId})` : '') +
-      `\n\nبراہ کرم تصدیق کریں اور رائیڈر کو روانہ فرمائیں۔ جزاک اللہ!`
+      `\n\nبراہ کرم میرا آرڈر کنفرم کریں۔ شکریہ!`
     );
 
-    window.open(`https://wa.me/923001234567?text=${msg}`, '_blank');
+    window.open(`https://wa.me/923182187575?text=${msg}`, '_blank');
   };
 
   return (
@@ -458,16 +460,16 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   <div className="flex items-center justify-between">
                     <div>
                       <div className="text-emerald-400 font-bold">{lang === 'ur' ? 'ایزی پیسہ اکاؤنٹ نمبر:' : 'Easypaisa Account:'}</div>
-                      <div className="font-mono text-sm font-bold text-white tracking-wider">0312-9876543</div>
-                      <div className="text-[11px] text-[#a69f91]">{lang === 'ur' ? 'عنوان: محمد احمد (عطر و ردا)' : 'Title: Muhammad Ahmad'}</div>
+                      <div className="font-mono text-sm font-bold text-white tracking-wider">0318-2187575</div>
+                      <div className="text-[11px] text-[#a69f91]">{lang === 'ur' ? 'عنوان: سدیس کلیکشن / سدیس احمد' : 'Title: Suddais Collection / Suddais Ahmed'}</div>
                     </div>
                     <button
                       type="button"
-                      onClick={() => handleCopyAccount('03129876543')}
+                      onClick={() => handleCopyAccount('03182187575')}
                       className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-emerald-800/40 text-emerald-300 text-xs font-medium cursor-pointer"
                     >
-                      {copiedAccount === '03129876543' ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                      <span>{copiedAccount === '03129876543' ? 'کاپی ہو گیا' : 'کاپی نمبر'}</span>
+                      {copiedAccount === '03182187575' ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                      <span>{copiedAccount === '03182187575' ? 'کاپی ہو گیا' : 'کاپی نمبر'}</span>
                     </button>
                   </div>
                   <div>
@@ -492,16 +494,16 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   <div className="flex items-center justify-between">
                     <div>
                       <div className="text-[#d4af37] font-bold">{lang === 'ur' ? 'جاز کیش اکاؤنٹ نمبر:' : 'JazzCash Account:'}</div>
-                      <div className="font-mono text-sm font-bold text-white tracking-wider">0300-1234567</div>
-                      <div className="text-[11px] text-[#a69f91]">{lang === 'ur' ? 'عنوان: محمد احمد (عطر و ردا)' : 'Title: Muhammad Ahmad'}</div>
+                      <div className="font-mono text-sm font-bold text-white tracking-wider">0318-2187575</div>
+                      <div className="text-[11px] text-[#a69f91]">{lang === 'ur' ? 'عنوان: سدیس کلیکشن / سدیس احمد' : 'Title: Suddais Collection / Suddais Ahmed'}</div>
                     </div>
                     <button
                       type="button"
-                      onClick={() => handleCopyAccount('03001234567')}
+                      onClick={() => handleCopyAccount('03182187575')}
                       className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#3d2f16] text-[#d4af37] text-xs font-medium cursor-pointer"
                     >
-                      {copiedAccount === '03001234567' ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                      <span>{copiedAccount === '03001234567' ? 'کاپی ہو گیا' : 'کاپی نمبر'}</span>
+                      {copiedAccount === '03182187575' ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                      <span>{copiedAccount === '03182187575' ? 'کاپی ہو گیا' : 'کاپی نمبر'}</span>
                     </button>
                   </div>
                   <div>

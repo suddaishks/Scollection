@@ -1,6 +1,43 @@
 import { Product } from '../types';
+import { EMBD_TOPI_IMG, CAPS_COLLECTION_IMG } from './images';
 
 export const TOPIS_DATA: Product[] = [
+  {
+    id: 'topi-summer-comfort-suddais',
+    nameUr: 'پریمیم سمر کمفرٹ نماز ٹوپی',
+    nameEn: 'Premium Summer Comfort Cap',
+    taglineUr: 'سدیس کلیکشن کی نرم، ہوادار، پریمیم کوالٹی اسلامی نماز ٹوپی',
+    taglineEn: 'Breathable, Soft, High Quality Islamic Cap for Summer & Daily Prayer',
+    category: 'topi',
+    price: 800,
+    originalPrice: 1100,
+    discountPercentage: 27,
+    rating: 4.9,
+    reviewsCount: 40,
+    image: CAPS_COLLECTION_IMG,
+    inStock: true,
+    featured: true,
+    badgeUr: 'گرمیوں کی خاص پسند',
+    badgeEn: 'Summer Comfort',
+    descriptionUr: 'سدیس کلیکشن کی خاص پریمیم سمر کمفرٹ ٹوپی۔ 100 فیصد نرم سوتی کپڑے پر نفیس ہوادار جالی دار کڑھائی جو سر پر ٹھنڈک اور آرام دیتی ہے۔ سجدے میں انتہائی آرام دہ۔',
+    descriptionEn: 'Breathable, soft, high quality Islamic cap designed for long prayer sessions and hot summer days. Folds easily into your pocket.',
+    topiSpecs: {
+      materialUr: '100٪ مصری نرم قدرتی کاٹن (پسینہ جذب کرنے والا)',
+      materialEn: '100% Breathable Combed Cotton with Micro-Ventilation',
+      craftUr: 'ہاتھ کی باریک جیومیٹرک کڑھائی',
+      craftEn: 'Fine Geometric Relief Needlework',
+      originUr: 'سدیس کلیکشن ملیر، کراچی',
+      originEn: 'Suddais Collection, Malir, Karachi',
+      careUr: 'ہاتھ یا مشین میں دھلائی کے قابل',
+      careEn: 'Hand or machine washable'
+    },
+    variants: [
+      { size: '21.5 انچ (سمال)', price: 800, inStock: true },
+      { size: '22 انچ (میڈیم)', price: 800, inStock: true },
+      { size: '22.5 انچ (لارج)', price: 800, inStock: true },
+      { size: '23 انچ (ایکس ایل)', price: 800, inStock: true }
+    ]
+  },
   {
     id: 'topi-omani-royal-velvet',
     nameUr: 'شاہی عمانی زری کڑھائی مخمل ٹوپی',
@@ -13,7 +50,7 @@ export const TOPIS_DATA: Product[] = [
     discountPercentage: 23,
     rating: 4.8,
     reviewsCount: 96,
-    image: '/src/assets/images/product_luxury_embroidered_topi_1790930733235.jpg',
+    image: EMBD_TOPI_IMG,
     inStock: true,
     featured: true,
     badgeUr: 'دستکاری ماسٹر پیس',
@@ -21,20 +58,20 @@ export const TOPIS_DATA: Product[] = [
     descriptionUr: 'اعلیٰ کوالٹی کے شاہی مخمل کپڑے پر خالص سنہری اور نقرئی زری دھاگے سے کڑھائی کی گئی ہے۔ عمانی شاہی انداز اور سر پر انتہائی آرام دہ۔',
     descriptionEn: 'Exquisitely hand-stitched on premium plush velvet featuring traditional royal Omani geometric floral motifs.',
     topiSpecs: {
-      materialUr: 'خالص شاہی مخمل بمع کاٹن استر (پسینہ جذب کرنے والی)',
+      materialUr: 'خالص شاہی مخمل بمع کاٹن استر',
       materialEn: 'Pure High-Density Velvet with Soft Breathable Cotton Lining',
       craftUr: 'ہاتھ کی باریک زری اور ریشم کڑھائی',
       craftEn: 'Traditional Hand Needle Zari & Silk Threadwork',
-      originUr: 'عمانی روایتی ڈیزائن - ملتان دستکار یونین',
-      originEn: 'Omani Heritage Silhouette - Artisanal Craftsmanship',
-      careUr: 'صرف ڈرائی کلین یا ہلکے گیلے کپڑے سے صفائی',
-      careEn: 'Dry clean only or gently wipe with damp soft cloth'
+      originUr: 'عمانی روایتی ڈیزائن',
+      originEn: 'Omani Heritage Silhouette',
+      careUr: 'صرف ڈرائی کلین',
+      careEn: 'Dry clean only'
     },
     variants: [
-      { size: '21.5 انچ (چھوٹا / S)', price: 1850, inStock: true },
-      { size: '22 انچ (درمیانہ / M)', price: 1850, inStock: true },
-      { size: '22.5 انچ (بڑا / L)', price: 1850, inStock: true },
-      { size: '23 انچ (ایکس ایل / XL)', price: 1850, inStock: true }
+      { size: '21.5 انچ (چھوٹا)', price: 1850, inStock: true },
+      { size: '22 انچ (درمیانہ)', price: 1850, inStock: true },
+      { size: '22.5 انچ (بڑا)', price: 1850, inStock: true },
+      { size: '23 انچ (ایکس ایل)', price: 1850, inStock: true }
     ]
   },
   {
@@ -49,7 +86,7 @@ export const TOPIS_DATA: Product[] = [
     discountPercentage: 21,
     rating: 4.9,
     reviewsCount: 64,
-    image: '/src/assets/images/product_luxury_embroidered_topi_1790930733235.jpg',
+    image: EMBD_TOPI_IMG,
     inStock: true,
     featured: true,
     badgeUr: 'عثمانی روایت',
@@ -59,18 +96,18 @@ export const TOPIS_DATA: Product[] = [
     topiSpecs: {
       materialUr: '100٪ قدرتی اون کا فیلٹ (پائیدار اور مضبوط ساخت)',
       materialEn: '100% Natural Pressed Wool Felt with Black Twisted Silk Tassel',
-      craftUr: 'روایتی استنبولی فیلٹ مولڈنگ و کٹنگ',
+      craftUr: 'روایتی استنبولی فیلٹ مولڈنگ',
       craftEn: 'Traditional Mold-Blocked Ottoman Heritage Craft',
       originUr: 'عثمانی تاریخی ڈیزائن',
       originEn: 'Historical Ottoman Style',
       careUr: 'برش سے صفائی، پانی سے پرہیز کریں',
-      careEn: 'Dry brush clean only, keep away from water'
+      careEn: 'Dry brush clean only'
     },
     variants: [
-      { size: '21.5 انچ (چھوٹا)', price: 2200, inStock: true },
-      { size: '22 انچ (درمیانہ)', price: 2200, inStock: true },
-      { size: '22.5 انچ (بڑا)', price: 2200, inStock: true },
-      { size: '23 انچ (ایکس ایل)', price: 2200, inStock: true }
+      { size: '21.5 انچ', price: 2200, inStock: true },
+      { size: '22 انچ', price: 2200, inStock: true },
+      { size: '22.5 انچ', price: 2200, inStock: true },
+      { size: '23 انچ', price: 2200, inStock: true }
     ]
   },
   {
@@ -85,7 +122,7 @@ export const TOPIS_DATA: Product[] = [
     discountPercentage: 22,
     rating: 5.0,
     reviewsCount: 58,
-    image: '/src/assets/images/product_sindhi_afghan_caps_1790931778385.jpg',
+    image: CAPS_COLLECTION_IMG,
     inStock: true,
     featured: true,
     badgeUr: 'قائدانہ وقار',
@@ -103,78 +140,10 @@ export const TOPIS_DATA: Product[] = [
       careEn: 'Specialized fur dry clean only'
     },
     variants: [
-      { size: '21.5 انچ (چھوٹا)', price: 4500, inStock: true },
-      { size: '22 انچ (درمیانہ)', price: 4500, inStock: true },
-      { size: '22.5 انچ (بڑا)', price: 4500, inStock: true },
-      { size: '23 انچ (ایکس ایل)', price: 4500, inStock: true }
-    ]
-  },
-  {
-    id: 'topi-sindhi-mirrorwork-ajrak',
-    nameUr: 'سندھی دستکاری شیشہ و زری ٹوپی',
-    nameEn: 'Sindhi Handcrafted Mirrorwork Cap',
-    taglineUr: 'اصلی شیشہ کاری، روایتی جیومیٹرک کڑھائی اور محرابی پیشانی',
-    taglineEn: 'Traditional Sindhi Mirror-Work & Geometric Embroidery',
-    category: 'topi',
-    price: 1650,
-    originalPrice: 2200,
-    rating: 4.8,
-    reviewsCount: 79,
-    image: '/src/assets/images/product_sindhi_afghan_caps_1790931778385.jpg',
-    inStock: true,
-    badgeUr: 'ثقافتی ورثہ',
-    badgeEn: 'Sindhi Cultural Art',
-    descriptionUr: 'سندھ کے دیہی علاقوں کے ہنرمند دستکاروں کی بنائی گئی خوبصورت شیشہ کاری اور رنگین ریشمی دھاگوں سے مرصع تاریخی ٹوپی۔',
-    descriptionEn: 'Intricate micro-mirror hand-embroidery featuring the famousSindhi arched front cut and silk motifs.',
-    topiSpecs: {
-      materialUr: 'مضبوط کاٹن کینوس پر شیشے اور ریشم کا کام',
-      materialEn: 'Pure Cotton Base with Hand-Set Tiny Mirrors and Silk Thread',
-      craftUr: 'تھرپارکر و ہالہ کی روایتی دستکاری',
-      craftEn: 'Traditional Tharparkar Needlecraft',
-      originUr: 'سندھ، پاکستان',
-      originEn: 'Sindh, Pakistan',
-      careUr: 'ہاتھ سے نرمی کے ساتھ صفائی',
-      careEn: 'Gentle hand wipe only'
-    },
-    variants: [
-      { size: '21.5 انچ (چھوٹا)', price: 1650, inStock: true },
-      { size: '22 انچ (درمیانہ)', price: 1650, inStock: true },
-      { size: '22.5 انچ (بڑا)', price: 1650, inStock: true },
-      { size: '23 انچ (ایکس ایل)', price: 1650, inStock: true }
-    ]
-  },
-  {
-    id: 'topi-madani-green-velvet',
-    nameUr: 'مدنی سبز مخمل زری کڑھائی ٹوپی',
-    nameEn: 'Madani Emerald Green Velvet Cap',
-    taglineUr: 'گنبدِ خضریٰ کے سبز رنگ کی مناسبت سے نفیس سنہری زری والی ٹوپی',
-    taglineEn: 'Deep Emerald Velvet with Gold Zari Geometric Bands',
-    category: 'topi',
-    price: 1750,
-    originalPrice: 2300,
-    rating: 4.9,
-    reviewsCount: 112,
-    image: '/src/assets/images/product_luxury_embroidered_topi_1790930733235.jpg',
-    inStock: true,
-    badgeUr: 'عاشقانِ مدینہ',
-    badgeEn: 'Madinah Green',
-    descriptionUr: 'سبز مخمل پر سنہری تاروں کی باریک کڑھائی جو سر پر شاندار اور باوقار لگتی ہے۔ جمعہ اور میلاد کی تقاریب کے لیے خاص تحفہ۔',
-    descriptionEn: 'Lush dark green velvet crown with intricate gold bullion wire stitching along the brim.',
-    topiSpecs: {
-      materialUr: 'اعلیٰ کوالٹی کا سبز مخمل بمع نرم سوتی استر',
-      materialEn: 'High-Pile Emerald Velvet with Breathable Cotton Lining',
-      craftUr: 'ہاتھ کی سنہری زری کڑھائی',
-      craftEn: 'Handmade Bullion Wire Zari Work',
-      originUr: 'لاہور دستکار یونین',
-      originEn: 'Lahore Master Embroiderers',
-      careUr: 'ڈرائی کلین کریں',
-      careEn: 'Dry clean recommended'
-    },
-    variants: [
-      { size: '21.5 انچ', price: 1750, inStock: true },
-      { size: '22 انچ', price: 1750, inStock: true },
-      { size: '22.5 انچ', price: 1750, inStock: true },
-      { size: '23 انچ', price: 1750, inStock: true }
+      { size: '21.5 انچ', price: 4500, inStock: true },
+      { size: '22 انچ', price: 4500, inStock: true },
+      { size: '22.5 انچ', price: 4500, inStock: true },
+      { size: '23 انچ', price: 4500, inStock: true }
     ]
   },
   {
@@ -188,7 +157,7 @@ export const TOPIS_DATA: Product[] = [
     originalPrice: 900,
     rating: 4.9,
     reviewsCount: 210,
-    image: '/src/assets/images/product_sindhi_afghan_caps_1790931778385.jpg',
+    image: CAPS_COLLECTION_IMG,
     inStock: true,
     badgeUr: 'روزمرہ نماز کی پسند',
     badgeEn: 'Daily Prayer Favorite',
@@ -199,214 +168,47 @@ export const TOPIS_DATA: Product[] = [
       materialEn: '100% Pure Egyptian Combed Cotton',
       craftUr: 'ہاتھ کی باریک کروشیا بنائی',
       craftEn: 'Fine Hand Crochet Weave',
-      originUr: 'فیصل آباد ٹیکسٹائل یونٹ',
-      originEn: 'Faisalabad Handloom Weavers',
+      originUr: 'پاکستان',
+      originEn: 'Pakistan',
       careUr: 'ہاتھ یا مشین میں دھونے کے قابل',
       careEn: 'Machine or hand washable'
     },
     variants: [
-      { size: 'فری سائز (لچکدار / Stretchable)', price: 650, inStock: true }
+      { size: 'فری سائز (لچکدار)', price: 650, inStock: true }
     ]
   },
   {
-    id: 'topi-black-velvet-zari-royal',
-    nameUr: 'سیاہ مخمل پر نقرئی چاندی کڑھائی ٹوپی',
-    nameEn: 'Black Velvet Silver Zari Royal Cap',
-    taglineUr: 'سیاہ مخمل پر چاندی جیسے چمکتے دھاگوں کی نفاست',
-    taglineEn: 'Jet Black Velvet with Sterling Silver Zari Embroidery',
+    id: 'topi-sindhi-mirrorwork-ajrak',
+    nameUr: 'سندھی دستکاری شیشہ و زری ٹوپی',
+    nameEn: 'Sindhi Handcrafted Mirrorwork Cap',
+    taglineUr: 'اصلی شیشہ کاری، روایتی جیومیٹرک کڑھائی اور محرابی پیشانی',
+    taglineEn: 'Traditional Sindhi Mirror-Work & Geometric Embroidery',
     category: 'topi',
-    price: 1850,
-    originalPrice: 2400,
+    price: 1650,
+    originalPrice: 2200,
     rating: 4.8,
-    reviewsCount: 73,
-    image: '/src/assets/images/product_luxury_embroidered_topi_1790930733235.jpg',
+    reviewsCount: 79,
+    image: CAPS_COLLECTION_IMG,
     inStock: true,
-    badgeUr: 'نقرئی حسن',
-    badgeEn: 'Silver Elegance',
-    descriptionUr: 'سیاہ مخمل اور چاندی کے زری دھاگے کا ایسا تال میل جو کسی بھی رنگ کے کرتے کے ساتھ بے حد باوقار لگتا ہے۔',
-    descriptionEn: 'Rich black velvet paired with intricate silver thread needlework in classic arabesque bands.',
+    badgeUr: 'ثقافتی ورثہ',
+    badgeEn: 'Sindhi Cultural Art',
+    descriptionUr: 'سندھ کے دیہی علاقوں کے ہنرمند دستکاروں کی بنائی گئی خوبصورت شیشہ کاری اور رنگین ریشمی دھاگوں سے مرصع تاریخی ٹوپی۔',
+    descriptionEn: 'Intricate micro-mirror hand-embroidery featuring the famous Sindhi arched front cut.',
     topiSpecs: {
-      materialUr: 'جیٹ بلیک پریمیم مخمل',
-      materialEn: 'Jet Black Heavy Weight Velvet',
-      craftUr: 'سلور زری و ریشم ہاتھ کی کڑھائی',
-      craftEn: 'Silver Thread Hand Needlework',
-      originUr: 'ملتان ہینڈی کرافٹ',
-      originEn: 'Multan Handcrafted',
-      careUr: 'ڈرائی کلین کریں',
-      careEn: 'Dry clean only'
+      materialUr: 'مضبوط کاٹن کینوس پر شیشے اور ریشم کا کام',
+      materialEn: 'Pure Cotton Base with Hand-Set Tiny Mirrors and Silk Thread',
+      craftUr: 'تھرپارکر و ہالہ کی روایتی دستکاری',
+      craftEn: 'Traditional Tharparkar Needlecraft',
+      originUr: 'سندھ، پاکستان',
+      originEn: 'Sindh, Pakistan',
+      careUr: 'ہاتھ سے نرمی کے ساتھ صفائی',
+      careEn: 'Gentle hand wipe only'
     },
     variants: [
-      { size: '21.5 انچ', price: 1850, inStock: true },
-      { size: '22 انچ', price: 1850, inStock: true },
-      { size: '22.5 انچ', price: 1850, inStock: true },
-      { size: '23 انچ', price: 1850, inStock: true }
-    ]
-  },
-  {
-    id: 'topi-maroon-ottoman-embroidered',
-    nameUr: 'میرون عثمانی گولڈن کراؤن ٹوپی',
-    nameEn: 'Maroon Ottoman Golden Crown Cap',
-    taglineUr: 'گہرا عنابی مخمل اور عثمانی سلاطین کے انداز کی سنہری کڑھائی',
-    taglineEn: 'Imperial Maroon Velvet with Ottoman Floral Embroidery',
-    category: 'topi',
-    price: 1950,
-    originalPrice: 2600,
-    rating: 4.9,
-    reviewsCount: 88,
-    image: '/src/assets/images/product_luxury_embroidered_topi_1790930733235.jpg',
-    inStock: true,
-    badgeUr: 'شاہانہ انداز',
-    badgeEn: 'Sultanate Style',
-    descriptionUr: 'ترکی کے عثمانی سلاطین کے انداز میں سجی ہوئی خوبصورت عنابی مخمل ٹوپی جس پر سنہری کڑھائی کی گئی ہے۔',
-    descriptionEn: 'Regal maroon velvet embroidered with flowing Ottoman tulip and palmette motifs.',
-    topiSpecs: {
-      materialUr: 'عنابی پریمیم مخمل کپڑا',
-      materialEn: 'Deep Maroon Imperial Velvet',
-      craftUr: 'ہاتھ کی سنہری تار کڑھائی',
-      craftEn: 'Gold Wire Hand Stitching',
-      originUr: 'ترک و مغل مشترکہ ورثہ',
-      originEn: 'Ottoman-Mughal Fusion Heritage',
-      careUr: 'ڈرائی کلین',
-      careEn: 'Dry clean'
-    },
-    variants: [
-      { size: '21.5 انچ', price: 1950, inStock: true },
-      { size: '22 انچ', price: 1950, inStock: true },
-      { size: '22.5 انچ', price: 1950, inStock: true },
-      { size: '23 انچ', price: 1950, inStock: true }
-    ]
-  },
-  {
-    id: 'topi-pakol-chitrali-wool',
-    nameUr: 'چترالی خالص اونی پکول ٹوپی',
-    nameEn: 'Chitrali 100% Pure Wool Pakol',
-    taglineUr: 'شمالی علاقہ جات کی روایتی گرم اونی پکول، سردیوں کا قدرتی تحفہ',
-    taglineEn: 'Hand-Rolled 100% Himalayan Sheep Wool Pakol',
-    category: 'topi',
-    price: 1450,
-    originalPrice: 1900,
-    rating: 4.8,
-    reviewsCount: 102,
-    image: '/src/assets/images/product_sindhi_afghan_caps_1790931778385.jpg',
-    inStock: true,
-    badgeUr: 'سردیوں کی پسند',
-    badgeEn: 'Northern Warmth',
-    descriptionUr: 'چترال اور گلگت کے پہاڑوں کی خالص بھیڑ کی اون سے ہاتھ کی کھڈی پر تیار کردہ مستند پکول۔ انتہائی گرم اور پائیدار۔',
-    descriptionEn: 'Traditional rolled woolen cap hand-spun by northern mountain weavers, naturally insulating.',
-    topiSpecs: {
-      materialUr: '100٪ چترالی قدرتی اون',
-      materialEn: '100% Chitrali Highland Sheep Wool',
-      craftUr: 'روایتی ہاتھ کی کھڈی اور فولڈنگ',
-      craftEn: 'Handloom Woven & Block Formed',
-      originUr: 'چترال، پاکستان',
-      originEn: 'Chitral Valley, Pakistan',
-      careUr: 'ہلکے صابن سے ہاتھ کی دھلائی',
-      careEn: 'Gentle wool wash'
-    },
-    variants: [
-      { size: 'فری سائز (ایڈجسٹ ایبل رول)', price: 1450, inStock: true }
-    ]
-  },
-  {
-    id: 'topi-kashmiri-tilla-embroidered',
-    nameUr: 'کشمیری تلہ کڑھائی والی مخمل ٹوپی',
-    nameEn: 'Kashmiri Tilla Work Velvet Cap',
-    taglineUr: 'سری نگر کے استاد کاریگروں کی اصلی طلائی تلہ کڑھائی کا نمونہ',
-    taglineEn: 'Authentic Kashmiri Tilla Gold Threadwork on Velvet',
-    category: 'topi',
-    price: 2400,
-    originalPrice: 3200,
-    rating: 5.0,
-    reviewsCount: 61,
-    image: '/src/assets/images/product_luxury_embroidered_topi_1790930733235.jpg',
-    inStock: true,
-    badgeUr: 'کشمیری شاہکار',
-    badgeEn: 'Kashmiri Masterwork',
-    descriptionUr: 'کشمیر کی مشہورِ زمانہ تلہ کڑھائی جو دہائیوں تک اپنی سنہری چمک برقرار رکھتی ہے۔ شادیوں اور نمازِ جمعہ کے لیے خصوصی انتخاب۔',
-    descriptionEn: 'Intricately worked with pure golden tilla wire that reflects light with mesmerizing depth.',
-    topiSpecs: {
-      materialUr: 'سیاہ کوریائی مخمل بمع کاٹن استر',
-      materialEn: 'High-Density Korean Velvet with Cotton Base',
-      craftUr: 'اصلی کشمیری تلہ دستکاری',
-      craftEn: 'Authentic Kashmiri Tilla Needlecraft',
-      originUr: 'کشمیر و راولپنڈی ہینڈی کرافٹ',
-      originEn: 'Kashmiri Craft Guild',
-      careUr: 'صرف ڈرائی کلین',
-      careEn: 'Dry clean only'
-    },
-    variants: [
-      { size: '21.5 انچ', price: 2400, inStock: true },
-      { size: '22 انچ', price: 2400, inStock: true },
-      { size: '22.5 انچ', price: 2400, inStock: true },
-      { size: '23 انچ', price: 2400, inStock: true }
-    ]
-  },
-  {
-    id: 'topi-blue-omani-embroidered',
-    nameUr: 'نیوی بلو عمانی زری کڑھائی ٹوپی',
-    nameEn: 'Navy Blue Omani Zari Prayer Cap',
-    taglineUr: 'گہرا نیلا مخمل اور سلور و گولڈ زری کی متوازن جیومیٹرک کڑھائی',
-    taglineEn: 'Royal Navy Blue Velvet with Gold & Silver Zari Motifs',
-    category: 'topi',
-    price: 1850,
-    originalPrice: 2400,
-    rating: 4.8,
-    reviewsCount: 83,
-    image: '/src/assets/images/product_luxury_embroidered_topi_1790930733235.jpg',
-    inStock: true,
-    badgeUr: 'نیوی رائل',
-    badgeEn: 'Navy Royal',
-    descriptionUr: 'نیلے مخمل پر سفید اور سنہری دھاگوں سے بنائی گئی دلکش عمانی ٹوپی جو ہر لباس کو خوبصورت بنا دیتی ہے۔',
-    descriptionEn: 'Elegant navy blue velvet cap stitched with high precision geometric medallion borders.',
-    topiSpecs: {
-      materialUr: 'نیوی بلو اعلیٰ کوالٹی مخمل',
-      materialEn: 'Navy Blue Fine Velvet',
-      craftUr: 'ہاتھ کی زری کڑھائی',
-      craftEn: 'Handmade Zari Work',
-      originUr: 'ملتان دستکار',
-      originEn: 'Multan Artisans',
-      careUr: 'ڈرائی کلین',
-      careEn: 'Dry clean'
-    },
-    variants: [
-      { size: '21.5 انچ', price: 1850, inStock: true },
-      { size: '22 انچ', price: 1850, inStock: true },
-      { size: '22.5 انچ', price: 1850, inStock: true },
-      { size: '23 انچ', price: 1850, inStock: true }
-    ]
-  },
-  {
-    id: 'topi-cotton-egyptian-hard',
-    nameUr: 'مصری سخت سفید نماز ٹوپی (ہارڈ اسٹائل)',
-    nameEn: 'Egyptian Structured Hard White Cap',
-    taglineUr: 'مضبوط اسٹائلش بناوٹ، سفید کڑھائی اور سر پر بالکل سیدھی فٹنگ',
-    taglineEn: 'Structured Egyptian White Prayer Cap with Floral Relief',
-    category: 'topi',
-    price: 950,
-    originalPrice: 1300,
-    rating: 4.8,
-    reviewsCount: 140,
-    image: '/src/assets/images/product_sindhi_afghan_caps_1790931778385.jpg',
-    inStock: true,
-    badgeUr: 'مصر کا کلاسک انداز',
-    badgeEn: 'Egyptian Classic',
-    descriptionUr: 'جامعہ الازہر اور قاہرہ کے علماء کا روایتی انداز جس میں ٹوپی سر پر سخت اور دائرہ نما بیٹھی رہتی ہے۔',
-    descriptionEn: 'Rigid structured white cotton cap with raised floral self-thread stitching.',
-    topiSpecs: {
-      materialUr: 'سخت استر والی مصری کاٹن',
-      materialEn: 'Stiffened Egyptian Cotton with Embossed Stitching',
-      craftUr: 'روایتی ایمبوسڈ کڑھائی',
-      craftEn: 'Machine & Hand Finishing',
-      originUr: 'قاہرہ روایتی طرز',
-      originEn: 'Egyptian Style',
-      careUr: 'ہلکے گیلے کپڑے سے صاف کریں',
-      careEn: 'Wipe clean with damp cloth'
-    },
-    variants: [
-      { size: '21.5 انچ', price: 950, inStock: true },
-      { size: '22 انچ', price: 950, inStock: true },
-      { size: '22.5 انچ', price: 950, inStock: true },
-      { size: '23 انچ', price: 950, inStock: true }
+      { size: '21.5 انچ', price: 1650, inStock: true },
+      { size: '22 انچ', price: 1650, inStock: true },
+      { size: '22.5 انچ', price: 1650, inStock: true },
+      { size: '23 انچ', price: 1650, inStock: true }
     ]
   }
 ];

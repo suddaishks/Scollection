@@ -17,25 +17,25 @@ export const AboutUsSection: React.FC<AboutUsSectionProps> = ({ lang }) => {
           <div className="lg:col-span-7 space-y-6">
             <div className="flex items-center gap-2 text-[#d4af37] text-xs font-semibold uppercase tracking-wider">
               <Sparkles className="w-4 h-4" />
-              <span>{lang === 'ur' ? 'ہمارے بارے میں - عطر و ردا کی کہانی' : 'About Us - The Heritage of Itr & Rida'}</span>
+              <span>{lang === 'ur' ? 'ہمارے بارے میں - سدیس کلیکشن کی کہانی' : 'About Us - Suddais Collection Story'}</span>
             </div>
 
             <h2 className="text-3xl sm:text-4xl font-bold text-[#f4efe6] font-display leading-tight">
               {lang === 'ur'
-                ? 'سنّتِ نبویﷺ، روایتی عطر سازی اور دستکاری کا شاہکار'
-                : 'Reviving the Sunnah of Fine Fragrance & Artisanal Craft'}
+                ? 'خوشبو، خالص عطر اور نماز ٹوپیوں کا بااعتماد نام'
+                : 'Welcome to Suddais Collection | Official Store'}
             </h2>
 
             <p className="text-sm sm:text-base text-[#c5beb0] leading-relaxed font-body">
               {lang === 'ur'
-                ? 'عطر و ردا کا قیام اس جذبے کے تحت عمل میں آیا کہ پاکستان کے شائقینِ خوشبو کو اصلی، قدرتی اور الکحل سے پاک عطر، فرانسیسی و مشرقی پرفیومز، اور نفیس دستکاری ٹوپیاں ایک ہی معتبر جگہ پر میسر آسکیں۔'
-                : 'Itr & Rida was founded to offer authentic, non-alcoholic artisanal attars, high-concentration oriental perfumes, and masterfully embroidered prayer caps without compromise.'}
+                ? 'سدیس کلیکشن (Suddais Collection) میں خوش آمدید! ہم الکحل سے پاک پریمیم عطر، دیرپا لگژری اسپرے پرفیومز، اور اعلیٰ معیار کی اسلامی نماز ٹوپیوں (Kufi) کے ماہر ہیں۔ ہماری تمام خوشبوئیں خالص اور اصلی کنسنٹریٹڈ پرفیوم آئلز سے تیار کی جاتی ہیں تاکہ آپ کو سارا دن تروتازہ اور معطر رکھیں۔'
+                : 'Welcome to Suddais Collection! We specialize in premium non-alcoholic Attars, long-lasting luxury spray Perfumes, and high-quality Islamic Caps (Kufi). All our fragrances are carefully crafted using original concentrated perfume oils to ensure long-lasting freshness. Choose your favorite product and order directly via WhatsApp!'}
             </p>
 
             <p className="text-sm text-[#a69f91] leading-relaxed">
               {lang === 'ur'
-                ? 'ہمارا ہر پرفیوم اور عطر کمبوڈیا، آسام، اسپارٹا اور میسور کے قدیم خطوں سے لائے گئے قدرتی تیلوں سے کشید کیا جاتا ہے۔ ہم کسی بھی مصنوعی کیمیکل یا گھٹیا اسپرٹ کی آمیزش سے مکمل گریز کرتے ہیں تاکہ ہر بوند عبادت، جمعہ اور مجلس کے شایانِ شان ہو۔'
-                : 'Each flacon is composed using genuine aged agarwood, Kashmiri saffron, and cold-pressed botanical essences, honoring traditional copper alembic distillation.'}
+                ? 'ہماری دکان شیرپاؤ ایف 2 اسٹریٹ، لیبر کالونی ڈبل کیبن اسٹریٹ، نزد ایم اے ڈیکوریشن، ملیر، کراچی میں واقع ہے۔ ہمارے ہاں 5000 روپے سے زائد کے ہر آرڈر پر پورے پاکستان میں مفت ڈیلیوری کی سہولت دستیاب ہے۔'
+                : 'Located at Sherpao F2 Street, Labour Colony Double Kebin Street, Near M A Decoration, Malir, Karachi, Pakistan. Free delivery available on all orders over Rs. 5000.'}
             </p>
 
             {/* 3 Pillars */}

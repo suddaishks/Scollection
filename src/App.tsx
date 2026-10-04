@@ -19,7 +19,7 @@ export default function App() {
   const [activeCategory, setActiveCategory] = useState<ProductCategory>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc' | 'rating'>('featured');
-  const [mobileGridCols, setMobileGridCols] = useState<'2' | '3'>('2');
+  const [mobileGridCols, setMobileGridCols] = useState<'2' | '3' | '4'>('3');
   
   // Modals & Drawers state
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -275,7 +275,7 @@ export default function App() {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
-            {/* Mobile Grid Columns Switcher: 2x or 3x per row */}
+            {/* Mobile Grid Columns Switcher: 2x, 3x, or 4x per row */}
             <div className="flex items-center gap-1 bg-[#141722] border border-[#242a3a] rounded-lg p-1 text-xs">
               <span className="text-[11px] text-[#8e8778] px-1 hidden sm:inline">
                 {lang === 'ur' ? 'ڈسپلے:' : 'View:'}
@@ -300,6 +300,16 @@ export default function App() {
                 <Grid3X3 className="w-3.5 h-3.5" />
                 <span className="text-[11px] font-mono">3x</span>
               </button>
+              <button
+                onClick={() => setMobileGridCols('4')}
+                className={`px-2 py-1 rounded-md transition-colors cursor-pointer flex items-center gap-1 ${
+                  mobileGridCols === '4' ? 'bg-[#d4af37] text-[#0f1115] font-bold' : 'text-[#a69f91] hover:text-white'
+                }`}
+                title={lang === 'ur' ? '4 کالم (چار پروڈکٹس ایک ساتھ)' : '4 Columns (Ultra Compact)'}
+              >
+                <LayoutGrid className="w-3.5 h-3.5" />
+                <span className="text-[11px] font-mono">4x</span>
+              </button>
             </div>
 
             {/* Sort dropdown */}
@@ -320,7 +330,7 @@ export default function App() {
 
         </div>
 
-        {/* Product Grid - 2 or 3 Columns on Mobile, up to 4/5 on Desktop */}
+        {/* Product Grid - 2, 3 or 4 Columns on Mobile, up to 5/6 on Desktop */}
         {filteredProducts.length === 0 ? (
           <div className="py-20 text-center text-[#8e8778] space-y-3">
             <Search className="w-10 h-10 mx-auto opacity-40" />
@@ -333,7 +343,9 @@ export default function App() {
           </div>
         ) : (
           <div className={
-            mobileGridCols === '3'
+            mobileGridCols === '4'
+              ? 'grid grid-cols-4 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-1.5 sm:gap-3.5'
+              : mobileGridCols === '3'
               ? 'grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-4'
               : 'grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-5'
           }>

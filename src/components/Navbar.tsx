@@ -38,10 +38,10 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#d4af37]" />
-            <span className="font-urdu">
+            <span className="font-urdu font-semibold">
               {lang === 'ur'
-                ? 'پورے پاکستان میں مفت ڈیلیوری (PKR 3,000 سے زائد آرڈر پر) • کیش آن ڈیلیوری، ایزی پیسہ، جاز کیش'
-                : 'Free Delivery Across Pakistan over PKR 3,000 • COD, Easypaisa, JazzCash Accepted'}
+                ? '🎉 پورے پاکستان میں 5000 روپے سے زائد کے آرڈر پر مفت ترسیل! • واٹس ایپ: 0318-2187575'
+                : '🎉 FREE SHIPPING ON ALL ORDERS OVER RS. 5000! • WhatsApp: +92 318 2187575'}
             </span>
           </div>
 
@@ -54,13 +54,13 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span>{lang === 'ur' ? 'آرڈر و رائیڈر ٹریکنگ' : 'Track Order / Rider'}</span>
             </button>
             <a
-              href="https://wa.me/923001234567?text=Assalam%20o%20Alaikum!%20I%20want%20to%20inquire%20about%20fragrances"
+              href="https://wa.me/923182187575?text=Assalam%20o%20Alaikum!%20I%20want%20to%20inquire%20about%20Suddais%20Collection"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1 hover:text-[#d4af37] transition-colors"
             >
               <Phone className="w-3 h-3 text-emerald-400" />
-              <span className="tabular-nums">0300-1234567</span>
+              <span className="tabular-nums">0318-2187575</span>
             </a>
           </div>
         </div>
@@ -79,8 +79,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               }}
               className="text-start focus:outline-none group cursor-pointer"
             >
-              <span className="text-2xl sm:text-3xl font-bold tracking-tight text-[#f4efe6] font-display group-hover:text-[#d4af37] transition-colors">
-                عطر و ردا
+              <span className="text-xl sm:text-2xl font-extrabold tracking-tight text-[#f4efe6] font-display group-hover:text-[#d4af37] transition-colors">
+                {lang === 'ur' ? 'سدیس کلیکشن' : 'SUDDAIS COLLECTION'}
               </span>
             </button>
           </div>

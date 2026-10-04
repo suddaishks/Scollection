@@ -58,13 +58,13 @@ export const Footer: React.FC<FooterProps> = ({
         
         {/* Brand Col */}
         <div className="space-y-3">
-          <div className="text-2xl font-bold text-[#f4efe6] font-display">
-            عطر و ردا
+          <div className="text-xl sm:text-2xl font-bold text-[#f4efe6] font-display">
+            {lang === 'ur' ? 'سدیس کلیکشن' : 'SUDDAIS COLLECTION'}
           </div>
           <p className="text-xs text-[#8e8778] leading-relaxed">
             {lang === 'ur'
-              ? 'پاکستان کا معروف اسٹور برائے لگژری پرفیومز، نایاب عطر اور نفیس دستکاری ٹوپیاں۔ ہم اعلیٰ معیار اور دیانت داری کو اولیت دیتے ہیں۔'
-              : 'Pakistan’s premier boutique for oriental perfumes, pure artisanal attars, and handcrafted embroidered caps.'}
+              ? 'سدیس کلیکشن - پریمیم الکحل سے پاک عطر، دیرپا اسپرے پرفیومز، اور اعلیٰ معیار کی اسلامی نماز ٹوپیاں (Kufi)۔'
+              : 'Welcome to Suddais Collection! Premium non-alcoholic Attars, luxury spray Perfumes, and high-quality Islamic Caps (Kufi).'}
           </p>
           <div className="pt-2 flex items-center gap-2">
             <span className="text-[11px] text-[#7d776c]">{lang === 'ur' ? 'ادائیگی کے ذرائع:' : 'Payments:'}</span>
@@ -133,18 +133,18 @@ export const Footer: React.FC<FooterProps> = ({
             </li>
             <li>
               <a href="#about-section" className="hover:text-[#d4af37] transition-colors">
-                {lang === 'ur' ? 'ہمارے بارے میں' : 'About Itr & Rida'}
+                {lang === 'ur' ? 'ہمارے بارے میں' : 'About Suddais Collection'}
               </a>
             </li>
             <li>
               <a
-                href="https://wa.me/923001234567"
+                href="https://wa.me/923182187575"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-emerald-400 hover:underline flex items-center gap-1"
               >
                 <MessageCircle className="w-3 h-3" />
-                <span>{lang === 'ur' ? 'واٹس ایپ ہیلپ لائن' : 'WhatsApp Helpline'}</span>
+                <span>{lang === 'ur' ? 'واٹس ایپ: 0318-2187575' : 'WhatsApp: 0318-2187575'}</span>
               </a>
             </li>
           </ul>
@@ -153,16 +153,18 @@ export const Footer: React.FC<FooterProps> = ({
         {/* Contact info */}
         <div className="space-y-3">
           <h4 className="text-sm font-bold text-[#f4efe6] font-display">
-            {lang === 'ur' ? 'رابطہ و ہیڈ کوارٹر' : 'Headquarters'}
+            {lang === 'ur' ? 'پتہ و اوقاتِ کار' : 'Store Address & Timings'}
           </h4>
-          <p className="text-xs text-[#8e8778]">
-            {lang === 'ur' ? 'طارق روڈ، کراچی، پاکستان' : 'Tariq Road, Karachi, Pakistan'}
+          <p className="text-xs text-[#8e8778] leading-relaxed">
+            {lang === 'ur'
+              ? 'شیرپاؤ ایف 2 اسٹریٹ، لیبر کالونی ڈبل کیبن اسٹریٹ، نزد ایم اے ڈیکوریشن، ملیر، کراچی، پاکستان۔'
+              : 'Sherpao F2 Street, labour colony double Kebin Street, Near M A Decoration, Malir, Karachi, Pakistan.'}
           </p>
           <div className="text-xs text-[#f4efe6] font-mono tabular-nums">
-            +92 300 1234567
+            +92 318 2187575
           </div>
           <p className="text-[11px] text-[#7d776c]">
-            {lang === 'ur' ? 'صبح 11 بجے تا رات 11:30 بجے' : '11:00 AM - 11:30 PM'}
+            {lang === 'ur' ? 'روزانہ صبح 10:00 بجے تا رات 11:00 بجے' : 'Daily 10:00 AM - 11:00 PM'}
           </p>
         </div>
 
@@ -171,7 +173,7 @@ export const Footer: React.FC<FooterProps> = ({
       {/* Copyright */}
       <div className="border-t border-[#1a1e28] py-6 text-center text-[#6e685d] text-[11px]">
         <div>
-          © {new Date().getFullYear()} عطر و ردا (Itr & Rida). {lang === 'ur' ? 'جملہ حقوق محفوظ ہیں۔' : 'All rights reserved.'}
+          © {new Date().getFullYear()} SUDDAIS COLLECTION. {lang === 'ur' ? 'جملہ حقوق محفوظ ہیں۔' : 'All rights reserved.'}
         </div>
       </div>
 

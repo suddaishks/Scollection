@@ -26,36 +26,36 @@ export const PRODUCTS: Product[] = [
 export const SPECIAL_DEALS = [
   {
     id: 'deal-1',
-    code: 'JUMMAH15',
-    titleUr: 'جمعہ و عید اسپیشل 15٪ رعایت',
-    titleEn: 'Jummah & Eid 15% Flat Discount',
-    descUr: 'کوڈ "JUMMAH15" استعمال کریں اور کسی بھی آرڈر پر فوری 15 فیصد کی بچت حاصل کریں۔',
-    descEn: 'Apply coupon code JUMMAH15 at checkout to receive 15% instant discount.',
-    discount: 15,
-    tagUr: 'محدود وقت کی آفر',
-    tagEn: 'Limited Period'
+    code: 'FREESHIP',
+    titleUr: '5000 روپے سے زائد پر مفت ترسیل',
+    titleEn: 'FREE SHIPPING OVER RS. 5000',
+    descUr: 'سدیس کلیکشن کی طرف سے 5000 روپے سے زائد کی خریداری پر پورے پاکستان میں مفت ڈیلیوری۔',
+    descEn: 'Enjoy zero courier charges on every order above Rs. 5000 nationwide.',
+    discount: 0,
+    tagUr: 'مفت ترسیل',
+    tagEn: 'FREE SHIPPING'
   },
   {
     id: 'deal-2',
-    code: 'FREESHIP',
-    titleUr: '3000 روپے سے زائد پر مفت ڈیلیوری',
-    titleEn: 'Free Delivery Over PKR 3,000',
-    descUr: 'پورے پاکستان کے تمام شہروں میں تیز رفتار ڈیلیوری 2 سے 3 دن میں بالکل مفت۔',
-    descEn: 'Enjoy zero courier charges on every order above PKR 3,000 nationwide.',
-    discount: 0,
-    tagUr: 'پورے پاکستان میں',
-    tagEn: 'Nationwide Courier'
+    code: 'SUDDAIS10',
+    titleUr: 'سدیس کلیکشن 10٪ رعایت',
+    titleEn: 'Suddais Collection 10% Flat OFF',
+    descUr: 'کوڈ "SUDDAIS10" استعمال کریں اور کسی بھی آرڈر پر فوری 10 فیصد کی بچت حاصل کریں۔',
+    descEn: 'Apply coupon code SUDDAIS10 at checkout to receive 10% instant discount.',
+    discount: 10,
+    tagUr: 'اسپیشل کوڈ',
+    tagEn: 'Special Voucher'
   },
   {
     id: 'deal-3',
-    code: 'BUY2GET1',
-    titleUr: '2 عطر خریدیں 1 ٹوپی مفت پائیں',
-    titleEn: 'Buy Any 2 Attars, Get Free Cap',
-    descUr: 'دو عطر کی خریداری پر ہم آپ کو بھیجیں گے ایک دیدہ زیب نماز ٹوپی بالکل مفت۔',
-    descEn: 'Add any 2 attars to your order and we will pack an embroidered cap inside.',
-    discount: 10,
-    tagUr: 'خصوصی تحفہ',
-    tagEn: 'Free Gift Inside'
+    code: 'COMBO5',
+    titleUr: '5 پیس اسپرے سیٹ صرف 1500',
+    titleEn: '5 Pcs Spray Combo Just Rs. 1500',
+    descUr: 'سدیس کلیکشن کے 5 منی اسپرے پرفیومز (5ml) کا پورا گفٹ سیٹ صرف 1500 روپے میں۔',
+    descEn: '5-piece travel spray perfume gift set in presentation box.',
+    discount: 15,
+    tagUr: 'بڑی بچت',
+    tagEn: 'Mega Combo'
   }
 ];
 
