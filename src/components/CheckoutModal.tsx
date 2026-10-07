@@ -119,14 +119,60 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       rider
     };
 
+    // Save order to store and broadcast sync event immediately
+    saveOrderToStore(newOrder);
+    sessionStorage.setItem('suddais_last_order_id', newOrder.id);
+    onOrderCompleted(newOrder);
+
+    // Direct WhatsApp message sent to store owner
+    const itemsList = cartItems
+      .map(
+        (item, idx) =>
+          `${idx + 1}. *${item.nameEn}* (${item.selectedSize}) x${item.quantity} = Rs. ${(
+            item.unitPrice * item.quantity
+          ).toLocaleString()}`
+      )
+      .join('\n');
+
+    const whatsappMessage = `🛍️ *نیا آرڈر - سدیس کلیکشن (SUDDAIS COLLECTION)*
+━━━━━━━━━━━━━━━━━━━━━━━
+📋 *آرڈر نمبر:* #${newOrder.id}
+
+👤 *گاہک کی تفصیلات (Customer Details):*
+• *نام:* ${formData.fullName}
+• *فون نمبر:* ${formData.phone}${
+      formData.whatsappPhone && formData.whatsappPhone !== formData.phone
+        ? `\n• *واٹس ایپ نمبر:* ${formData.whatsappPhone}`
+        : ''
+    }
+• *شہر:* ${formData.city}
+• *ڈلیوری ایڈریس:* ${formData.address}${
+      formData.notes ? `\n• *نوٹ / ہدایات:* ${formData.notes}` : ''
+    }
+
+📦 *آرڈر آئٹمز (Ordered Items):*
+${itemsList}
+
+💰 *بل کی تفصیل (Payment Breakdown):*
+• سب ٹوٹل: Rs. ${subtotal.toLocaleString()}
+${discount > 0 ? `• خصوصی رعایت / ڈسکاؤنٹ: -Rs. ${discount.toLocaleString()}\n` : ''}• ڈلیوری چارجز (${cityInfo.region}): ${deliveryFee === 0 ? 'مفت (FREE)' : `Rs. ${deliveryFee}`}
+• *کل واجب الادا رقم: Rs. ${grandTotal.toLocaleString()}*
+• ادائیگی کا طریقہ: کیش آن ڈلیوری (COD)
+━━━━━━━━━━━━━━━━━━━━━━━
+براہ کرم میرا یہ آرڈر کنفرم فرما دیں۔ شکریہ!`;
+
+    // Immediately trigger WhatsApp opening so owner receives the order directly
+    const whatsappUrl = `https://wa.me/923182187575?text=${encodeURIComponent(whatsappMessage)}`;
+    try {
+      window.open(whatsappUrl, '_blank');
+    } catch {
+      // ignore popup blocker if any
+    }
+
     setTimeout(() => {
       setIsSubmitting(false);
       setCompletedOrder(newOrder);
-      onOrderCompleted(newOrder);
-
-      // Save order to store and broadcast sync event
-      saveOrderToStore(newOrder);
-    }, 1000);
+    }, 600);
   };
 
   const handleDownloadReceiptImage = (order: OrderRecord) => {
@@ -352,15 +398,17 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         {/* Modal Body */}
         <div className="p-5 sm:p-6 max-h-[82vh] overflow-y-auto">
           {completedOrder ? (
-            /* Order Placed Success Screen */
-            <div className="space-y-6">
+            /* Order Placed Success Screen - 100% Focused on WhatsApp & Receipt */
+            <div className="space-y-5">
               <div className="p-6 rounded-2xl bg-[#f4fbf7] border border-emerald-500/30 text-center space-y-2">
-                <CheckCircle2 className="w-12 h-12 text-emerald-600 mx-auto" />
+                <div className="w-14 h-14 rounded-full bg-emerald-100 text-emerald-700 mx-auto flex items-center justify-center">
+                  <CheckCircle2 className="w-8 h-8 text-emerald-600" />
+                </div>
                 <h4 className="text-xl font-bold text-[#1a1612] font-display">
-                  Order Successfully Placed!
+                  Order Confirmed & Sent to WhatsApp!
                 </h4>
-                <p className="text-xs text-[#52493d]">
-                  Thank you, <strong>{completedOrder.customer.fullName}</strong>! Your order is logged in our dispatch registry.
+                <p className="text-xs sm:text-sm text-[#52493d] max-w-md mx-auto">
+                  شکریہ <strong>{completedOrder.customer.fullName}</strong>! آپ کے آرڈر کا میسج ہمارے واٹس ایپ نمبر <strong>(0318-2187575)</strong> پر بھیج دیا گیا ہے۔
                 </p>
                 <div className="inline-flex items-center gap-2 mt-2 px-4 py-2 rounded-full bg-white border border-emerald-400 text-xs font-mono font-bold text-emerald-800 shadow-xs">
                   <span>Order ID: <strong>{completedOrder.id}</strong></span>
@@ -374,36 +422,32 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 </div>
               </div>
 
-              {/* Courier & Rider Assignment Details */}
-              <div className="p-5 rounded-2xl bg-[#faf7f2] border border-[#e8dec8] space-y-3">
-                <div className="flex items-center justify-between pb-3 border-b border-[#e8dec8]">
-                  <div className="flex items-center gap-2">
-                    <Truck className="w-4 h-4 text-[#b8860b]" />
-                    <span className="font-bold text-xs uppercase tracking-wider text-[#1a1612]">
-                      Assigned Courier & Tracking
-                    </span>
-                  </div>
-                  <span className="text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">
-                    Confirmed Dispatch
+              {/* Delivery Address & Customer Summary */}
+              <div className="p-4 rounded-2xl bg-[#faf7f2] border border-[#e8dec8] space-y-2.5 text-xs text-[#52493d]">
+                <div className="flex items-center justify-between pb-2 border-b border-[#e8dec8]">
+                  <span className="font-bold uppercase tracking-wider text-[#1a1612] text-[11px]">
+                    Delivery Information (ڈلیوری ایڈریس)
+                  </span>
+                  <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                    Cash on Delivery (COD)
                   </span>
                 </div>
-
-                <div className="grid grid-cols-2 gap-3 text-xs text-[#52493d]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <div>
-                    <span className="text-[#8c8273] block text-[11px]">Courier Partner:</span>
-                    <span className="font-bold text-[#1a1612]">{completedOrder.rider.courier}</span>
+                    <span className="text-[#8c8273] block text-[11px]">Customer Name:</span>
+                    <span className="font-bold text-[#1a1612]">{completedOrder.customer.fullName}</span>
                   </div>
                   <div>
-                    <span className="text-[#8c8273] block text-[11px]">Tracking Number:</span>
-                    <span className="font-mono font-bold text-[#b8860b]">{completedOrder.rider.trackingNo}</span>
+                    <span className="text-[#8c8273] block text-[11px]">Phone / WhatsApp:</span>
+                    <span className="font-bold text-[#1a1612]">{completedOrder.customer.phone}</span>
                   </div>
                   <div>
-                    <span className="text-[#8c8273] block text-[11px]">Destination & Delivery:</span>
+                    <span className="text-[#8c8273] block text-[11px]">City:</span>
                     <span className="font-bold text-[#1a1612]">{completedOrder.customer.city}</span>
                   </div>
                   <div>
-                    <span className="text-[#8c8273] block text-[11px]">Est. Arrival:</span>
-                    <span className="font-bold text-emerald-700">{completedOrder.rider.estimatedDelivery}</span>
+                    <span className="text-[#8c8273] block text-[11px]">Delivery Address:</span>
+                    <span className="font-bold text-[#1a1612]">{completedOrder.customer.address}</span>
                   </div>
                 </div>
               </div>
@@ -413,7 +457,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 <h5 className="text-xs font-bold text-[#1a1612] uppercase tracking-wider">
                   Ordered Products ({completedOrder.items.length})
                 </h5>
-                <div className="space-y-2 max-h-36 overflow-y-auto pr-1">
+                <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1">
                   {completedOrder.items.map((it) => (
                     <div
                       key={it.id}
@@ -428,60 +472,36 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     </div>
                   ))}
                 </div>
-                <div className="flex justify-between text-xs pt-1 font-bold">
-                  <span>Total Payable on Delivery:</span>
+                <div className="flex justify-between text-xs pt-1.5 font-bold border-t border-[#e8dec8]">
+                  <span>Total Cash to Pay on Delivery:</span>
                   <span className="font-mono text-sm text-[#b8860b]">
                     Rs. {completedOrder.total.toLocaleString()}
                   </span>
                 </div>
               </div>
 
-              {/* Prominent Save / Download Order Slip Picture Button (Requested by User) */}
-              <div className="p-4 rounded-2xl bg-[#faf2dd] border-2 border-[#d4af37]/60 space-y-2">
-                <div className="flex items-center justify-between text-xs font-bold text-[#8c6708]">
-                  <span>📸 رسید اور ٹریکنگ کی تصویر محفوظ کریں</span>
-                  <span className="font-mono font-bold text-[#1a1612] bg-white px-2 py-0.5 rounded border border-[#d4af37]/40">
-                    {completedOrder.id}
-                  </span>
-                </div>
+              {/* WhatsApp Chat & Picture Save Buttons */}
+              <div className="p-4 rounded-2xl bg-[#faf2dd] border-2 border-[#d4af37]/60 space-y-3">
+                <button
+                  type="button"
+                  onClick={handleWhatsAppDirectCheckout}
+                  className="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
+                >
+                  <MessageCircle className="w-5 h-5 fill-white" />
+                  <span>Open WhatsApp Chat (واٹس ایپ میسج کھولیں)</span>
+                </button>
+
                 <button
                   type="button"
                   onClick={() => handleDownloadReceiptImage(completedOrder)}
-                  className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-[#d4af37] via-[#c59b27] to-[#996515] hover:brightness-105 text-[#1a1612] font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
+                  className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-[#d4af37] via-[#c59b27] to-[#996515] hover:brightness-105 text-[#1a1612] font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer"
                 >
                   <Download className="w-4 h-4 text-[#1a1612]" />
-                  <span>Download / Save Order Picture (تصویر محفوظ کریں)</span>
-                </button>
-                <p className="text-[11px] text-[#736a5c] text-center">
-                  اس بٹن پر کلک کر کے آپ اپنے آرڈر اور ٹریکنگ ایڈریس (<strong>{completedOrder.rider.trackingNo}</strong>) کی تصویر اپنے موبائل میں محفوظ کر سکتے ہیں۔
-                </p>
-              </div>
-
-              {/* Action Buttons: Live Tracking & WhatsApp */}
-              <div className="pt-2 flex flex-col sm:flex-row gap-3">
-                {onOpenTracker && (
-                  <button
-                    onClick={() => {
-                      onClose();
-                      onOpenTracker();
-                    }}
-                    className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-[#1a1612] hover:bg-[#c59b27] text-white font-bold text-xs cursor-pointer shadow-md transition-all"
-                  >
-                    <Truck className="w-4 h-4 text-[#d4af37]" />
-                    <span>Track Live Delivery Status</span>
-                  </button>
-                )}
-
-                <button
-                  onClick={handleWhatsAppDirectCheckout}
-                  className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs cursor-pointer shadow-md transition-all"
-                >
-                  <MessageCircle className="w-4 h-4 fill-white" />
-                  <span>Send Copy on WhatsApp</span>
+                  <span>Download / Save Receipt Picture (تصویر محفوظ کریں)</span>
                 </button>
               </div>
 
-              <div className="text-center pt-2">
+              <div className="text-center pt-1">
                 <button
                   onClick={onClose}
                   className="text-xs text-[#736a5c] hover:text-[#1a1612] underline cursor-pointer"
@@ -779,21 +799,24 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-gradient-to-r from-[#d4af37] via-[#e6c352] to-[#c59b27] text-[#1a1612] font-bold text-sm hover:brightness-105 transition-all shadow-md active:scale-95 cursor-pointer disabled:opacity-50"
+                  className="w-full flex items-center justify-center gap-2 py-4 rounded-xl bg-gradient-to-r from-emerald-600 via-emerald-700 to-[#1a1612] text-white font-bold text-sm sm:text-base hover:brightness-105 transition-all shadow-md active:scale-95 cursor-pointer disabled:opacity-50"
                 >
                   {isSubmitting ? (
-                    <span>Registering Order...</span>
+                    <span>Sending Order to WhatsApp...</span>
                   ) : (
                     <>
-                      <span>Confirm & Place Order (Rs. {grandTotal.toLocaleString()})</span>
-                      <ArrowRight className="w-4 h-4" />
+                      <MessageCircle className="w-5 h-5 fill-white" />
+                      <span>Confirm & Send Order via WhatsApp (Rs. {grandTotal.toLocaleString()})</span>
                     </>
                   )}
                 </button>
+                <p className="text-[11px] text-[#736a5c] text-center">
+                  آرڈر کنفرم کرتے ہی آپ کے آرڈر کا مکمل بل اور ایڈریس ہمارے واٹس ایپ <strong>(0318-2187575)</strong> پر پہنچ جائے گا۔
+                </p>
 
-                <div className="flex items-center justify-center gap-2 text-[11px] text-[#736a5c]">
+                <div className="flex items-center justify-center gap-2 text-[11px] text-[#736a5c] pt-1">
                   <ShieldCheck className="w-3.5 h-3.5 text-[#b8860b]" />
-                  <span>100% Genuine Fragrances • 7-Day Exchange Guarantee</span>
+                  <span>100% Genuine Fragrances • Cash on Delivery</span>
                 </div>
               </div>
 

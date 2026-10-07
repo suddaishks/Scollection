@@ -5,7 +5,7 @@ import { BrandLogo } from './BrandLogo';
 
 interface FooterProps {
   onSelectCategory: (cat: ProductCategory) => void;
-  onOpenTracker: () => void;
+  onOpenTracker?: () => void;
   onOpenOwnerPortal?: () => void;
 }
 
@@ -114,20 +114,22 @@ export const Footer: React.FC<FooterProps> = ({
           </ul>
         </div>
 
-        {/* Quick Help & Tracking */}
+        {/* Quick Help & Inquiries */}
         <div className="space-y-2.5">
           <h5 className="font-bold text-sm text-[#f7e7ce] uppercase tracking-wider mb-3">
             Customer Care
           </h5>
           <ul className="space-y-2">
             <li>
-              <button
-                onClick={onOpenTracker}
-                className="hover:text-[#d4af37] transition-colors cursor-pointer flex items-center gap-1.5"
+              <a
+                href="https://wa.me/923182187575?text=Assalam-o-Alaikum!%20I%20have%20a%20question%20about%20an%20order."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-[#d4af37] transition-colors flex items-center gap-1.5 text-emerald-400 font-bold"
               >
-                <Truck className="w-3.5 h-3.5 text-[#d4af37]" />
-                <span>Track My Parcel & Rider</span>
-              </button>
+                <Phone className="w-3.5 h-3.5" />
+                <span>WhatsApp Helpline (0318-2187575)</span>
+              </a>
             </li>
             <li>
               <a
@@ -142,18 +144,14 @@ export const Footer: React.FC<FooterProps> = ({
                 href="#contact-section"
                 className="hover:text-[#d4af37] transition-colors"
               >
-                Store Location & Inquiries
+                Store Location & Inquiries (Karachi)
               </a>
             </li>
             <li>
-              <a
-                href="https://wa.me/923182187575"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-[#d4af37] transition-colors text-emerald-400 font-bold"
-              >
-                Direct WhatsApp Helpline
-              </a>
+              <span className="text-[#a69c8c] flex items-center gap-1.5">
+                <Truck className="w-3.5 h-3.5 text-[#d4af37]" />
+                <span>Express Dispatch (COD Nationwide)</span>
+              </span>
             </li>
           </ul>
         </div>

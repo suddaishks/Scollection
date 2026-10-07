@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, ShoppingBag, Plus, Minus, Trash2, ArrowRight, Tag, Truck, ShieldCheck, Check } from 'lucide-react';
+import { X, ShoppingBag, Plus, Minus, Trash2, ArrowRight, Tag, Truck, ShieldCheck, Check, MessageCircle } from 'lucide-react';
 import { CartItem } from '../types';
 
 interface CartDrawerProps {
@@ -59,6 +59,33 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       setCouponMsg({ text: 'Invalid coupon. Try WELCOME500 or JUMMAH10', error: true });
     }
     setTimeout(() => setCouponMsg(null), 3500);
+  };
+
+  const handleDirectWhatsAppOrder = () => {
+    const itemsList = cartItems
+      .map(
+        (item, idx) =>
+          `${idx + 1}. *${item.nameEn}* (${item.selectedSize}) x${item.quantity} = Rs. ${(
+            item.unitPrice * item.quantity
+          ).toLocaleString()}`
+      )
+      .join('\n');
+
+    const whatsappMessage = `🛍️ *نیا آرڈر - سدیس کلیکشن (SUDDAIS COLLECTION)*
+━━━━━━━━━━━━━━━━━━━━━━━
+السلام علیکم! میں درج ذیل اشیاء کا آرڈر کرنا چاہتا ہوں:
+
+📦 *آرڈر آئٹمز (Items):*
+${itemsList}
+
+💰 *بل کی تفصیل:*
+• سب ٹوٹل: Rs. ${subtotal.toLocaleString()}
+${discount > 0 ? `• رعایت / ڈسکاؤنٹ: -Rs. ${discount.toLocaleString()}\n` : ''}• کل رقم (تقریباً): Rs. ${grandTotal.toLocaleString()}
+• ادائیگی: کیش آن ڈلیوری (COD)
+━━━━━━━━━━━━━━━━━━━━━━━
+براہ کرم ڈلیوری ایڈریس لے کر میرا یہ آرڈر بک فرما دیں۔ شکریہ!`;
+
+    window.open(`https://wa.me/923182187575?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
   };
 
   return (
@@ -260,17 +287,27 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               </div>
             </div>
 
-            {/* Checkout Action Button */}
-            <button
-              onClick={() => {
-                onClose();
-                onProceedToCheckout();
-              }}
-              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-gradient-to-r from-[#d4af37] via-[#e6c352] to-[#c59b27] text-[#1a1612] font-bold text-sm hover:brightness-105 transition-all shadow-md active:scale-95 cursor-pointer"
-            >
-              <span>Proceed to Checkout</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
+            {/* Dual Action Buttons: Direct WhatsApp & Web Checkout */}
+            <div className="space-y-2">
+              <button
+                onClick={handleDirectWhatsAppOrder}
+                className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm transition-all shadow-md active:scale-95 cursor-pointer"
+              >
+                <MessageCircle className="w-4 h-4 fill-white" />
+                <span>Order Directly on WhatsApp (واٹس ایپ آرڈر)</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  onClose();
+                  onProceedToCheckout();
+                }}
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#faf6ee] hover:bg-[#faf2dd] border border-[#d4af37] text-[#1a1612] font-bold text-xs sm:text-sm transition-all shadow-xs active:scale-95 cursor-pointer"
+              >
+                <span>Proceed with Delivery Address Form</span>
+                <ArrowRight className="w-3.5 h-3.5 text-[#b8860b]" />
+              </button>
+            </div>
 
             <div className="flex items-center justify-center gap-2 text-[11px] text-[#736a5c]">
               <ShieldCheck className="w-3.5 h-3.5 text-[#b8860b]" />

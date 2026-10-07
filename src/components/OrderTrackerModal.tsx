@@ -43,8 +43,15 @@ export const OrderTrackerModal: React.FC<OrderTrackerModalProps> = ({
         return;
       }
     }
-    if (list.length > 0 && !activeOrder) {
-      setActiveOrder(list[0]);
+    // Only auto-load if the user in this session recently completed an order
+    if (!activeOrder) {
+      const lastPlacedId = sessionStorage.getItem('suddais_last_order_id');
+      if (lastPlacedId) {
+        const myOrder = list.find((o) => o.id === lastPlacedId);
+        if (myOrder) {
+          setActiveOrder(myOrder);
+        }
+      }
     }
   };
 
@@ -159,7 +166,7 @@ export const OrderTrackerModal: React.FC<OrderTrackerModalProps> = ({
               <Search className="w-4 h-4 text-[#8c8273] absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
-                placeholder="Enter Order ID (e.g. SUD-123456) or Phone Number..."
+                placeholder="Enter your Order ID (e.g. SC-010101) or Phone Number..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-[#faf7f2] border border-[#dcd2be] rounded-xl pl-10 pr-3 py-2.5 text-xs text-[#1a1612] focus:outline-none focus:border-[#b8860b]"
@@ -173,26 +180,14 @@ export const OrderTrackerModal: React.FC<OrderTrackerModalProps> = ({
             </button>
           </form>
 
-          {/* Quick Select of Stored Orders */}
-          {orders.length > 1 && (
-            <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
-              <span className="text-[#8c8273] text-[11px] shrink-0 font-medium">Recent Orders:</span>
-              {orders.map((o) => (
-                <button
-                  key={o.id}
-                  onClick={() => {
-                    setActiveOrder(o);
-                    setNotFound(false);
-                  }}
-                  className={`px-3 py-1 rounded-lg text-xs font-mono font-bold transition-colors cursor-pointer shrink-0 border ${
-                    activeOrder?.id === o.id
-                      ? 'bg-[#1a1612] text-white border-[#1a1612]'
-                      : 'bg-[#faf7f2] border-[#e8dec8] text-[#52493d] hover:border-[#b8860b]'
-                  }`}
-                >
-                  {o.id}
-                </button>
-              ))}
+          {/* Empty search state when no order entered yet */}
+          {!activeOrder && !notFound && (
+            <div className="py-10 px-4 text-center rounded-2xl bg-[#faf7f2] border border-[#e8dec8] space-y-2">
+              <Package className="w-10 h-10 text-[#c59b27] mx-auto opacity-60" />
+              <h4 className="text-sm font-bold text-[#1a1612]">Track Your Delivery</h4>
+              <p className="text-xs text-[#736a5c] max-w-sm mx-auto">
+                Please enter the Order ID (e.g. <strong>SC-010101</strong>) from your confirmation slip or your phone number to check live parcel status.
+              </p>
             </div>
           )}
 
@@ -240,59 +235,82 @@ export const OrderTrackerModal: React.FC<OrderTrackerModalProps> = ({
                 </div>
               </div>
 
-              {/* Progress Milestones Timeline */}
+              {/* Progress Milestones Timeline or Cancelled State */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h4 className="text-xs font-bold text-[#1a1612] uppercase tracking-wider">
                     Shipment Progress Timeline
                   </h4>
-                  <span className="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-300 px-3 py-1 rounded-full">
+                  <span className={`text-xs font-bold px-3 py-1 rounded-full ${
+                    activeOrder.rider.status === 'cancelled'
+                      ? 'text-rose-900 bg-rose-100 border border-rose-300'
+                      : 'text-emerald-800 bg-emerald-50 border border-emerald-300'
+                  }`}>
                     {activeOrder.rider.statusUr || 'Active Shipment'}
                   </span>
                 </div>
 
-                <div className="relative pl-6 space-y-6 before:content-[''] before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-[#e8dec8]">
-                  {steps.map((st, idx) => {
-                    const isCompleted = currentLevel > st.level;
-                    const isCurrent = currentLevel === st.level;
+                {activeOrder.rider.status === 'cancelled' ? (
+                  <div className="p-5 rounded-2xl bg-rose-50 border-2 border-rose-300 text-rose-950 space-y-2">
+                    <div className="flex items-center gap-2 font-bold text-sm text-rose-900">
+                      <AlertCircle className="w-5 h-5 text-rose-600" />
+                      <span>آرڈر منسوخ ہو چکا ہے (Order Cancelled)</span>
+                    </div>
+                    <p className="text-xs text-rose-800">
+                      {activeOrder.cancellationReason === 'customer'
+                        ? 'یہ آرڈر کسٹمر کی درخواست پر ڈسپیچ سے پہلے منسوخ کیا گیا ہے۔'
+                        : 'یہ آرڈر اسٹاک نہ ہونے یا کوالٹی جانچ کی وجہ سے اسٹور اونر کی طرف سے منسوخ کیا گیا ہے۔'}
+                    </p>
+                    {activeOrder.rider.currentLocation && (
+                      <p className="text-[11px] font-mono text-rose-700 bg-white/80 p-2.5 rounded-xl border border-rose-200">
+                        تفصیل: {activeOrder.rider.currentLocation}
+                      </p>
+                    )}
+                  </div>
+                ) : (
+                  <div className="relative pl-6 space-y-6 before:content-[''] before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-[#e8dec8]">
+                    {steps.map((st, idx) => {
+                      const isCompleted = currentLevel > st.level;
+                      const isCurrent = currentLevel === st.level;
 
-                    return (
-                      <div key={idx} className="relative">
-                        <span
-                          className={`absolute -left-6 top-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center text-[10px] font-bold ${
-                            isCompleted
-                              ? 'bg-emerald-600 border-white text-white shadow-xs'
-                              : isCurrent
-                              ? 'bg-[#c59b27] border-white text-white shadow-xs ring-4 ring-[#d4af37]/20 animate-pulse'
-                              : 'bg-white border-[#dcd2be] text-[#8c8273]'
-                          }`}
-                        >
-                          {isCompleted ? (
-                            <CheckCircle className="w-3 h-3" />
-                          ) : (
-                            st.level
-                          )}
-                        </span>
-                        <div className="ml-2">
-                          <h5
-                            className={`text-xs font-bold ${
+                      return (
+                        <div key={idx} className="relative">
+                          <span
+                            className={`absolute -left-6 top-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center text-[10px] font-bold ${
                               isCompleted
-                                ? 'text-emerald-800'
+                                ? 'bg-emerald-600 border-white text-white shadow-xs'
                                 : isCurrent
-                                ? 'text-[#1a1612] font-extrabold'
-                                : 'text-[#8c8273]'
+                                ? 'bg-[#c59b27] border-white text-white shadow-xs ring-4 ring-[#d4af37]/20 animate-pulse'
+                                : 'bg-white border-[#dcd2be] text-[#8c8273]'
                             }`}
                           >
-                            {st.title} {isCurrent && <span className="text-[10px] text-[#b8860b] font-normal">(Current Stage)</span>}
-                          </h5>
-                          <p className="text-[11px] text-[#736a5c]">
-                            {st.desc}
-                          </p>
+                            {isCompleted ? (
+                              <CheckCircle className="w-3 h-3" />
+                            ) : (
+                              st.level
+                            )}
+                          </span>
+                          <div className="ml-2">
+                            <h5
+                              className={`text-xs font-bold ${
+                                isCompleted
+                                  ? 'text-emerald-800'
+                                  : isCurrent
+                                  ? 'text-[#1a1612] font-extrabold'
+                                  : 'text-[#8c8273]'
+                              }`}
+                            >
+                              {st.title} {isCurrent && <span className="text-[10px] text-[#b8860b] font-normal">(Current Stage)</span>}
+                            </h5>
+                            <p className="text-[11px] text-[#736a5c]">
+                              {st.desc}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
-                </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
 
               {/* Assigned Courier & Rider Card */}

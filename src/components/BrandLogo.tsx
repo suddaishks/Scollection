@@ -30,11 +30,12 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
     xl: 'w-16 h-16 text-2xl'
   };
 
+  const defaultSizeClass = className.includes('w-') ? '' : sizeClasses[size];
   const imageSrc = BRAND_LOGO_IMG || '/assets/logo.png';
 
   return (
     <div
-      className={`relative rounded-xl overflow-hidden shadow-xs border border-[#d4af37]/40 bg-white flex items-center justify-center shrink-0 ${sizeClasses[size]} ${className}`}
+      className={`relative rounded-xl overflow-hidden shadow-xs border border-[#d4af37]/40 bg-white flex items-center justify-center shrink-0 ${defaultSizeClass} ${className}`}
       title="Suddais Collection Logo"
     >
       {!imageError ? (

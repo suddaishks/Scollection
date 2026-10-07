@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShoppingBag, Truck, Menu, X, Phone, Sparkles, ShieldCheck } from 'lucide-react';
+import { ShoppingBag, Menu, X, Phone, Sparkles, ShieldCheck } from 'lucide-react';
 import { ProductCategory } from '../types';
 import { BrandLogo } from './BrandLogo';
 
@@ -8,7 +8,7 @@ interface NavbarProps {
   onSelectCategory: (cat: ProductCategory) => void;
   cartCount: number;
   onOpenCart: () => void;
-  onOpenTracker: () => void;
+  onOpenTracker?: () => void;
   onOpenOwnerPortal?: () => void;
 }
 
@@ -17,7 +17,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   onSelectCategory,
   cartCount,
   onOpenCart,
-  onOpenTracker,
   onOpenOwnerPortal,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -33,31 +32,34 @@ export const Navbar: React.FC<NavbarProps> = ({
   return (
     <>
       {/* Top Announcement Bar */}
-      <div className="bg-[#1a1612] text-[#f7e7ce] text-xs py-2 px-4 border-b border-[#c59b27]/30">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#d4af37] animate-pulse" />
-            <span className="font-medium tracking-wide">
-              ✨ FREE NATIONWIDE EXPRESS DELIVERY ON ORDERS OVER RS. 5,000 • COD & EASYPAISA
+      <div className="bg-[#1a1612] text-[#f7e7ce] text-xs py-2 px-3 sm:px-4 border-b border-[#c59b27]/30">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 truncate">
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#d4af37] animate-pulse shrink-0" />
+            <span className="font-medium tracking-wide text-[11px] sm:text-xs truncate">
+              ✨ FREE NATIONWIDE EXPRESS DELIVERY OVER RS. 5,000 • COD & EASYPAISA
             </span>
           </div>
 
-          <div className="hidden sm:flex items-center gap-5 text-[#dcd7cb]">
-            <button
-              onClick={onOpenTracker}
-              className="flex items-center gap-1.5 hover:text-[#d4af37] transition-colors cursor-pointer text-xs"
-            >
-              <Truck className="w-3.5 h-3.5 text-[#d4af37]" />
-              <span>Track Order</span>
-            </button>
+          <div className="flex items-center gap-3 shrink-0 text-[#dcd7cb]">
+            {onOpenOwnerPortal && (
+              <button
+                onClick={onOpenOwnerPortal}
+                className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#d4af37]/20 border border-[#d4af37]/40 text-[#f7e7ce] hover:bg-[#d4af37] hover:text-[#1a1612] transition-colors cursor-pointer text-[10px] font-bold"
+                title="Store Owner Admin Portal (سدیس احمد)"
+              >
+                <ShieldCheck className="w-3 h-3 text-[#d4af37]" />
+                <span>Admin</span>
+              </button>
+            )}
             <a
-              href="https://wa.me/923182187575?text=Hello!%20I%20would%20like%20to%20order%20from%20Suddais%20Collection."
+              href="https://wa.me/923182187575?text=Assalam-o-Alaikum!%20I%20would%20like%20to%20order%20from%20Suddais%20Collection."
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-[#d4af37] hover:text-[#f3d274] transition-colors font-medium text-xs"
+              className="flex items-center gap-1.5 text-[#d4af37] hover:text-[#f3d274] transition-colors font-medium text-[11px] sm:text-xs"
             >
-              <Phone className="w-3.5 h-3.5 text-emerald-400" />
-              <span>WhatsApp: +92 318 2187575</span>
+              <Phone className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+              <span className="font-sans font-semibold">WhatsApp: 0318-2187575</span>
             </a>
           </div>
         </div>
@@ -65,26 +67,28 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Main Luxury White & Gold Navbar */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#e8dec8] shadow-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 min-h-[64px] sm:h-20 py-2 sm:py-0 flex items-center justify-between gap-2 sm:gap-4">
           
-          {/* Brand Wordmark & Logo */}
-          {/* NOTE FOR GITHUB: To change your logo, replace 'public/assets/logo.png' or 'public/logo.png' with your logo file! */}
-          <div className="flex items-center gap-3">
+          {/* Brand Wordmark & Logo (100% Mobile Responsive - Never Overflows or Wraps Awkwardly) */}
+          <div className="flex items-center min-w-0 flex-1">
             <button
               onClick={() => {
                 onSelectCategory('all');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="text-left focus:outline-none group cursor-pointer flex items-center gap-2.5"
+              className="text-left focus:outline-none group cursor-pointer flex items-center gap-2 sm:gap-3 min-w-0"
+              aria-label="Suddais Collection Home"
             >
-              <BrandLogo size="md" />
-              <div>
-                <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#1a1612] font-display flex items-center gap-1.5">
-                  <span>SUDDAIS COLLECTION</span>
-                  <Sparkles className="w-4 h-4 text-[#c59b27]" />
-                </h1>
-                <p className="text-[11px] text-[#8c7853] font-medium tracking-widest uppercase">
-                  Haute Parfumerie & Artisan Attars
+              <BrandLogo size="md" className="w-9 h-9 sm:w-11 sm:h-11 shrink-0" />
+              <div className="min-w-0 flex flex-col justify-center">
+                <div className="flex items-center gap-1 sm:gap-1.5 leading-tight">
+                  <span className="text-sm xs:text-base sm:text-xl lg:text-2xl font-black tracking-tight text-[#1a1612] font-display whitespace-nowrap">
+                    SUDDAIS COLLECTION
+                  </span>
+                  <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#c59b27] shrink-0 hidden xs:inline" />
+                </div>
+                <p className="text-[9px] xs:text-[10px] sm:text-[11px] text-[#8c7853] font-medium tracking-wider uppercase truncate block mt-0.5 max-w-[190px] xs:max-w-[240px] sm:max-w-none">
+                  Original Perfumes & Pure Attars
                 </p>
               </div>
             </button>
@@ -119,27 +123,29 @@ export const Navbar: React.FC<NavbarProps> = ({
             })}
           </nav>
 
-          {/* Actions: Tracking, Cart & WhatsApp */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            {/* Order Tracker Button (Desktop) */}
-            <button
-              onClick={onOpenTracker}
-              className="hidden lg:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#5a4e3c] bg-[#faf6ee] border border-[#e8dec8] hover:border-[#c59b27] hover:text-[#1a1612] transition-colors cursor-pointer"
+          {/* Actions: Direct WhatsApp & Cart */}
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            {/* WhatsApp Quick Order Button (Desktop) */}
+            <a
+              href="https://wa.me/923182187575?text=Hello!%20I%20want%20to%20order%20from%20Suddais%20Collection."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden lg:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-white bg-emerald-700 hover:bg-emerald-800 transition-colors shadow-xs"
             >
-              <Truck className="w-3.5 h-3.5 text-[#c59b27]" />
-              <span>Live Order Tracker</span>
-            </button>
+              <Phone className="w-3.5 h-3.5" />
+              <span>WhatsApp Order</span>
+            </a>
 
             {/* Cart Button */}
             <button
               onClick={onOpenCart}
-              className="relative flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-[#1a1612] text-white hover:bg-[#2b241d] transition-all cursor-pointer shadow-sm group"
+              className="relative flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-2 sm:py-2.5 rounded-xl bg-[#1a1612] text-white hover:bg-[#2b241d] transition-all cursor-pointer shadow-sm group shrink-0"
               aria-label="View Shopping Cart"
             >
               <ShoppingBag className="w-4 h-4 text-[#d4af37] group-hover:scale-110 transition-transform" />
               <span className="hidden sm:inline text-xs font-bold text-[#faf6ee]">Cart</span>
               {cartCount > 0 && (
-                <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-[11px] font-bold rounded-full bg-[#d4af37] text-[#1a1612]">
+                <span className="inline-flex items-center justify-center min-w-[18px] sm:min-w-[20px] h-4.5 sm:h-5 px-1 sm:px-1.5 text-[10px] sm:text-[11px] font-black rounded-full bg-[#d4af37] text-[#1a1612]">
                   {cartCount}
                 </span>
               )}
@@ -148,10 +154,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-xl text-[#4a4237] hover:text-[#1a1612] hover:bg-[#f5f1e8] md:hidden cursor-pointer"
+              className="p-1.5 sm:p-2 rounded-xl text-[#4a4237] hover:text-[#1a1612] hover:bg-[#f5f1e8] md:hidden cursor-pointer shrink-0"
               aria-label="Toggle menu"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" />}
             </button>
           </div>
 
@@ -159,7 +165,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-[#e8dec8] bg-white px-4 py-4 space-y-2 shadow-lg">
+          <div className="md:hidden border-t border-[#e8dec8] bg-white px-4 py-4 space-y-3 shadow-lg">
             <div className="grid grid-cols-2 gap-2 pb-3 border-b border-[#f0ebd9]">
               {navLinks.map((link) => (
                 <button
@@ -186,26 +192,15 @@ export const Navbar: React.FC<NavbarProps> = ({
               ))}
             </div>
 
-            <div className="pt-2 flex flex-col gap-2">
-              <button
-                onClick={() => {
-                  onOpenTracker();
-                  setMobileMenuOpen(false);
-                }}
-                className="w-full flex items-center justify-center gap-2 py-2.5 text-xs font-semibold text-[#1a1612] bg-[#faf6ee] border border-[#e8dec8] rounded-xl"
-              >
-                <Truck className="w-4 h-4 text-[#c59b27]" />
-                <span>Track Rider / Order Status</span>
-              </button>
-
+            <div className="pt-1 flex flex-col gap-2">
               <a
-                href="https://wa.me/923182187575?text=Hello!%20I%20would%20like%20to%20order%20from%20Suddais%20Collection."
+                href="https://wa.me/923182187575?text=Assalam-o-Alaikum!%20I%20would%20like%20to%20order%20from%20Suddais%20Collection."
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2 py-2.5 text-xs font-bold text-white bg-emerald-700 hover:bg-emerald-800 rounded-xl"
+                className="w-full flex items-center justify-center gap-2 py-3 text-xs font-bold text-white bg-emerald-700 hover:bg-emerald-800 rounded-xl shadow-xs"
               >
                 <Phone className="w-4 h-4" />
-                <span>WhatsApp Order (+92 318 2187575)</span>
+                <span>Direct WhatsApp Order (0318-2187575)</span>
               </a>
             </div>
           </div>

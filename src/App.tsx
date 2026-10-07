@@ -6,8 +6,6 @@ import { ProductCard } from './components/ProductCard';
 import { ProductDetailModal } from './components/ProductDetailModal';
 import { CartDrawer } from './components/CartDrawer';
 import { CheckoutModal } from './components/CheckoutModal';
-import { OrderTrackerModal } from './components/OrderTrackerModal';
-import { OwnerPortalModal } from './components/OwnerPortalModal';
 import { AdminPortalPage } from './components/AdminPortalPage';
 import { AboutUsSection } from './components/AboutUsSection';
 import { ContactUsSection } from './components/ContactUsSection';
@@ -26,8 +24,6 @@ export default function App() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
-  const [isTrackerOpen, setIsTrackerOpen] = useState(false);
-  const [isOwnerPortalOpen, setIsOwnerPortalOpen] = useState(false);
 
   // Dedicated Admin Website Route (for Store Owner)
   const [isAdminRoute, setIsAdminRoute] = useState<boolean>(() => {
@@ -249,8 +245,10 @@ export default function App() {
         }}
         cartCount={totalCartCount}
         onOpenCart={() => setIsCartOpen(true)}
-        onOpenTracker={() => setIsTrackerOpen(true)}
-        onOpenOwnerPortal={() => setIsOwnerPortalOpen(true)}
+        onOpenOwnerPortal={() => {
+          window.location.hash = 'admin';
+          setIsAdminRoute(true);
+        }}
       />
 
       {/* Hero Slides Carousel */}
@@ -450,7 +448,6 @@ export default function App() {
           setSearchQuery('');
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
-        onOpenTracker={() => setIsTrackerOpen(true)}
         onOpenOwnerPortal={() => {
           window.location.hash = 'admin';
           setIsAdminRoute(true);
@@ -485,22 +482,6 @@ export default function App() {
         cartItems={cartItems}
         onOrderCompleted={handleOrderCompleted}
         appliedCoupon={appliedCoupon}
-        onOpenTracker={() => {
-          setIsCheckoutOpen(false);
-          setIsTrackerOpen(true);
-        }}
-      />
-
-      {/* Customer Tracking Modal */}
-      <OrderTrackerModal
-        isOpen={isTrackerOpen}
-        onClose={() => setIsTrackerOpen(false)}
-      />
-
-      {/* Store Owner / Admin Dashboard Modal */}
-      <OwnerPortalModal
-        isOpen={isOwnerPortalOpen}
-        onClose={() => setIsOwnerPortalOpen(false)}
       />
 
       {/* Floating WhatsApp CTA */}
