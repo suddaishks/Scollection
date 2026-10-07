@@ -8,10 +8,11 @@ import { CartDrawer } from './components/CartDrawer';
 import { CheckoutModal } from './components/CheckoutModal';
 import { OrderTrackerModal } from './components/OrderTrackerModal';
 import { OwnerPortalModal } from './components/OwnerPortalModal';
+import { AdminPortalPage } from './components/AdminPortalPage';
 import { AboutUsSection } from './components/AboutUsSection';
 import { ContactUsSection } from './components/ContactUsSection';
 import { Footer } from './components/Footer';
-import { PRODUCTS } from './data/products';
+import { getStoredProducts, PRODUCT_UPDATE_EVENT } from './data/productStore';
 import { CartItem, Product, ProductCategory, OrderRecord } from './types';
 import { Search, SlidersHorizontal, MessageCircle, Sparkles, LayoutGrid, Grid2X2, Grid3X3 } from 'lucide-react';
 
@@ -27,6 +28,58 @@ export default function App() {
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isTrackerOpen, setIsTrackerOpen] = useState(false);
   const [isOwnerPortalOpen, setIsOwnerPortalOpen] = useState(false);
+
+  // Dedicated Admin Website Route (for Store Owner)
+  const [isAdminRoute, setIsAdminRoute] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    const path = window.location.pathname.toLowerCase();
+    const hash = window.location.hash.toLowerCase();
+    const search = window.location.search.toLowerCase();
+    return (
+      path === '/admin' ||
+      path === '/owner' ||
+      hash === '#admin' ||
+      hash === '#owner' ||
+      search.includes('admin=true') ||
+      search.includes('owner=true')
+    );
+  });
+
+  // Dynamic Products List synchronized with Admin Portal
+  const [productsList, setProductsList] = useState<Product[]>(() => getStoredProducts());
+
+  useEffect(() => {
+    const syncProducts = () => setProductsList(getStoredProducts());
+    window.addEventListener(PRODUCT_UPDATE_EVENT, syncProducts);
+    window.addEventListener('storage', syncProducts);
+    return () => {
+      window.removeEventListener(PRODUCT_UPDATE_EVENT, syncProducts);
+      window.removeEventListener('storage', syncProducts);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleLocationChange = () => {
+      const path = window.location.pathname.toLowerCase();
+      const hash = window.location.hash.toLowerCase();
+      const search = window.location.search.toLowerCase();
+      setIsAdminRoute(
+        path === '/admin' ||
+        path === '/owner' ||
+        hash === '#admin' ||
+        hash === '#owner' ||
+        search.includes('admin=true') ||
+        search.includes('owner=true')
+      );
+    };
+
+    window.addEventListener('popstate', handleLocationChange);
+    window.addEventListener('hashchange', handleLocationChange);
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange);
+      window.removeEventListener('hashchange', handleLocationChange);
+    };
+  }, []);
 
   // Cart & Coupon
   const [cartItems, setCartItems] = useState<CartItem[]>(() => {
@@ -131,7 +184,7 @@ export default function App() {
   };
 
   // Filter products by Category, Search Query, and Sort
-  const filteredProducts = PRODUCTS.filter((prod) => {
+  const filteredProducts = productsList.filter((prod) => {
     if (activeCategory !== 'all') {
       if (activeCategory === 'deals') {
         if (!prod.isDeal) return false;
@@ -164,8 +217,25 @@ export default function App() {
     return (b.featured ? 1 : 0) - (a.featured ? 1 : 0);
   });
 
-  const dealsProducts = PRODUCTS.filter((p) => p.isDeal);
+  const dealsProducts = productsList.filter((p) => p.isDeal);
   const totalCartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+
+  // Dedicated Admin Portal Website (Only for Owner via #admin or /admin)
+  if (isAdminRoute) {
+    return (
+      <AdminPortalPage
+        onGoToStore={() => {
+          if (window.location.hash.toLowerCase().includes('admin') || window.location.hash.toLowerCase().includes('owner')) {
+            window.location.hash = '';
+          }
+          if (window.location.pathname.toLowerCase() === '/admin' || window.location.pathname.toLowerCase() === '/owner') {
+            window.history.pushState(null, '', '/');
+          }
+          setIsAdminRoute(false);
+        }}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white text-[#1a1612] font-body">
@@ -249,10 +319,10 @@ export default function App() {
           <div className="flex flex-wrap items-center gap-1.5 p-1.5 bg-[#faf7f2] border border-[#e8dec8] rounded-2xl">
             {(
               [
-                { id: 'all', label: 'All Items', count: PRODUCTS.length },
-                { id: 'perfume', label: 'Perfumes (15/30/50ml)', count: PRODUCTS.filter((p) => p.category === 'perfume').length },
-                { id: 'attar', label: 'Pure Attar (3/6/12ml)', count: PRODUCTS.filter((p) => p.category === 'attar').length },
-                { id: 'topi', label: 'Prayer Caps', count: PRODUCTS.filter((p) => p.category === 'topi').length },
+                { id: 'all', label: 'All Items', count: productsList.length },
+                { id: 'perfume', label: 'Perfumes (15/30/50ml)', count: productsList.filter((p) => p.category === 'perfume').length },
+                { id: 'attar', label: 'Pure Attar (3/6/12ml)', count: productsList.filter((p) => p.category === 'attar').length },
+                { id: 'topi', label: 'Prayer Caps', count: productsList.filter((p) => p.category === 'topi').length },
                 { id: 'deals', label: 'Impressions & Sets', count: dealsProducts.length },
               ] as { id: ProductCategory; label: string; count: number }[]
             ).map((item) => (
@@ -381,7 +451,10 @@ export default function App() {
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
         onOpenTracker={() => setIsTrackerOpen(true)}
-        onOpenOwnerPortal={() => setIsOwnerPortalOpen(true)}
+        onOpenOwnerPortal={() => {
+          window.location.hash = 'admin';
+          setIsAdminRoute(true);
+        }}
       />
 
       {/* Modals & Slide-Overs */}

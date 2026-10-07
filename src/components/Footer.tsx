@@ -155,17 +155,6 @@ export const Footer: React.FC<FooterProps> = ({
                 Direct WhatsApp Helpline
               </a>
             </li>
-            {onOpenOwnerPortal && (
-              <li className="pt-2 border-t border-[#332a21]">
-                <button
-                  onClick={onOpenOwnerPortal}
-                  className="hover:text-[#d4af37] transition-colors cursor-pointer flex items-center gap-1.5 text-xs text-[#d4af37] font-semibold"
-                >
-                  <ShieldCheck className="w-3.5 h-3.5" />
-                  <span>Owner / Admin Portal (سدیس احمد)</span>
-                </button>
-              </li>
-            )}
           </ul>
         </div>
 
@@ -194,7 +183,18 @@ export const Footer: React.FC<FooterProps> = ({
       {/* Copyright Strip */}
       <div className="border-t border-[#262019] py-5 bg-[#120f0c] text-center text-[#807567] text-[11px]">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>© {new Date().getFullYear()} SUDDAIS COLLECTION. All Rights Reserved. White & Gold Luxury Edition.</span>
+          <div className="flex items-center gap-2">
+            <span>© {new Date().getFullYear()} SUDDAIS COLLECTION. All Rights Reserved.</span>
+            {onOpenOwnerPortal && (
+              <button
+                onClick={onOpenOwnerPortal}
+                className="text-[#3a3227] hover:text-[#c59b27] transition-colors p-1 cursor-pointer"
+                title="Management Access"
+              >
+                <ShieldCheck className="w-3.5 h-3.5 opacity-60 hover:opacity-100" />
+              </button>
+            )}
+          </div>
           <div className="flex items-center gap-3">
             <span>Cash on Delivery</span>
             <span>•</span>

@@ -56,6 +56,8 @@ export interface Product {
   isDeal?: boolean;
   badgeUr?: string;
   badgeEn?: string;
+  volume?: string;
+  concentration?: string;
   descriptionUr: string;
   descriptionEn: string;
   storyUr?: string;
@@ -116,4 +118,6 @@ export interface OrderRecord {
   total: number;
   couponCode?: string;
   rider: RiderStatus;
+  cancellationReason?: 'customer' | 'owner' | string;
+  cancelledAt?: string;
 }

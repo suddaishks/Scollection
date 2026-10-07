@@ -14,7 +14,10 @@ import {
   MapPin,
   Sparkles,
   MessageCircle,
-  HelpCircle
+  HelpCircle,
+  Download,
+  Image as ImageIcon,
+  Printer
 } from 'lucide-react';
 import { CartItem, OrderCustomerInfo, OrderRecord, PaymentMethod, RiderStatus } from '../types';
 import {
@@ -23,7 +26,7 @@ import {
   calculateDeliveryFee,
   FREE_DELIVERY_THRESHOLD
 } from '../data/deliveryRates';
-import { saveOrderToStore } from '../data/orderStore';
+import { saveOrderToStore, getNextOrderSequence } from '../data/orderStore';
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -88,23 +91,23 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
     setIsSubmitting(true);
 
-    const randomId = `SUD-${Math.floor(100000 + Math.random() * 900000)}`;
-    const randomTracking = `SC-${Math.floor(10000000 + Math.random() * 90000000)}`;
+    // Generate strict 010101 series numbers requested by store owner
+    const { orderId, trackingNo } = getNextOrderSequence();
 
     const rider: RiderStatus = {
       status: 'confirmed',
-      statusUr: 'آرڈر تصدیق شدہ',
-      riderName: 'Muhammad Bilal (Dispatch)',
+      statusUr: 'آرڈر تصدیق شدہ (New)',
+      riderName: 'Suddais Central Dispatch',
       riderPhone: '0318-2187575',
       vehicleNo: 'KHI-7892',
       courier: cityInfo.courier,
-      trackingNo: randomTracking,
+      trackingNo: trackingNo,
       estimatedDelivery: cityInfo.estimatedDelivery,
       currentLocation: `Malir Hub / ${cityInfo.region} Gateway`
     };
 
     const newOrder: OrderRecord = {
-      id: randomId,
+      id: orderId,
       createdAt: new Date().toISOString(),
       customer: { ...formData },
       items: [...cartItems],
@@ -124,6 +127,171 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       // Save order to store and broadcast sync event
       saveOrderToStore(newOrder);
     }, 1000);
+  };
+
+  const handleDownloadReceiptImage = (order: OrderRecord) => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    canvas.width = 700;
+    canvas.height = 760 + order.items.length * 36;
+
+    // Background
+    ctx.fillStyle = '#faf8f5';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Decorative Borders
+    ctx.strokeStyle = '#c59b27';
+    ctx.lineWidth = 6;
+    ctx.strokeRect(16, 16, canvas.width - 32, canvas.height - 32);
+
+    ctx.strokeStyle = '#e8dec8';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(26, 26, canvas.width - 52, canvas.height - 52);
+
+    // Header Background Strip
+    ctx.fillStyle = '#1a1612';
+    ctx.fillRect(26, 26, canvas.width - 52, 110);
+
+    // Header Title
+    ctx.fillStyle = '#f7e7ce';
+    ctx.font = 'bold 26px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('SUDDAIS COLLECTION', canvas.width / 2, 68);
+
+    ctx.fillStyle = '#d4af37';
+    ctx.font = 'bold 12px sans-serif';
+    ctx.fillText('HAUTE LUXURY PERFUMES & PURE ARTISAN ATTARS', canvas.width / 2, 92);
+
+    ctx.fillStyle = '#dcd7cb';
+    ctx.font = '11px sans-serif';
+    ctx.fillText('Official Store: Malir, Karachi | WhatsApp Order Helpline: +92 318 2187575', canvas.width / 2, 115);
+
+    // Order Meta Box
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#faf2dd';
+    ctx.fillRect(45, 155, canvas.width - 90, 85);
+    ctx.strokeStyle = '#d4af37';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(45, 155, canvas.width - 90, 85);
+
+    ctx.fillStyle = '#996515';
+    ctx.font = 'bold 16px sans-serif';
+    ctx.fillText(`ORDER ID: ${order.id}`, 65, 185);
+
+    ctx.fillStyle = '#1a1612';
+    ctx.font = 'bold 14px monospace';
+    ctx.fillText(`TRACKING CONSIGNMENT NO: ${order.rider.trackingNo}`, 65, 215);
+
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#736a5c';
+    ctx.font = '12px sans-serif';
+    ctx.fillText(`Date: ${new Date(order.createdAt).toLocaleDateString('en-US', { dateStyle: 'medium' })}`, canvas.width - 65, 185);
+    ctx.fillStyle = '#15803d';
+    ctx.font = 'bold 13px sans-serif';
+    ctx.fillText('STATUS: CONFIRMED (تصدیق شدہ)', canvas.width - 65, 215);
+
+    // Customer Information
+    ctx.textAlign = 'left';
+    let y = 265;
+    ctx.fillStyle = '#1a1612';
+    ctx.font = 'bold 13px sans-serif';
+    ctx.fillText('CUSTOMER & DELIVERY ADDRESS:', 45, y);
+    y += 24;
+
+    ctx.font = '13px sans-serif';
+    ctx.fillStyle = '#333';
+    ctx.fillText(`Customer Name: ${order.customer.fullName}`, 45, y);
+    y += 22;
+    ctx.fillText(`Phone: ${order.customer.phone}   |   WhatsApp: ${order.customer.whatsappPhone || order.customer.phone}`, 45, y);
+    y += 22;
+    ctx.fillText(`Destination City: ${order.customer.city}`, 45, y);
+    y += 22;
+    ctx.fillText(`Delivery Address: ${order.customer.address}`, 45, y);
+    y += 22;
+    ctx.fillText(`Assigned Courier: ${order.rider.courier}  (Est. Delivery: ${order.rider.estimatedDelivery})`, 45, y);
+    y += 32;
+
+    // Items Table Header
+    ctx.fillStyle = '#f0ebd9';
+    ctx.fillRect(45, y, canvas.width - 90, 32);
+    ctx.strokeStyle = '#dcd2be';
+    ctx.strokeRect(45, y, canvas.width - 90, 32);
+
+    ctx.fillStyle = '#1a1612';
+    ctx.font = 'bold 12px sans-serif';
+    ctx.fillText('PRODUCT DESCRIPTION', 60, y + 21);
+    ctx.textAlign = 'center';
+    ctx.fillText('QTY', canvas.width - 190, y + 21);
+    ctx.textAlign = 'right';
+    ctx.fillText('TOTAL (RS)', canvas.width - 65, y + 21);
+    y += 38;
+
+    // Items rows
+    ctx.font = '13px sans-serif';
+    order.items.forEach((it) => {
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#1a1612';
+      ctx.fillText(`• ${it.nameEn} (${it.selectedSize})`, 60, y);
+
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#555';
+      ctx.fillText(`${it.quantity}`, canvas.width - 190, y);
+
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#1a1612';
+      ctx.fillText(`Rs. ${(it.unitPrice * it.quantity).toLocaleString()}`, canvas.width - 65, y);
+
+      y += 28;
+    });
+
+    y += 12;
+    ctx.strokeStyle = '#eee5d3';
+    ctx.beginPath();
+    ctx.moveTo(45, y);
+    ctx.lineTo(canvas.width - 45, y);
+    ctx.stroke();
+    y += 24;
+
+    // Summary Totals
+    ctx.textAlign = 'right';
+    ctx.font = '13px sans-serif';
+    ctx.fillStyle = '#555';
+    ctx.fillText(`Subtotal: Rs. ${order.subtotal.toLocaleString()}`, canvas.width - 65, y);
+    y += 20;
+    if (order.discount > 0) {
+      ctx.fillStyle = '#15803d';
+      ctx.fillText(`Special Voucher Discount: -Rs. ${order.discount.toLocaleString()}`, canvas.width - 65, y);
+      y += 20;
+    }
+    ctx.fillStyle = '#555';
+    ctx.fillText(`Delivery Charges (${order.customer.city.split(' ')[0]}): Rs. ${order.deliveryFee}`, canvas.width - 65, y);
+    y += 26;
+
+    // Grand Total Box
+    ctx.fillStyle = '#faf2dd';
+    ctx.fillRect(canvas.width - 360, y - 5, 315, 45);
+    ctx.strokeStyle = '#d4af37';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(canvas.width - 360, y - 5, 315, 45);
+
+    ctx.fillStyle = '#996515';
+    ctx.font = 'bold 15px sans-serif';
+    ctx.fillText(`TOTAL CASH TO PAY (COD): Rs. ${order.total.toLocaleString()}`, canvas.width - 60, y + 24);
+    y += 60;
+
+    // Footer note
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#8c7853';
+    ctx.font = 'italic 12px sans-serif';
+    ctx.fillText('Thank you for choosing Suddais Collection! Keep this picture for live tracking.', canvas.width / 2, y);
+
+    // Trigger image download
+    const link = document.createElement('a');
+    link.download = `Suddais-Order-${order.id}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
   };
 
   const handleWhatsAppDirectCheckout = () => {
@@ -266,6 +434,27 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     Rs. {completedOrder.total.toLocaleString()}
                   </span>
                 </div>
+              </div>
+
+              {/* Prominent Save / Download Order Slip Picture Button (Requested by User) */}
+              <div className="p-4 rounded-2xl bg-[#faf2dd] border-2 border-[#d4af37]/60 space-y-2">
+                <div className="flex items-center justify-between text-xs font-bold text-[#8c6708]">
+                  <span>📸 رسید اور ٹریکنگ کی تصویر محفوظ کریں</span>
+                  <span className="font-mono font-bold text-[#1a1612] bg-white px-2 py-0.5 rounded border border-[#d4af37]/40">
+                    {completedOrder.id}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleDownloadReceiptImage(completedOrder)}
+                  className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-[#d4af37] via-[#c59b27] to-[#996515] hover:brightness-105 text-[#1a1612] font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
+                >
+                  <Download className="w-4 h-4 text-[#1a1612]" />
+                  <span>Download / Save Order Picture (تصویر محفوظ کریں)</span>
+                </button>
+                <p className="text-[11px] text-[#736a5c] text-center">
+                  اس بٹن پر کلک کر کے آپ اپنے آرڈر اور ٹریکنگ ایڈریس (<strong>{completedOrder.rider.trackingNo}</strong>) کی تصویر اپنے موبائل میں محفوظ کر سکتے ہیں۔
+                </p>
               </div>
 
               {/* Action Buttons: Live Tracking & WhatsApp */}
